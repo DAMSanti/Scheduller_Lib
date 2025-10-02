@@ -28,21 +28,22 @@ namespace Scheduler_Lib.Services {
             if (requestedDate.ChangeDate != null) {
                 return new SolvedDate {
                     NewDate = requestedDate.ChangeDate.Value,
-                    Description = $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value.Date} at {requestedDate.ChangeDate.Value.TimeOfDay} starting on {requestedDate.StartDate} "
+                    Description = $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value.Date} " +
+                                  $"at {requestedDate.ChangeDate.Value.TimeOfDay} starting on {requestedDate.StartDate} "
                 };
             }
 
             if (requestedDate.Offset != null) {
-                var nuevaFecha = requestedDate.Date.Add(requestedDate.Offset.Value);
-                if (nuevaFecha > requestedDate.EndDate && nuevaFecha < requestedDate.StartDate) {
+                var newDate = requestedDate.Date.Add(requestedDate.Offset.Value);
+                if (newDate > requestedDate.EndDate && newDate < requestedDate.StartDate) {
                     return new SolvedDate {
                         NewDate = requestedDate.Date,
                         Description = $"ERROR: The given date is after the end date."
                     };
                 }
                 return new SolvedDate {
-                    NewDate = nuevaFecha,
-                    Description = $"Occurs Once: Schedule will be used on {nuevaFecha} starting on {requestedDate.StartDate} "
+                    NewDate = newDate,
+                    Description = $"Occurs Once: Schedule will be used on {newDate} starting on {requestedDate.StartDate} "
                 };
             }
 
@@ -50,33 +51,29 @@ namespace Scheduler_Lib.Services {
         }
 
 
-        private static SolvedDate CalcRecurrent(RequestedDate requestedDate)
-        {
-            if (requestedDate.Offset == null)
-            {
-                throw new Exception("Necesitas un Offset positivo para el calculo recurrente");
+        private static SolvedDate CalcRecurrent(RequestedDate requestedDate) {
+            if (requestedDate.Offset == null) {
+                throw new Exception("Positive Offset required.");
             }
 
             TimeSpan span = requestedDate.Offset.Value;
 
-            if (span.Days < 0)
-            {
-                throw new Exception("El offset no puede ser negativo.");
+            if (span.Days < 0) {
+                throw new Exception("Offset must be positive.");
             }
 
-            if (requestedDate.Date < requestedDate.StartDate && requestedDate.Date > requestedDate.EndDate)
-            {
-                throw new Exception("Las fechas tienen que estar entre la fecha inicial y la fecha final.");
+            if (requestedDate.Date < requestedDate.StartDate 
+                && requestedDate.Date > requestedDate.EndDate 
+                && (requestedDate.Date + requestedDate.Offset) < requestedDate.EndDate) {
+                throw new Exception("The date should be between start and end date.");
             }
-
-            var daysSpan = requestedDate.EndDate - requestedDate.Date;
-            var spans = daysSpan / requestedDate.Offset;
 
             var nextDate = requestedDate.Date.Add(requestedDate.Offset.Value);
-            return new SolvedDate
-            {
+
+            return new SolvedDate {
                 NewDate = nextDate,
-                Description = $"Occurs every {requestedDate.Offset.Value.Days} days. Schedule will be used on {requestedDate.Date.Date} at {requestedDate.Date.TimeOfDay} starting on {requestedDate.StartDate}"
+                Description = $"Occurs every {requestedDate.Offset.Value.Days} days. Schedule will be used on {requestedDate.Date.Date}" +
+                              $" at {requestedDate.Date.TimeOfDay} starting on {requestedDate.StartDate}"
             };
         }
     }

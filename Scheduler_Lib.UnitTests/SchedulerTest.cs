@@ -4,8 +4,7 @@ using Scheduler_Lib.Services;
 
 namespace Scheduler_Lib.UnitTests;
 
-public class SchedulerTest
-{
+public class SchedulerTest {
     [Fact]
     public void CalcDate_NullArgument() {
         RequestedDate testRequested = null;
