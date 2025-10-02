@@ -1,4 +1,6 @@
-﻿namespace Scheduler_Lib.Classes;
+﻿using System;
+
+namespace Scheduler_Lib.Classes;
 
 public class SolvedDate
 {
