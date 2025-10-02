@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Scheduller_Lib\Scheduller_Lib.csproj" />
+    <ProjectReference Include="..\Scheduler_Lib\Scheduler_Lib.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,18 +1,19 @@
 ﻿using Xunit;
 using Scheduler_Lib.Classes;
+using Scheduler_Lib.Services;
 
 namespace Scheduler_Lib.UnitTests;
 
-public class UnitTest1
+public class SchedulerTest
 {
     [Fact]
     public void CalcDate_NullArgument() {
         var service = new Service();
         RequestedDate testRequested = null;
-        Assert.Throws<Exception>(() => service.CalcDate(testRequested))
+        Assert.Throws<Exception>(() => service.CalcDate(null));
     }
 
-    /*[Fact]
+    [Fact]
     public void CalcDate_Enabled() {
         RequestedDate testRequested = new RequestedDate();
         testRequested.Enabled = false;
@@ -22,5 +23,5 @@ public class UnitTest1
             Description = "Desactivado: No se ha realizado ninguna modificación"
         };
         Assert.Equal(Service.CalcDate(testRequested), solvedDate);
-    }*/
+    }
 }
