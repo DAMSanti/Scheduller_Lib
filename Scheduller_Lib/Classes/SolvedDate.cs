@@ -1,4 +1,4 @@
-﻿namespace Scheduller_Lib.Classes;
+﻿namespace Scheduler_Lib.Classes;
 
 public class SolvedDate {
     public string Description { get; set; }

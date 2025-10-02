@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Scheduller_Lib.Classes;
+﻿using Scheduler_Lib.Classes;
 
-namespace Scheduller_Lib.Services {
+namespace Scheduler_Lib.Services {
     public class Service {
         public SolvedDate CalcDate(RequestedDate requestedDate) {
             if (requestedDate == null) {
-                throw new Exception("Error: La solicitud no puede ser nula");
+                throw new Exception("Error: The request shouldn't be null.");
             }
 
             if (!requestedDate.Enabled) {
                 return new SolvedDate {
                     NewDate = requestedDate.Date,
-                    Description = "Desactivado: No se ha realizado ninguna modificación"
+                    Description = "Disabled: No changes performed."
                 };
             }
 
@@ -25,7 +20,7 @@ namespace Scheduller_Lib.Services {
                 case Periodicity.Recurrent:
                     return CalcRecurrent(requestedDate);
                 default:
-                    throw new Exception("No se reconoce este tipo de Periodicidad.");
+                    throw new Exception("Periodicity not recognized.");
             }
         }
 
@@ -33,25 +28,25 @@ namespace Scheduller_Lib.Services {
             if (requestedDate.ChangeDate != null) {
                 return new SolvedDate {
                     NewDate = requestedDate.ChangeDate.Value,
-                    Description = $"Cambio Único: Se ha cambiado la fecha a {requestedDate.ChangeDate}"
+                    Description = $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value.Date} at {requestedDate.ChangeDate.Value.TimeOfDay} starting on {requestedDate.StartDate} "
                 };
             }
 
             if (requestedDate.Offset != null) {
                 var nuevaFecha = requestedDate.Date.Add(requestedDate.Offset.Value);
-                if (nuevaFecha > requestedDate.EndDate) {
+                if (nuevaFecha > requestedDate.EndDate && nuevaFecha < requestedDate.StartDate) {
                     return new SolvedDate {
                         NewDate = requestedDate.Date,
-                        Description = $"ERROR: La fecha introducida es posterior a la fecha final."
+                        Description = $"ERROR: The given date is after the end date."
                     };
                 }
                 return new SolvedDate {
                     NewDate = nuevaFecha,
-                    Description = $"Cambio Único: Se ha cambiado la fecha a {nuevaFecha}"
+                    Description = $"Occurs Once: Schedule will be used on {nuevaFecha} starting on {requestedDate.StartDate} "
                 };
             }
 
-            throw new Exception("El calculo unico requiere de fecha de reemplazo o un offset de dias.");
+            throw new Exception("New date time or offset required in Once mode.");
         }
 
 
