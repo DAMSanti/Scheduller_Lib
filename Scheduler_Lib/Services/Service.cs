@@ -28,7 +28,7 @@ namespace Scheduler_Lib.Services {
             if (requestedDate.ChangeDate != null) {
                 return new SolvedDate {
                     NewDate = requestedDate.ChangeDate.Value,
-                    Description = $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value.Date} " +
+                    Description = $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value.Date.ToString("dd/MM/yyyy")} " +
                                   $"at {requestedDate.ChangeDate.Value.TimeOfDay} starting on {requestedDate.StartDate} "
                 };
             }

@@ -6,6 +6,6 @@ public class RequestedDate {
     public DateTimeOffset StartDate { get; set; }
     public DateTimeOffset EndDate { get; set; }
     public DateTimeOffset? ChangeDate { get; set; }
-    public Periodicity Periodicity { get; set; }
+    public Periodicity? Periodicity { get; set; }
     public TimeSpan? Offset { get; set; }
 }
