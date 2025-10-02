@@ -2,7 +2,7 @@
 
 namespace Scheduler_Lib.Services {
     public class Service {
-        public SolvedDate CalcDate(RequestedDate requestedDate) {
+        public static SolvedDate CalcDate(RequestedDate requestedDate) {
             if (requestedDate == null) {
                 throw new Exception("Error: The request shouldn't be null.");
             }
@@ -24,7 +24,7 @@ namespace Scheduler_Lib.Services {
             }
         }
 
-        private SolvedDate CalcOneTime(RequestedDate requestedDate) {
+        private static SolvedDate CalcOneTime(RequestedDate requestedDate) {
             if (requestedDate.ChangeDate != null) {
                 return new SolvedDate {
                     NewDate = requestedDate.ChangeDate.Value,
@@ -50,7 +50,7 @@ namespace Scheduler_Lib.Services {
         }
 
 
-        private SolvedDate CalcRecurrent(RequestedDate requestedDate)
+        private static SolvedDate CalcRecurrent(RequestedDate requestedDate)
         {
             if (requestedDate.Offset == null)
             {
