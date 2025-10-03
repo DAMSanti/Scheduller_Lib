@@ -1,16 +1,11 @@
 ﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Interfaz;
+using Scheduler_Lib.Validation;
 
 namespace Scheduler_Lib.Services {
     public class CalcRecurrent : ISchedule {
         public SolvedDate CalcDate(RequestedDate requestedDate) {
-            if (requestedDate.Offset == null || requestedDate.Offset.Value.Days <= 0) {
-                throw new Exception("Positive Offset required.");
-            }
-
-            if (requestedDate.Date < requestedDate.StartDate || requestedDate.Date > requestedDate.EndDate) {
-                throw new Exception("The date should be between start and end date.");
-            }
+            Validations.
 
             var nextDate = requestedDate.Date.Add(requestedDate.Offset.Value);
 
