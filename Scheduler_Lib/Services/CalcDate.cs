@@ -1,6 +1,8 @@
 ﻿using System;
 using Scheduler_Lib.Classes;
-using Scheduler_Lib.Interaz;
+using Scheduler_Lib.Factory;
+using Scheduler_Lib.Interfaz;
+using Scheduler_Lib.Enum;
 
 namespace Scheduler_Lib.Services {
     public class Service {
@@ -16,8 +18,8 @@ namespace Scheduler_Lib.Services {
                 };
             }
 
-            //var calcDate = ScheduleCalculator.GetCalculator(requestedDate.Periodicity);
-            //return calcDate.CalcDate(requestedDate);
+            var calcDate = ScheduleCalculator.GetScheduleCalculator(requestedDate.Periodicity);
+            return calcDate.CalcDate(requestedDate);
         }
     }
 }

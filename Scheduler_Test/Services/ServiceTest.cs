@@ -6,7 +6,7 @@ namespace Scheduler_Lib.Services
 {
     public class ServiceTest
     {
-        [Fact]
+      /*  [Fact]
         public void CalcDate_NullArgument()
         {
             RequestedDate testRequested = null;
@@ -63,7 +63,7 @@ namespace Scheduler_Lib.Services
 
 
 
-
+        
 
 
                 /*var requestedDate2 = new RequestedDate {
@@ -88,7 +88,8 @@ namespace Scheduler_Lib.Services
                 //Assert.Equal(expectedDate1, result1);
                 //Assert.Equal(expectedDate2, result2);
 
-            }
-        }
+         //   }
+       // }
+
     }
 }

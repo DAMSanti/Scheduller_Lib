@@ -6,7 +6,7 @@ using Scheduler_Lib.Services;
 
 namespace Scheduler_Lib.Factory {
     public static class ScheduleCalculator {
-        public static ISchedule GetScheduleCalculator(Periodicity periodicity) {
+        public static ISchedule GetScheduleCalculator(Periodicity? periodicity) {
             switch (periodicity) {
                 case Periodicity.OneTime:
                     return new CalcOneTime();
