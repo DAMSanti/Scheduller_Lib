@@ -3,12 +3,9 @@ using Scheduler_Lib.Interfaz;
 
 namespace Scheduler_Lib.Services
 {
-    public class CalcOneTime : ISchedule
-    {
-        public SolvedDate CalcDate(RequestedDate requestedDate)
-        {
-            if (requestedDate.ChangeDate != null)
-            {
+    public class CalcOneTime : ISchedule {
+        public SolvedDate CalcDate(RequestedDate requestedDate) {
+            if (requestedDate.ChangeDate != null) {
                 return new SolvedDate
                 {
                     NewDate = requestedDate.ChangeDate.Value,
@@ -16,11 +13,9 @@ namespace Scheduler_Lib.Services
                 };
             }
 
-            if (requestedDate.Offset != null)
-            {
+            if (requestedDate.Offset != null) {
                 var newDate = requestedDate.Date.Add(requestedDate.Offset.Value);
-                if (newDate > requestedDate.EndDate || newDate < requestedDate.StartDate)
-                {
+                if (newDate > requestedDate.EndDate || newDate < requestedDate.StartDate) {
                     return new SolvedDate
                     {
                         NewDate = requestedDate.Date,

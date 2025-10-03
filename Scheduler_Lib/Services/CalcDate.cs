@@ -4,12 +4,11 @@ using Scheduler_Lib.Factory;
 namespace Scheduler_Lib.Services {
     public class Service {
         public static SolvedDate CalcDate(RequestedDate requestedDate) {
-            if (requestedDate == null) {
-                throw new Exception("Error: The request shouldn't be null.");
-            }
+            Validations.Validations.ValidateCalc(requestedDate);
 
             if (!requestedDate.Enabled) {
-                return new SolvedDate {
+                return new SolvedDate                
+                {
                     NewDate = requestedDate.Date,
                     Description = "Disabled: No changes performed."
                 };

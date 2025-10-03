@@ -1,10 +1,8 @@
 ﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Enum;
 
-namespace Scheduler_Lib.Services
-{
-    public class CalcOneTimeTest
-    {
+namespace Scheduler_Lib.Services {
+    public class CalcOneTimeTest {
         [Fact]
         public void ChangeDate_OneTime()
         {
@@ -29,8 +27,7 @@ namespace Scheduler_Lib.Services
         }
 
         [Fact]
-        public void Offset_OneTime_OnLimits()
-        {
+        public void Offset_OneTime_OnLimits() {
             var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
             var requestedDate = new RequestedDate
             {
@@ -53,8 +50,7 @@ namespace Scheduler_Lib.Services
         }
 
         [Fact]
-        public void Offset_OneTime_OutLimits()
-        {
+        public void Offset_OneTime_OutLimits() {
             var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
             var requestedDate = new RequestedDate
             {
@@ -74,8 +70,7 @@ namespace Scheduler_Lib.Services
         }
 
         [Fact]
-        public void NoChange_MissingData()
-        {
+        public void NoChange_MissingData() {
             var requestedDate = new RequestedDate
             {
                 Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),

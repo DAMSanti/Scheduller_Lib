@@ -1,11 +1,11 @@
 ﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Interfaz;
-using Scheduler_Lib.Validation;
+using Scheduler_Lib.Validations;
 
 namespace Scheduler_Lib.Services {
     public class CalcRecurrent : ISchedule {
         public SolvedDate CalcDate(RequestedDate requestedDate) {
-            Validations.
+            Validations.Validations.ValidateRecurrent(requestedDate);
 
             var nextDate = requestedDate.Date.Add(requestedDate.Offset.Value);
 

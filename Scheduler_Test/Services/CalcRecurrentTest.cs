@@ -1,13 +1,10 @@
 ﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Enum;
 
-namespace Scheduler_Lib.Services
-{
-    public class CalcRecurrentTest
-    {
+namespace Scheduler_Lib.Services {
+    public class CalcRecurrentTest {
         [Fact]
-        public void OffSet_Recurrent_Valid()
-        {
+        public void OffSet_Recurrent_Valid() {
             var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
             var requestedDate = new RequestedDate
             {
@@ -31,8 +28,7 @@ namespace Scheduler_Lib.Services
         }
 
         [Fact]
-        public void NullOffset_Recurrent_Invalid()
-        {
+        public void NullOffset_Recurrent_Invalid() {
             var requestedDate = new RequestedDate
             {
                 Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
@@ -49,8 +45,7 @@ namespace Scheduler_Lib.Services
         }
 
         [Fact]
-        public void NegativeOffset_Recurrent_Invalid()
-        {
+        public void NegativeOffset_Recurrent_Invalid() {
             var requestedDate = new RequestedDate
             {
                 Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
@@ -69,8 +64,7 @@ namespace Scheduler_Lib.Services
         [Theory]
         [InlineData(2024,12,31)]
         [InlineData(2026,1,1)]
-        public void OutsideRange_Recurrent_Invalid(int y, int m, int d)
-        {
+        public void OutsideRange_Recurrent_Invalid(int y, int m, int d) {
             var requestedDate = new RequestedDate
             {
                 Date = new DateTimeOffset(y, m, d, 0, 0, 0, TimeSpan.Zero),
