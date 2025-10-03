@@ -1,8 +1,8 @@
 ﻿using Scheduler_Lib.Enum;
 using Scheduler_Lib.Interface;
 
-namespace Scheduler_Lib.Factory
-{
+namespace Scheduler_Lib.Factory;
+
     public class ScheduleCalculatorTest {
         [Fact]
         public void GetScheduleCalculator_Once() {
@@ -25,4 +25,3 @@ namespace Scheduler_Lib.Factory
             Assert.Equal("Unsupported periodicity", result.Message);
         }
     }
-}
