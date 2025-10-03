@@ -11,7 +11,7 @@ public class RequestedDate {
     public Periodicity? Periodicity { get; set; }
     public TimeSpan? Offset { get; set; }
 
-    public RequestedDate() {
+    public void InitializeEndDate() {
         if (EndDate == default && Offset.HasValue) {
             EndDate = Date + Offset.Value;
         }
