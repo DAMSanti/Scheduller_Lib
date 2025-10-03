@@ -1,4 +1,4 @@
-﻿using Scheduler_Lib.Interfaz;
+﻿using Scheduler_Lib.Interface;
 using Scheduler_Lib.Enum;
 using Scheduler_Lib.Services;
 

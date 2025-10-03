@@ -1,5 +1,5 @@
 ﻿using Scheduler_Lib.Enum;
-using Scheduler_Lib.Interfaz;
+using Scheduler_Lib.Interface;
 
 namespace Scheduler_Lib.Factory
 {
