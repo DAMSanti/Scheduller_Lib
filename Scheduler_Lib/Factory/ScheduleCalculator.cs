@@ -1,6 +1,7 @@
 ﻿using System;
 using Scheduler_Lib.Classes;
-using Scheduler_Lib.Interaz;
+using Scheduler_Lib.Interfaz;
+using Scheduler_Lib.Enum;
 using Scheduler_Lib.Services;
 
 namespace Scheduler_Lib.Factory {

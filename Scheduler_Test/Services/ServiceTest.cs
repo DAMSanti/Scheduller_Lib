@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Scheduler_Lib.Classes;
+using Scheduler_Lib.Enum;
 
 namespace Scheduler_Lib.Services
 {

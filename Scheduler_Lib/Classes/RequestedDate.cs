@@ -1,4 +1,5 @@
 ﻿using System;
+using Scheduler_Lib.Enum;
 
 namespace Scheduler_Lib.Classes;
 
