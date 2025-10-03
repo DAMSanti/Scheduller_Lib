@@ -1,5 +1,4 @@
-﻿using System;
-using Scheduler_Lib.Classes;
+﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Interfaz;
 
 namespace Scheduler_Lib.Services

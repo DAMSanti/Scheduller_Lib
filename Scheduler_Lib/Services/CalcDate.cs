@@ -1,8 +1,5 @@
-﻿using System;
-using Scheduler_Lib.Classes;
+﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Factory;
-using Scheduler_Lib.Interfaz;
-using Scheduler_Lib.Enum;
 
 namespace Scheduler_Lib.Services {
     public class Service {
