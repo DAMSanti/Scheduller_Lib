@@ -22,7 +22,7 @@ namespace Scheduler_Lib.Factory
         }
 
         [Fact]
-        public void GetScheduleCalculator_Unsuported()
+        public void GetScheduleCalculator_Unsupported()
         {
             var calc = (Periodicity)5;
             var result = Assert.Throws<Exception>(() => ScheduleCalculator.GetScheduleCalculator(calc));
