@@ -9,10 +9,6 @@ public class SolvedDate
 }
 
 
-
-
-
-
 /*
  public override bool Equals(object obj)
  {

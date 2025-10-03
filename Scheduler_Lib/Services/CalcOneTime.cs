@@ -4,7 +4,7 @@ using Scheduler_Lib.Interaz;
 
 namespace Scheduler_Lib.Services { 
     public class CalcOneTime : ISchedule {
-        public SolvedDate Calculate(RequestedDate requestedDate) {
+        public SolvedDate CalcDate(RequestedDate requestedDate) {
         if (requestedDate.ChangeDate != null) {
             return new SolvedDate {
                 NewDate = requestedDate.ChangeDate.Value,

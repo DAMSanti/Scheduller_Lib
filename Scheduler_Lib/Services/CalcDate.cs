@@ -16,8 +16,8 @@ namespace Scheduler_Lib.Services {
                 };
             }
 
-            var calcDate = ScheduleCalculator.GetCalculator(requestedDate.Periodicity);
-            return calcDate.CalcDate(requestedDate);
+            //var calcDate = ScheduleCalculator.GetCalculator(requestedDate.Periodicity);
+            //return calcDate.CalcDate(requestedDate);
         }
     }
 }

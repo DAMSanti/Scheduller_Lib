@@ -4,7 +4,7 @@ using Scheduler_Lib.Interaz;
 
 namespace Scheduler_Lib.Services {
     public class CalcRecurrent : ISchedule {
-        public SolvedDate CalcRecurrent(RequestedDate requestedDate) {
+        public SolvedDate CalcDate(RequestedDate requestedDate) {
             if (requestedDate.Offset == null || requestedDate.Offset.Value.Days <= 0) {
                 throw new Exception("Positive Offset required.");
             }
