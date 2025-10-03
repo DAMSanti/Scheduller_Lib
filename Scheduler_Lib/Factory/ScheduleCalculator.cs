@@ -1,6 +1,5 @@
 ﻿using Scheduler_Lib.Enum;
 using Scheduler_Lib.Interface;
-using Scheduler_Lib.Resources;
 using Scheduler_Lib.Services;
 
 namespace Scheduler_Lib.Factory;
@@ -12,7 +11,7 @@ public static class ScheduleCalculator {
             case Periodicity.Recurrent:
                 return new CalcRecurrent();
             default:
-                throw new Exception(Messages.UnsupportedPeriodicity);
+                throw new Exception("Unsupported periodicity.");
         }
     }
 }

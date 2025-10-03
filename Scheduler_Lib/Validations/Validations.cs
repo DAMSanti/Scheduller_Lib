@@ -1,11 +1,10 @@
 ﻿using Scheduler_Lib.Classes;
-using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Validations;
 public static class Validations {
     public static void ValidateRecurrent(RequestedDate requestedDate) {
         if (requestedDate.Offset == null || requestedDate.Offset.Value.Days <= 0) {
-            throw new Exception(Messages.PositiveOffset);
+            throw new Exception("ERROR: Positive Offset required.");
         }
 
         if (requestedDate.Date < requestedDate.StartDate || requestedDate.Date > requestedDate.EndDate) {

@@ -5,7 +5,6 @@ namespace Scheduler_Lib.Services;
 public class Service {
     public static SolvedDate CalcDate(RequestedDate requestedDate) {
         Validations.Validations.ValidateCalc(requestedDate);
-        requestedDate.InitializeEndDate();
 
         if (!requestedDate.Enabled) {
             return new SolvedDate

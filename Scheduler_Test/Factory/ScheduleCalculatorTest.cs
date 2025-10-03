@@ -1,6 +1,5 @@
 ﻿using Scheduler_Lib.Enum;
 using Scheduler_Lib.Interface;
-using Scheduler_Lib.Resources;
 namespace Scheduler_Lib.Factory;
 
 public class ScheduleCalculatorTest {
@@ -22,6 +21,6 @@ public class ScheduleCalculatorTest {
     public void GetScheduleCalculator_Unsupported() {
         var calc = (Periodicity)5;
         var result = Assert.Throws<Exception>(() => ScheduleCalculator.GetScheduleCalculator(calc));
-        Assert.Equal(Messages.UnsupportedPeriodicity, result.Message);
+        Assert.Equal("Unsupported periodicity.", result.Message);
     }
 }

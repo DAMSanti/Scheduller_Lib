@@ -1,12 +1,6 @@
 ﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Enum;
-using Scheduler_Lib.Resources;
 using Scheduler_Lib.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scheduler_Lib.Validations
 {
@@ -27,7 +21,7 @@ namespace Scheduler_Lib.Validations
 
             var preResult = new CalcRecurrent();
             var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
-            Assert.Equal(Messages.PositiveOffset, result.Message);
+            Assert.Equal("ERROR: Positive Offset required.", result.Message);
         }
 
         [Fact]
@@ -45,7 +39,7 @@ namespace Scheduler_Lib.Validations
 
             var preResult = new CalcRecurrent();
             var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
-            Assert.Equal(Messages.PositiveOffset, result.Message);
+            Assert.Equal("ERROR: Positive Offset required.", result.Message);
         }
 
         [Fact]
@@ -62,7 +56,7 @@ namespace Scheduler_Lib.Validations
             };
 
             var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
-            Assert.Equal(Messages.PositiveOffset, result.Message);
+            Assert.Equal("ERROR: Positive Offset required.", result.Message);
         }
     }
 }

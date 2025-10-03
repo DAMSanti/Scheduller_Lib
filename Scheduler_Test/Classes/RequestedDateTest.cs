@@ -18,12 +18,10 @@ public class RequestedDateTest {
             Offset = TimeSpan.FromDays(5),
             Periodicity = Periodicity.OneTime,
         };
-        requestedDate.InitializeEndDate();
 
-        var date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        var offset = TimeSpan.FromDays(5);
+        var date = new DateTimeOffset(1, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        Assert.Equal(date + offset, requestedDate.EndDate);
+        Assert.Equal(date, requestedDate.EndDate);
     }
 
     [Fact]
@@ -36,7 +34,6 @@ public class RequestedDateTest {
             StartDate = start,
             Periodicity = Periodicity.OneTime,
         };
-        requestedDate.InitializeEndDate();
 
         var date = new DateTimeOffset(1, 1, 1, 0, 0, 0, TimeSpan.Zero);
 

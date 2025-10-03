@@ -10,10 +10,4 @@ public class RequestedDate {
     public DateTimeOffset? ChangeDate { get; set; }
     public Periodicity? Periodicity { get; set; }
     public TimeSpan? Offset { get; set; }
-
-    public void InitializeEndDate() {
-        if (EndDate == default && Offset.HasValue) {
-            EndDate = Date + Offset.Value;
-        }
-    }
 }
