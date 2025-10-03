@@ -1,6 +1,5 @@
 ﻿using Scheduler_Lib.Classes;
 using Scheduler_Lib.Interface;
-using Scheduler_Lib.Validations;
 
 namespace Scheduler_Lib.Services {
     public class CalcRecurrent : ISchedule {
