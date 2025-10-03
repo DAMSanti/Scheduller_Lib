@@ -17,8 +17,8 @@ namespace Scheduler_Lib.Services {
 
             return new SolvedDate {
                 NewDate = nextDate,
-                Description = $"Occurs every {requestedDate.Offset.Value.Days} days. Schedule will be used on {requestedDate.Date.Date}" +
-                              $" at {requestedDate.Date.TimeOfDay} starting on {requestedDate.StartDate}"
+                Description = $"Occurs every {requestedDate.Offset.Value.Days} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
+                              $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}"
             };
         }
     }

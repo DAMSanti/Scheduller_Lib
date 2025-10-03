@@ -29,7 +29,7 @@ namespace Scheduler_Lib.Services
             var result = preResult.CalcDate(requestedDate);
 
             Assert.Equal(change, result.NewDate);
-            var expectedResult = $"Occurs once: Schedule will be used on {change:dd/MM/yyyy} at {change:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";// starting on {start:dd/MM/yyyy HH:mm} ";
+            var expectedResult = $"Occurs once: Schedule will be used on {change:dd/MM/yyyy} at {change:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
             Assert.Equal(expectedResult, result.Description);
         }
 
