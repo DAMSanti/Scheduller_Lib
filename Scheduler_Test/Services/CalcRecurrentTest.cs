@@ -46,4 +46,30 @@ public class CalcRecurrentTest
         var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
         Assert.Equal("The date should be between start and end date.", result.Message);
     }
+
+    [Fact]
+    public void CalcDate_FutureDates() {
+        var requestedDate = new RequestedDate {
+            Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            Enabled = true,
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero),
+            Offset = TimeSpan.FromDays(1),
+            Periodicity = Periodicity.Recurrent
+        };
+
+        var preResult = new CalcRecurrent();
+        var result = preResult.CalcDate(requestedDate);
+
+        var expectedDates = new List<DateTimeOffset>
+        {
+            new DateTimeOffset(2025, 1, 2, 0, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2025, 1, 4, 0, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero)
+        };
+
+        Assert.Equal(expectedDates, result.FutureDates);
+    }
 }
+
