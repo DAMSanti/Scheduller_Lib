@@ -11,17 +11,15 @@ public class CalcRecurrent : ISchedule {
 
         var solution = new SolvedDate();
         solution.NewDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
-        solution.Description =
-            $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
-            $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+        solution.Description = BuildDescription(requestedDate);
         solution.FutureDates = futureDates;
+
         return ResultPattern<SolvedDate>.Success(solution);
     }
 
-    public List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate)
+    private List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate)
     {
         var dates = new List<DateTimeOffset>();
-        dates.Clear();
         var endDate = requestedDate.EndDate ?? requestedDate.Date.AddDays(requestedDate.Offset.Value * 3);
         var current = requestedDate.Date.AddDays(requestedDate.Offset.Value*2);
 
@@ -31,5 +29,10 @@ public class CalcRecurrent : ISchedule {
         }
 
         return dates;
+    }
+
+    private string BuildDescription(RequestedDate requestedDate) {
+        return $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
+               $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
     }
 }
