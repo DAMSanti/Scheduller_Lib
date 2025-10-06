@@ -1,6 +1,6 @@
-﻿using Scheduler_Lib.Classes;
+﻿using Scheduler_Lib.Core.Classes;
 
-namespace Scheduler_Lib.Validations;
+namespace Scheduler_Lib.Infrastructure.Validations;
 public static class Validations {
     public static void ValidateRecurrent(RequestedDate requestedDate) {
         if (requestedDate.Offset == null || requestedDate.Offset.Value <= 0) {

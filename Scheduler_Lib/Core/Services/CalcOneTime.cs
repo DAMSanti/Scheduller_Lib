@@ -1,7 +1,7 @@
-﻿using Scheduler_Lib.Classes;
-using Scheduler_Lib.Interface;
+﻿using Scheduler_Lib.Core.Classes;
+using Scheduler_Lib.Core.Interface;
 
-namespace Scheduler_Lib.Services;
+namespace Scheduler_Lib.Core.Services;
 public class CalcOneTime : ISchedule {
     public SolvedDate CalcDate(RequestedDate requestedDate) {
         var solucion = new SolvedDate();

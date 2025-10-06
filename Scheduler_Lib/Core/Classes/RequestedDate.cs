@@ -1,6 +1,6 @@
-﻿using Scheduler_Lib.Enum;
+﻿using Scheduler_Lib.Core.Enum;
 
-namespace Scheduler_Lib.Classes;
+namespace Scheduler_Lib.Core.Classes;
 
 public class RequestedDate {
     public DateTimeOffset Date { get; set; } = DateTimeOffset.Now;

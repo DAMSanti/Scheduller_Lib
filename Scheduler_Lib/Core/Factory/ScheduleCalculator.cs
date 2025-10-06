@@ -1,8 +1,8 @@
-﻿using Scheduler_Lib.Enum;
-using Scheduler_Lib.Interface;
-using Scheduler_Lib.Services;
+﻿using Scheduler_Lib.Core.Enum;
+using Scheduler_Lib.Core.Interface;
+using Scheduler_Lib.Core.Services;
 
-namespace Scheduler_Lib.Factory;
+namespace Scheduler_Lib.Core.Factory;
 public static class ScheduleCalculator {
     public static ISchedule GetScheduleCalculator(Periodicity? periodicity) {
         switch (periodicity) {

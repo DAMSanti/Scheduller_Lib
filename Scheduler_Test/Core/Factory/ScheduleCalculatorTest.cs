@@ -1,20 +1,21 @@
-﻿using Scheduler_Lib.Enum;
-using Scheduler_Lib.Interface;
-namespace Scheduler_Lib.Factory;
+﻿using Scheduler_Lib.Core.Enum;
+using Scheduler_Lib.Core.Interface;
+
+namespace Scheduler_Lib.Core.Factory;
 
 public class ScheduleCalculatorTest {
     [Fact]
     public void GetScheduleCalculator_Once() {
         var calc = ScheduleCalculator.GetScheduleCalculator(Periodicity.OneTime);
         Assert.IsAssignableFrom<ISchedule>(calc);
-        Assert.Equal("Scheduler_Lib.Services.CalcOneTime", calc.GetType().FullName);
+        Assert.Equal("Scheduler_Lib.Core.Services.CalcOneTime", calc.GetType().FullName);
     }
 
     [Fact]
     public void GetScheduleCalculator_Recurrent() {
         var calc = ScheduleCalculator.GetScheduleCalculator(Periodicity.Recurrent);
         Assert.IsAssignableFrom<ISchedule>(calc);
-        Assert.Equal("Scheduler_Lib.Services.CalcRecurrent", calc.GetType().FullName);
+        Assert.Equal("Scheduler_Lib.Core.Services.CalcRecurrent", calc.GetType().FullName);
     }
 
     [Fact]

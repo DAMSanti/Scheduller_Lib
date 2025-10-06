@@ -1,12 +1,13 @@
-﻿using Scheduler_Lib.Classes;
-using Scheduler_Lib.Interface;
+﻿using Scheduler_Lib.Core.Classes;
+using Scheduler_Lib.Core.Interface;
+using Scheduler_Lib.Infrastructure.Validations;
 
-namespace Scheduler_Lib.Services;
+namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrent : ISchedule {
     private List<DateTimeOffset> _futureDates = new();
     public SolvedDate CalcDate(RequestedDate requestedDate) {
 
-        Validations.Validations.ValidateRecurrent(requestedDate);
+        Validations.ValidateRecurrent(requestedDate);
 
         _futureDates.Clear();
 

@@ -1,7 +1,7 @@
-﻿using Scheduler_Lib.Classes;
-using Scheduler_Lib.Enum;
+﻿using Scheduler_Lib.Core.Classes;
+using Scheduler_Lib.Core.Enum;
 
-namespace Scheduler_Lib.Services;
+namespace Scheduler_Lib.Core.Services;
 public class CalcOneTimeTest
 {
     [Fact]

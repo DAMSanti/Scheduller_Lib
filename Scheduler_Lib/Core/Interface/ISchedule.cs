@@ -1,6 +1,6 @@
-﻿using Scheduler_Lib.Classes;
+﻿using Scheduler_Lib.Core.Classes;
 
-namespace Scheduler_Lib.Interface;
+namespace Scheduler_Lib.Core.Interface;
 public interface ISchedule {
     SolvedDate CalcDate(RequestedDate requestedDate);
 }

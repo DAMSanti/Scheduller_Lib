@@ -1,8 +1,8 @@
-﻿using Scheduler_Lib.Classes;
-using Scheduler_Lib.Enum;
-using Scheduler_Lib.Services;
+﻿using Scheduler_Lib.Core.Classes;
+using Scheduler_Lib.Core.Enum;
+using Scheduler_Lib.Core.Services;
 
-namespace Scheduler_Lib.Validations
+namespace Scheduler_Lib.Infrastructure.Validations
 {
     public class ValidationsTest
     {

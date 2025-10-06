@@ -1,4 +1,4 @@
-﻿namespace Scheduler_Lib.Enum;
+﻿namespace Scheduler_Lib.Core.Enum;
 
 public enum Periodicity {
     OneTime,
