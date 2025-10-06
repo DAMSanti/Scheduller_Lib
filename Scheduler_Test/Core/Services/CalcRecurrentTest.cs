@@ -1,5 +1,5 @@
 ﻿using Scheduler_Lib.Core.Classes;
-using Scheduler_Lib.Core.Enum;
+using Scheduler_Lib.Core.Model;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrentTest
@@ -13,7 +13,7 @@ public class CalcRecurrentTest
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Offset = 1,
-            Periodicity = Periodicity.OneTime,
+            Periodicity = EnumPeriodicity.OneTime,
         };
 
         var preResult = new CalcRecurrent();
@@ -37,7 +37,7 @@ public class CalcRecurrentTest
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Offset = 1,
-            Periodicity = Periodicity.Recurrent
+            Periodicity = EnumPeriodicity.Recurrent
         };
 
         var preResult = new CalcRecurrent();
@@ -52,7 +52,7 @@ public class CalcRecurrentTest
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero),
             Offset = 1,
-            Periodicity = Periodicity.Recurrent
+            Periodicity = EnumPeriodicity.Recurrent
         };
 
         var preResult = new CalcRecurrent();
@@ -77,7 +77,7 @@ public class CalcRecurrentTest
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = null,
             Offset = 3,
-            Periodicity = Periodicity.Recurrent
+            Periodicity = EnumPeriodicity.Recurrent
         };
 
         var preResult = new CalcRecurrent();
@@ -102,7 +102,7 @@ public class CalcRecurrentTest
             StartDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
             Offset = 3,
-            Periodicity = Periodicity.Recurrent
+            Periodicity = EnumPeriodicity.Recurrent
         };
 
         var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
@@ -117,7 +117,7 @@ public class CalcRecurrentTest
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 1, 0, 0, 0, TimeSpan.Zero),
             Offset = 1,
-            Periodicity = Periodicity.Recurrent
+            Periodicity = EnumPeriodicity.Recurrent
         };
 
         var preResult = new CalcRecurrent();

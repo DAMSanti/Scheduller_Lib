@@ -1,5 +1,5 @@
 ﻿using Scheduler_Lib.Core.Classes;
-using Scheduler_Lib.Core.Enum;
+using Scheduler_Lib.Core.Model;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcDateTest
@@ -14,7 +14,7 @@ public class CalcDateTest
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             ChangeDate = change,
-            Periodicity = Periodicity.OneTime,
+            Periodicity = EnumPeriodicity.OneTime,
         };
 
         var result = Service.CalcDate(requestedDate);

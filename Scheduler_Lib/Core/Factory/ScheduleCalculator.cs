@@ -1,14 +1,14 @@
-﻿using Scheduler_Lib.Core.Enum;
-using Scheduler_Lib.Core.Interface;
+﻿using Scheduler_Lib.Core.Interface;
+using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 
 namespace Scheduler_Lib.Core.Factory;
 public static class ScheduleCalculator {
-    public static ISchedule GetScheduleCalculator(Periodicity? periodicity) {
+    public static ISchedule GetScheduleCalculator(EnumPeriodicity? periodicity) {
         switch (periodicity) {
-            case Periodicity.OneTime:
+            case EnumPeriodicity.OneTime:
                 return new CalcOneTime();
-            case Periodicity.Recurrent:
+            case EnumPeriodicity.Recurrent:
                 return new CalcRecurrent();
             default:
                 throw new Exception("Unsupported periodicity.");

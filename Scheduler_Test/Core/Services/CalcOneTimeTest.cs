@@ -1,5 +1,5 @@
 ﻿using Scheduler_Lib.Core.Classes;
-using Scheduler_Lib.Core.Enum;
+using Scheduler_Lib.Core.Model;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcOneTimeTest
@@ -14,7 +14,7 @@ public class CalcOneTimeTest
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             ChangeDate = change,
-            Periodicity = Periodicity.OneTime,
+            Periodicity = EnumPeriodicity.OneTime,
         };
 
         var preResult = new CalcOneTime();
@@ -34,7 +34,7 @@ public class CalcOneTimeTest
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Offset = 4,
-            Periodicity = Periodicity.OneTime,
+            Periodicity = EnumPeriodicity.OneTime,
         };
 
         var preResult = new CalcOneTime();
@@ -56,7 +56,7 @@ public class CalcOneTimeTest
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 9, 30, 0, 0, 0, TimeSpan.Zero),
             Offset = 4,
-            Periodicity = Periodicity.OneTime,
+            Periodicity = EnumPeriodicity.OneTime,
         };
 
         var preResult = new CalcOneTime();
@@ -73,7 +73,7 @@ public class CalcOneTimeTest
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = Periodicity.OneTime
+            Periodicity = EnumPeriodicity.OneTime
         };
 
         var preResult = new CalcOneTime();

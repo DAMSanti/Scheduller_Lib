@@ -1,5 +1,5 @@
 ﻿using Scheduler_Lib.Core.Classes;
-using Scheduler_Lib.Core.Enum;
+using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 
 namespace Scheduler_Lib.Infrastructure.Validations
@@ -15,7 +15,7 @@ namespace Scheduler_Lib.Infrastructure.Validations
                 StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
                 Offset = null,
-                Periodicity = Periodicity.Recurrent
+                Periodicity = EnumPeriodicity.Recurrent
             };
 
             var preResult = new CalcRecurrent();
@@ -32,7 +32,7 @@ namespace Scheduler_Lib.Infrastructure.Validations
                 StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
                 Offset = -1,
-                Periodicity = Periodicity.Recurrent
+                Periodicity = EnumPeriodicity.Recurrent
             };
 
             var preResult = new CalcRecurrent();
@@ -48,7 +48,7 @@ namespace Scheduler_Lib.Infrastructure.Validations
                 StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
                 Offset = null,
-                Periodicity = Periodicity.Recurrent
+                Periodicity = EnumPeriodicity.Recurrent
             };
 
             var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
