@@ -1,4 +1,4 @@
-﻿namespace Scheduler_Lib.Core.Model;
+﻿namespace Scheduler_Lib.Resources;
 
 public static class Messages
 {

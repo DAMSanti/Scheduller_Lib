@@ -1,6 +1,7 @@
 ﻿using Scheduler_Lib.Core.Interface;
 using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
+using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Factory;
 public static class ScheduleCalculator {
