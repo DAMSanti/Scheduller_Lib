@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace Scheduler_Lib.Core.Model.Messages;
+﻿namespace Scheduler_Lib.Core.Model;
 
 public static class Messages
 {

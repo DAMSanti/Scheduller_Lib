@@ -1,5 +1,4 @@
 ﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Core.Model.Messages;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 public static class Validations {
