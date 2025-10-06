@@ -26,7 +26,7 @@ public class CalcDateTest
     [Fact]
     public void NullRequest() {
         RequestedDate? requestedDate = null;
-        var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
+        var result = Assert.Throws<NullRequestException>(() => Service.CalcDate(requestedDate));
         Assert.Equal("Error: The request shouldn't be null.", result.Message);
     }
 }

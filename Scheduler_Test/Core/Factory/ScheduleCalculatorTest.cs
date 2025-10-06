@@ -21,7 +21,7 @@ public class ScheduleCalculatorTest {
     [Fact]
     public void GetScheduleCalculator_Unsupported() {
         var calc = (EnumPeriodicity)5;
-        var result = Assert.Throws<Exception>(() => ScheduleCalculator.GetScheduleCalculator(calc));
+        var result = Assert.Throws<UnsupportedPeriodicityException>(() => ScheduleCalculator.GetScheduleCalculator(calc));
         Assert.Equal("Unsupported periodicity.", result.Message);
     }
 
@@ -29,7 +29,7 @@ public class ScheduleCalculatorTest {
     public void GetScheduleCalculator_NullPeriodicity_ThrowsException()
     {
         EnumPeriodicity? calc = null;
-        var result = Assert.Throws<Exception>(() => ScheduleCalculator.GetScheduleCalculator(calc));
+        var result = Assert.Throws<UnsupportedPeriodicityException>(() => ScheduleCalculator.GetScheduleCalculator(calc));
         Assert.Equal("Unsupported periodicity.", result.Message);
     }
 

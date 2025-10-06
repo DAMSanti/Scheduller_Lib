@@ -27,6 +27,6 @@ public class CalcOneTime : ISchedule {
             return ResultPattern<SolvedDate>.Success(solution);
         }
 
-        throw new Exception(Messages.ErrorOnceMode);
+        throw new OnceModeException(Messages.ErrorOnceMode);
     }
 }

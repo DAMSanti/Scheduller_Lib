@@ -76,7 +76,7 @@ public class CalcOneTimeTest
         };
 
         var preResult = new CalcOneTime();
-        var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
+        var result = Assert.Throws<OnceModeException>(() => preResult.CalcDate(requestedDate));
         Assert.Equal("New date time or offset required in Once mode.", result.Message);
     }
 

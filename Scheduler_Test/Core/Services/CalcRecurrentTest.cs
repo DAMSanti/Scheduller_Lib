@@ -40,7 +40,7 @@ public class CalcRecurrentTest
         };
 
         var preResult = new CalcRecurrent();
-        var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
+        var result = Assert.Throws<DateOutOfRangeException>(() => preResult.CalcDate(requestedDate));
         Assert.Equal("The date should be between start and end date.", result.Message);
     }
 
@@ -104,7 +104,7 @@ public class CalcRecurrentTest
             Periodicity = EnumPeriodicity.Recurrent
         };
 
-        var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
+        var result = Assert.Throws<DateOutOfRangeException>(() => Service.CalcDate(requestedDate));
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class CalcRecurrentTest
         };
 
         var preResult = new CalcRecurrent();
-        var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
+        var result = Assert.Throws<DateOutOfRangeException>(() => preResult.CalcDate(requestedDate));
         Assert.Equal("The date should be between start and end date.", result.Message);
     }
 

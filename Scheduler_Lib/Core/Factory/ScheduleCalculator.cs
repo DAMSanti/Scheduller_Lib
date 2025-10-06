@@ -12,7 +12,7 @@ public static class ScheduleCalculator {
             case EnumPeriodicity.Recurrent:
                 return new CalcRecurrent();
             default:
-                throw new Exception(Messages.ErrorUnsupportedPeriodicity);
+                throw new UnsupportedPeriodicityException(Messages.ErrorUnsupportedPeriodicity);
         }
     }
 }

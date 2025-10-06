@@ -18,7 +18,7 @@ namespace Scheduler_Lib.Infrastructure.Validations
             };
 
             var preResult = new CalcRecurrent();
-            var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
+            var result = Assert.Throws<NegativeOffsetException>(() => preResult.CalcDate(requestedDate));
             Assert.Equal("ERROR: Positive Offset required.", result.Message);
         }
 
@@ -35,7 +35,7 @@ namespace Scheduler_Lib.Infrastructure.Validations
             };
 
             var preResult = new CalcRecurrent();
-            var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
+            var result = Assert.Throws<NegativeOffsetException>(() => preResult.CalcDate(requestedDate));
             Assert.Equal("ERROR: Positive Offset required.", result.Message);
         }
 
@@ -50,7 +50,7 @@ namespace Scheduler_Lib.Infrastructure.Validations
                 Periodicity = EnumPeriodicity.Recurrent
             };
 
-            var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
+            var result = Assert.Throws<NegativeOffsetException>(() => Service.CalcDate(requestedDate));
             Assert.Equal("ERROR: Positive Offset required.", result.Message);
         }
     }
