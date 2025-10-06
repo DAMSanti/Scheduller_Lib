@@ -94,18 +94,38 @@ public class CalcRecurrentTest
     }
 
     [Fact]
-    public void CalcDate_CurrentLessThanEnd()
+    public void CalcDate_IfCurrentLessThanEndDate()
     {
         var requestedDate = new RequestedDate
         {
-            Date = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
+            Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             StartDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
             Offset = 3,
             Periodicity = Periodicity.Recurrent
         };
 
         var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
     }
+
+    [Fact]
+    public void CalcDate_IfCurrentGreaterThanEndDate()
+    {
+        var requestedDate = new RequestedDate
+        {
+            Date = new DateTimeOffset(2025, 12, 25, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 1, 0, 0, 0, TimeSpan.Zero),
+            Offset = 1,
+            Periodicity = Periodicity.Recurrent
+        };
+
+        var preResult = new CalcRecurrent();
+        var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
+        Assert.Equal("The date should be between start and end date.", result.Message);
+    }
+
+
+
 }
 

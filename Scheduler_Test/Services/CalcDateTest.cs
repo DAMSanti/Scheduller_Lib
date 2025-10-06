@@ -17,8 +17,7 @@ public class CalcDateTest
             Periodicity = Periodicity.OneTime,
         };
 
-        var preResult = new CalcOneTime();
-        var result = preResult.CalcDate(requestedDate);
+        var result = Service.CalcDate(requestedDate);
 
         Assert.Equal(change, result.NewDate);
         var expectedResult = $"Occurs once: Schedule will be used on {change:dd/MM/yyyy} at {change:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
