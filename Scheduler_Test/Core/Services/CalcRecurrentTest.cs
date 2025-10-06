@@ -19,11 +19,11 @@ public class CalcRecurrentTest
         var result = preResult.CalcDate(requestedDate);
 
         var expectedDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
-        Assert.Equal(expectedDate, result.NewDate);
+        Assert.Equal(expectedDate, result.Value.NewDate);
         var expectedDesc =
             $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
             $" at {requestedDate.Date:HH:mm} starting on {start:dd/MM/yyyy}";
-        Assert.Equal(expectedDesc, result.Description);
+        Assert.Equal(expectedDesc, result.Value.Description);
     }
 
     [Theory]
@@ -65,7 +65,7 @@ public class CalcRecurrentTest
             new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero)
         };
 
-        Assert.Equal(expectedDates, result.FutureDates);
+        Assert.Equal(expectedDates, result.Value.FutureDates);
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class CalcRecurrentTest
             new DateTimeOffset(2025, 1, 10, 0, 0, 0, TimeSpan.Zero)
         };
 
-        Assert.Equal(expectedDates, result.FutureDates);
+        Assert.Equal(expectedDates, result.Value.FutureDates);
     }
 
     [Fact]

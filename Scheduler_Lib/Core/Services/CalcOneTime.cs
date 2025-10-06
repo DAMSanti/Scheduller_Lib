@@ -4,13 +4,13 @@ using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcOneTime : ISchedule {
-    public SolvedDate CalcDate(RequestedDate requestedDate) {
+    public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
         var solution = new SolvedDate();
         if (requestedDate.ChangeDate != null) {
             solution.NewDate = requestedDate.ChangeDate.Value;
             solution.Description =
                 $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value:dd/MM/yyyy} at {requestedDate.ChangeDate.Value:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
-            return solution;
+            return ResultPattern<SolvedDate>.Success(solution);
         }
 
         if (requestedDate.Offset != null) {
@@ -18,13 +18,13 @@ public class CalcOneTime : ISchedule {
             if (newDate > requestedDate.EndDate || newDate < requestedDate.StartDate) {
                 solution.NewDate = requestedDate.Date;
                 solution.Description = Messages.ErrorChangeDateAfterEndDate;
-                return solution;
+                return ResultPattern<SolvedDate>.Failure(Messages.ErrorChangeDateAfterEndDate);
             }
 
             solution.NewDate = newDate;
             solution.Description =
                 $"Occurs Once: Schedule will be used on {newDate:dd/MM/yyyy HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy HH:mm}";
-            return solution;
+            return ResultPattern<SolvedDate>.Success(solution);
         }
 
         throw new Exception(Messages.ErrorOnceMode);

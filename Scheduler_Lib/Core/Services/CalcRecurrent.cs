@@ -5,7 +5,7 @@ using Scheduler_Lib.Infrastructure.Validations;
 namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrent : ISchedule {
     private readonly List<DateTimeOffset> _futureDates = [];
-    public SolvedDate CalcDate(RequestedDate requestedDate) {
+    public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
 
         Validations.ValidateRecurrent(requestedDate);
 
@@ -24,12 +24,12 @@ public class CalcRecurrent : ISchedule {
             current = current.AddDays(requestedDate.Offset.Value);
         }
 
-        var solucion = new SolvedDate();
-        solucion.NewDate = nextDate;
-        solucion.Description =
+        var solution = new SolvedDate();
+        solution.NewDate = nextDate;
+        solution.Description =
             $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
             $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
-        solucion.FutureDates = _futureDates;
-        return solucion;
+        solution.FutureDates = _futureDates;
+        return ResultPattern<SolvedDate>.Success(solution);
     }
 }

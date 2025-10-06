@@ -19,9 +19,9 @@ public class CalcOneTimeTest
         var preResult = new CalcOneTime();
         var result = preResult.CalcDate(requestedDate);
 
-        Assert.Equal(change, result.NewDate);
+        Assert.Equal(change, result.Value.NewDate);
         var expectedResult = $"Occurs once: Schedule will be used on {change:dd/MM/yyyy} at {change:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
-        Assert.Equal(expectedResult, result.Description);
+        Assert.Equal(expectedResult, result.Value.Description);
     }
 
     [Fact]
@@ -40,10 +40,10 @@ public class CalcOneTimeTest
         var result = preResult.CalcDate(requestedDate);
 
         var expectedNew = requestedDate.Date.AddDays(requestedDate.Offset.Value);
-        Assert.Equal(expectedNew, result.NewDate);
+        Assert.Equal(expectedNew, result.Value.NewDate);
         var expectedDesc =
             $"Occurs Once: Schedule will be used on {expectedNew:dd/MM/yyyy HH:mm} starting on {start:dd/MM/yyyy HH:mm}";
-        Assert.Equal(expectedDesc, result.Description);
+        Assert.Equal(expectedDesc, result.Value.Description);
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class CalcOneTimeTest
         var preResult = new CalcOneTime();
         var result = preResult.CalcDate(requestedDate);
 
-        Assert.Equal(requestedDate.Date, result.NewDate);
-        Assert.Equal("ERROR: The given date is after the end date.", result.Description);
+        Assert.False(result.IsSuccess);
+        Assert.Equal("ERROR: The given date is after the end date.", result.Error);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class CalcOneTimeTest
         var result = preResult.CalcDate(requestedDate);
 
         var expectedNew = requestedDate.Date.AddDays(-5);
-        Assert.Equal(expectedNew, result.NewDate);
+        Assert.Equal(expectedNew, result.Value.NewDate);
     }
 
 }
