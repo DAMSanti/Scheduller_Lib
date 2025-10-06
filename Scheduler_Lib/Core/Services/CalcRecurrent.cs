@@ -4,32 +4,32 @@ using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrent : ISchedule {
-    private readonly List<DateTimeOffset> _futureDates = [];
     public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
-
         Validations.ValidateRecurrent(requestedDate);
 
-        _futureDates.Clear();
-
-        if (requestedDate.EndDate == null) {
-            requestedDate.EndDate = requestedDate.Date.AddDays(requestedDate.Offset.Value * 3);
-        }
-
-        var current = requestedDate.Date.AddDays(requestedDate.Offset.Value);
-        var nextDate = current;
-
-
-        while (current <= requestedDate.EndDate) {
-            current = current.AddDays(requestedDate.Offset.Value);
-            _futureDates.Add(current);
-        }
+        var futureDates = CalculateFutureDates(requestedDate);
 
         var solution = new SolvedDate();
-        solution.NewDate = nextDate;
+        solution.NewDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
         solution.Description =
             $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
             $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
-        solution.FutureDates = _futureDates;
+        solution.FutureDates = futureDates;
         return ResultPattern<SolvedDate>.Success(solution);
+    }
+
+    public List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate)
+    {
+        var dates = new List<DateTimeOffset>();
+        dates.Clear();
+        var endDate = requestedDate.EndDate ?? requestedDate.Date.AddDays(requestedDate.Offset.Value * 3);
+        var current = requestedDate.Date.AddDays(requestedDate.Offset.Value*2);
+
+        while (current <= endDate) {
+            dates.Add(current);
+            current = current.AddDays(requestedDate.Offset.Value);
+        }
+
+        return dates;
     }
 }
