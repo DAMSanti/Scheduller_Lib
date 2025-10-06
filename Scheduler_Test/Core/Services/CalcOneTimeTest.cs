@@ -79,4 +79,24 @@ public class CalcOneTimeTest
         var result = Assert.Throws<Exception>(() => preResult.CalcDate(requestedDate));
         Assert.Equal("New date time or offset required in Once mode.", result.Message);
     }
+
+    [Fact]
+    public void Offset_OneTime_NegativeOffset()
+    {
+        var requestedDate = new RequestedDate
+        {
+            Date = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            Offset = -5,
+            Periodicity = EnumPeriodicity.OneTime
+        };
+
+        var preResult = new CalcOneTime();
+        var result = preResult.CalcDate(requestedDate);
+
+        var expectedNew = requestedDate.Date.AddDays(-5);
+        Assert.Equal(expectedNew, result.NewDate);
+    }
+
 }

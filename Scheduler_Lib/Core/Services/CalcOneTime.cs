@@ -1,5 +1,6 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Interface;
+using Scheduler_Lib.Core.Model.Messages;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcOneTime : ISchedule {
@@ -16,7 +17,7 @@ public class CalcOneTime : ISchedule {
             var newDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
             if (newDate > requestedDate.EndDate || newDate < requestedDate.StartDate) {
                 solucion.NewDate = requestedDate.Date;
-                solucion.Description = "ERROR: The given date is after the end date.";
+                solucion.Description = Messages.ErrorChangeDateAfterEndDate;
                 return solucion;
             }
 
@@ -26,6 +27,6 @@ public class CalcOneTime : ISchedule {
             return solucion;
         }
 
-        throw new Exception("New date time or offset required in Once mode.");
+        throw new Exception(Messages.ErrorOnceMode);
     }
 }

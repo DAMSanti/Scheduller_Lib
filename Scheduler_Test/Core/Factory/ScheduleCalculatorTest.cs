@@ -24,4 +24,13 @@ public class ScheduleCalculatorTest {
         var result = Assert.Throws<Exception>(() => ScheduleCalculator.GetScheduleCalculator(calc));
         Assert.Equal("Unsupported periodicity.", result.Message);
     }
+
+    [Fact]
+    public void GetScheduleCalculator_NullPeriodicity_ThrowsException()
+    {
+        EnumPeriodicity? calc = null;
+        var result = Assert.Throws<Exception>(() => ScheduleCalculator.GetScheduleCalculator(calc));
+        Assert.Equal("Unsupported periodicity.", result.Message);
+    }
+
 }
