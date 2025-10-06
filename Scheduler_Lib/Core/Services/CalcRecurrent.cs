@@ -4,7 +4,7 @@ using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrent : ISchedule {
-    private List<DateTimeOffset> _futureDates = new();
+    private readonly List<DateTimeOffset> _futureDates = [];
     public SolvedDate CalcDate(RequestedDate requestedDate) {
 
         Validations.ValidateRecurrent(requestedDate);
