@@ -23,12 +23,12 @@ public class CalcRecurrent : ISchedule {
             current = current.AddDays(requestedDate.Offset.Value);
         }
 
-        return new SolvedDate
-        {
-            NewDate = nextDate,
-            Description = $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
-                          $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}",
-            FutureDates = _futureDates
-        };
+        var solucion = new SolvedDate();
+        solucion.NewDate = nextDate;
+        solucion.Description =
+            $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
+            $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+        solucion.FutureDates = _futureDates;
+        return solucion;
     }
 }

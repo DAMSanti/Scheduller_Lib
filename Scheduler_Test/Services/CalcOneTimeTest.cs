@@ -11,7 +11,6 @@ public class CalcOneTimeTest
         var requestedDate = new RequestedDate
         {
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             ChangeDate = change,
@@ -32,7 +31,6 @@ public class CalcOneTimeTest
         var requestedDate = new RequestedDate
         {
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Offset = 4,
@@ -55,7 +53,6 @@ public class CalcOneTimeTest
         var requestedDate = new RequestedDate
         {
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 9, 30, 0, 0, 0, TimeSpan.Zero),
             Offset = 4,
@@ -74,7 +71,6 @@ public class CalcOneTimeTest
         var requestedDate = new RequestedDate
         {
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Periodicity = Periodicity.OneTime

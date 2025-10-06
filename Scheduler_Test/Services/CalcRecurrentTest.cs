@@ -10,7 +10,6 @@ public class CalcRecurrentTest
         var requestedDate = new RequestedDate
         {
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Offset = 1,
@@ -35,7 +34,6 @@ public class CalcRecurrentTest
         var requestedDate = new RequestedDate
         {
             Date = new DateTimeOffset(y, m, d, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Offset = 1,
@@ -51,7 +49,6 @@ public class CalcRecurrentTest
     public void CalcDate_FutureDates() {
         var requestedDate = new RequestedDate {
             Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero),
             Offset = 1,
@@ -77,7 +74,6 @@ public class CalcRecurrentTest
         var requestedDate = new RequestedDate
         {
             Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            Enabled = true,
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = null,
             Offset = 3,
@@ -95,6 +91,21 @@ public class CalcRecurrentTest
         };
 
         Assert.Equal(expectedDates, result.FutureDates);
+    }
+
+    [Fact]
+    public void CalcDate_CurrentLessThanEnd()
+    {
+        var requestedDate = new RequestedDate
+        {
+            Date = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            Offset = 3,
+            Periodicity = Periodicity.Recurrent
+        };
+
+        var result = Assert.Throws<Exception>(() => Service.CalcDate(requestedDate));
     }
 }
 

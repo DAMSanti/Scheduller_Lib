@@ -4,29 +4,26 @@ using Scheduler_Lib.Interface;
 namespace Scheduler_Lib.Services;
 public class CalcOneTime : ISchedule {
     public SolvedDate CalcDate(RequestedDate requestedDate) {
+        var solucion = new SolvedDate();
         if (requestedDate.ChangeDate != null) {
-            return new SolvedDate
-            {
-                NewDate = requestedDate.ChangeDate.Value,
-                Description = $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value:dd/MM/yyyy} at {requestedDate.ChangeDate.Value:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}"
-            };
+            solucion.NewDate = requestedDate.ChangeDate.Value;
+            solucion.Description =
+                $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value:dd/MM/yyyy} at {requestedDate.ChangeDate.Value:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+            return solucion;
         }
 
         if (requestedDate.Offset != null) {
             var newDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
             if (newDate > requestedDate.EndDate || newDate < requestedDate.StartDate) {
-                return new SolvedDate
-                {
-                    NewDate = requestedDate.Date,
-                    Description = "ERROR: The given date is after the end date."
-                };
+                solucion.NewDate = requestedDate.Date;
+                solucion.Description = "ERROR: The given date is after the end date.";
+                return solucion;
             }
 
-            return new SolvedDate
-            {
-                NewDate = newDate,
-                Description = $"Occurs Once: Schedule will be used on {newDate:dd/MM/yyyy HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy HH:mm}"
-            };
+            solucion.NewDate = newDate;
+            solucion.Description =
+                $"Occurs Once: Schedule will be used on {newDate:dd/MM/yyyy HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy HH:mm}";
+            return solucion;
         }
 
         throw new Exception("New date time or offset required in Once mode.");
