@@ -1,4 +1,4 @@
-﻿using Scheduler_Lib.Core.Classes;
+﻿using Scheduler_Lib.Core.Model;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 public static class Validations {

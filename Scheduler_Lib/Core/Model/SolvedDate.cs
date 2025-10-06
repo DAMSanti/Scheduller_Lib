@@ -1,4 +1,4 @@
-﻿namespace Scheduler_Lib.Core.Classes;
+﻿namespace Scheduler_Lib.Core.Model;
 
 public class SolvedDate {
     public string Description { get; set; } = string.Empty;

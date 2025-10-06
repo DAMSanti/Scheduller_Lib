@@ -1,4 +1,4 @@
-﻿using Scheduler_Lib.Core.Classes;
+﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Interface;
 using Scheduler_Lib.Infrastructure.Validations;
 

@@ -1,6 +1,4 @@
-﻿using Scheduler_Lib.Core.Model;
-
-namespace Scheduler_Lib.Core.Classes;
+﻿namespace Scheduler_Lib.Core.Model;
 
 public class RequestedDate {
     public DateTimeOffset Date { get; set; } = DateTimeOffset.Now;
