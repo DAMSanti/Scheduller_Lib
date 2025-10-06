@@ -6,8 +6,8 @@ public class RequestedDate {
     public DateTimeOffset Date { get; set; } = DateTimeOffset.Now;
     public bool Enabled { get; set; }
     public DateTimeOffset StartDate { get; set; }
-    public DateTimeOffset EndDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
     public DateTimeOffset? ChangeDate { get; set; }
     public Periodicity Periodicity { get; set; }
-    public TimeSpan? Offset { get; set; }
+    public int? Offset { get; set; }
 }

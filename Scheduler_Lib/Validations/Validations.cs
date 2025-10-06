@@ -3,7 +3,7 @@
 namespace Scheduler_Lib.Validations;
 public static class Validations {
     public static void ValidateRecurrent(RequestedDate requestedDate) {
-        if (requestedDate.Offset == null || requestedDate.Offset.Value.Days <= 0) {
+        if (requestedDate.Offset == null || requestedDate.Offset.Value <= 0) {
             throw new Exception("ERROR: Positive Offset required.");
         }
 

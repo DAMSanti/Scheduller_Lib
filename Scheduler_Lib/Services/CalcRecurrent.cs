@@ -10,18 +10,23 @@ public class CalcRecurrent : ISchedule {
 
         _futureDates.Clear();
 
-        var current = requestedDate.Date.Add(requestedDate.Offset.Value);
+        if (requestedDate.EndDate == null) {
+            requestedDate.EndDate = requestedDate.Date.AddDays(requestedDate.Offset.Value * 3);
+        }
+
+        var current = requestedDate.Date.AddDays(requestedDate.Offset.Value);
         var nextDate = current;
+
 
         while (current <= requestedDate.EndDate) {
             _futureDates.Add(current);
-            current = current.Add(requestedDate.Offset.Value);
+            current = current.AddDays(requestedDate.Offset.Value);
         }
 
         return new SolvedDate
         {
             NewDate = nextDate,
-            Description = $"Occurs every {requestedDate.Offset.Value.Days} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
+            Description = $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
                           $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}",
             FutureDates = _futureDates
         };

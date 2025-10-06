@@ -35,14 +35,14 @@ public class CalcOneTimeTest
             Enabled = true,
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            Offset = TimeSpan.FromDays(4),
+            Offset = 4,
             Periodicity = Periodicity.OneTime,
         };
 
         var preResult = new CalcOneTime();
         var result = preResult.CalcDate(requestedDate);
 
-        var expectedNew = requestedDate.Date.Add(requestedDate.Offset.Value);
+        var expectedNew = requestedDate.Date.AddDays(requestedDate.Offset.Value);
         Assert.Equal(expectedNew, result.NewDate);
         var expectedDesc =
             $"Occurs Once: Schedule will be used on {expectedNew:dd/MM/yyyy HH:mm} starting on {start:dd/MM/yyyy HH:mm}";
@@ -58,7 +58,7 @@ public class CalcOneTimeTest
             Enabled = true,
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 9, 30, 0, 0, 0, TimeSpan.Zero),
-            Offset = TimeSpan.FromDays(4),
+            Offset = 4,
             Periodicity = Periodicity.OneTime,
         };
 

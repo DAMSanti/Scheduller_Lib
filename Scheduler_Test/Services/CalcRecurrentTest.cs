@@ -13,17 +13,17 @@ public class CalcRecurrentTest
             Enabled = true,
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            Offset = TimeSpan.FromDays(1),
+            Offset = 1,
             Periodicity = Periodicity.OneTime,
         };
 
         var preResult = new CalcRecurrent();
         var result = preResult.CalcDate(requestedDate);
 
-        var expectedDate = requestedDate.Date.Add(requestedDate.Offset.Value);
+        var expectedDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
         Assert.Equal(expectedDate, result.NewDate);
         var expectedDesc =
-            $"Occurs every {requestedDate.Offset.Value.Days} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
+            $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
             $" at {requestedDate.Date:HH:mm} starting on {start:dd/MM/yyyy}";
         Assert.Equal(expectedDesc, result.Description);
     }
@@ -38,7 +38,7 @@ public class CalcRecurrentTest
             Enabled = true,
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            Offset = TimeSpan.FromDays(1),
+            Offset = 1,
             Periodicity = Periodicity.Recurrent
         };
 
@@ -54,7 +54,7 @@ public class CalcRecurrentTest
             Enabled = true,
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero),
-            Offset = TimeSpan.FromDays(1),
+            Offset = 1,
             Periodicity = Periodicity.Recurrent
         };
 
@@ -67,6 +67,31 @@ public class CalcRecurrentTest
             new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2025, 1, 4, 0, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero)
+        };
+
+        Assert.Equal(expectedDates, result.FutureDates);
+    }
+
+    [Fact]
+    public void CalcDate_FutureDates_noOffset() {
+        var requestedDate = new RequestedDate
+        {
+            Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            Enabled = true,
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = null,
+            Offset = 3,
+            Periodicity = Periodicity.Recurrent
+        };
+
+        var preResult = new CalcRecurrent();
+        var result = preResult.CalcDate(requestedDate);
+
+        var expectedDates = new List<DateTimeOffset>
+        {
+            new DateTimeOffset(2025, 1, 4, 0, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2025, 1, 7, 0, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2025, 1, 10, 0, 0, 0, TimeSpan.Zero)
         };
 
         Assert.Equal(expectedDates, result.FutureDates);

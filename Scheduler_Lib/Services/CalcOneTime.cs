@@ -13,7 +13,7 @@ public class CalcOneTime : ISchedule {
         }
 
         if (requestedDate.Offset != null) {
-            var newDate = requestedDate.Date.Add(requestedDate.Offset.Value);
+            var newDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
             if (newDate > requestedDate.EndDate || newDate < requestedDate.StartDate) {
                 return new SolvedDate
                 {
