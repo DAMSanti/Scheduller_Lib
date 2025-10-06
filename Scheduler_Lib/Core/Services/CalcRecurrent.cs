@@ -20,8 +20,8 @@ public class CalcRecurrent : ISchedule {
 
 
         while (current <= requestedDate.EndDate) {
-            _futureDates.Add(current);
             current = current.AddDays(requestedDate.Offset.Value);
+            _futureDates.Add(current);
         }
 
         var solution = new SolvedDate();

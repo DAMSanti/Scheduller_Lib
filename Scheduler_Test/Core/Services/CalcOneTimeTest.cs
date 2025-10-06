@@ -46,12 +46,14 @@ public class CalcOneTimeTest
         Assert.Equal(expectedDesc, result.Value.Description);
     }
 
-    [Fact]
-    public void Offset_OneTime_OutLimits() {
+    [InlineData(2025, 10, 3)]
+    [InlineData(2024, 1, 1)]
+    [Theory]
+    public void Offset_OneTime_OutLimits(int y, int m, int d) {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var requestedDate = new RequestedDate
         {
-            Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            Date = new DateTimeOffset(y, m, d, 0, 0, 0, TimeSpan.Zero),
             StartDate = start,
             EndDate = new DateTimeOffset(2025, 9, 30, 0, 0, 0, TimeSpan.Zero),
             Offset = 4,
@@ -97,6 +99,29 @@ public class CalcOneTimeTest
 
         var expectedNew = requestedDate.Date.AddDays(-5);
         Assert.Equal(expectedNew, result.Value.NewDate);
+    }
+
+    [Fact]
+    public void Offset_OneTime_EndDateNull_Throws()
+    {
+        var requestedDate = new RequestedDate
+        {
+            Date = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = null,
+            Offset = 1,
+            Periodicity = EnumPeriodicity.OneTime
+        };
+
+        var preResult = new CalcOneTime();
+        var result = preResult.CalcDate(requestedDate);
+
+        var expectedNew = requestedDate.Date.AddDays(requestedDate.Offset.Value);
+        Assert.Equal(expectedNew, result.Value.NewDate);
+        var expectedDesc =
+            $"Occurs Once: Schedule will be used on {expectedNew:dd/MM/yyyy HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy HH:mm}";
+        Assert.Equal(expectedDesc, result.Value.Description);
+
     }
 
 }

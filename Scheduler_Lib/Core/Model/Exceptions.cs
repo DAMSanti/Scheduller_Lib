@@ -1,46 +1,12 @@
 ﻿namespace Scheduler_Lib.Core.Model;
 
-    public class UnsupportedPeriodicityException : Exception {
-        public UnsupportedPeriodicityException() {
+public class UnsupportedPeriodicityException(string message) : Exception(message);
 
-        }
-        public UnsupportedPeriodicityException(string mensaje) : base(mensaje) {
-        }
-    }
+public class OnceModeException(string message) : Exception(message);
 
-    public class OnceModeException : Exception {
-        public OnceModeException() {
+public class NegativeOffsetException(string message) : Exception(message);
 
-        }
-        public OnceModeException(string mensaje) : base(mensaje) {
-        }
-    }
+public class DateOutOfRangeException(string message) : Exception(message);
 
-    public class NegativeOffsetException : Exception {
-        public NegativeOffsetException() {
-
-        }
-        public NegativeOffsetException(string mensaje) : base(mensaje) {
-        }
-    }
-
-    public class DateOutOfRangeException : Exception {
-        public DateOutOfRangeException() {
-
-        }
-        public DateOutOfRangeException(string mensaje) : base(mensaje) {
-        }
-    }
-
-    public class NullRequestException : Exception
-    {
-        public NullRequestException()
-        {
-
-        }
-        public NullRequestException(string mensaje) : base(mensaje)
-        {
-        }
-    }
-
+public class NullRequestException(string message) : Exception(message);
 

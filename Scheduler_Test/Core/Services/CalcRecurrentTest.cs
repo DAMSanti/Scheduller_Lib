@@ -59,10 +59,10 @@ public class CalcRecurrentTest
 
         var expectedDates = new List<DateTimeOffset>
         {
-            new DateTimeOffset(2025, 1, 2, 0, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2025, 1, 4, 0, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero)
+            new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2025, 1, 6, 0, 0, 0, TimeSpan.Zero)
         };
 
         Assert.Equal(expectedDates, result.Value.FutureDates);
@@ -84,9 +84,9 @@ public class CalcRecurrentTest
 
         var expectedDates = new List<DateTimeOffset>
         {
-            new DateTimeOffset(2025, 1, 4, 0, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2025, 1, 7, 0, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2025, 1, 10, 0, 0, 0, TimeSpan.Zero)
+            new DateTimeOffset(2025, 1, 10, 0, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2025, 1, 13, 0, 0, 0, TimeSpan.Zero)
         };
 
         Assert.Equal(expectedDates, result.Value.FutureDates);
@@ -124,7 +124,24 @@ public class CalcRecurrentTest
         Assert.Equal("The date should be between start and end date.", result.Message);
     }
 
+    [Fact]
+    public void CalcDate_DatesAllEqual_OneFutureDate()
+    {
+        var date = new DateTimeOffset(2025, 3, 3, 0, 0, 0, TimeSpan.Zero);
+        var requestedDate = new RequestedDate
+        {
+            Date = date,
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = date,
+            Offset = 1,
+            Periodicity = EnumPeriodicity.Recurrent
+        };
 
+        var preResult = new CalcRecurrent();
+        var result = preResult.CalcDate(requestedDate);
+
+        Assert.Empty(result.Value.FutureDates);
+    }
 
 }
 
