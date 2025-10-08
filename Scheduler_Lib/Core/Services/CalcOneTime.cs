@@ -6,9 +6,9 @@ using Scheduler_Lib.Resources;
 namespace Scheduler_Lib.Core.Services;
 public class CalcOneTime : ISchedule {
     public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
-        var solution = new SolvedDate();
-
         Validations.ValidateOnce(requestedDate);
+
+        var solution = new SolvedDate();     
 
         return BuildResultForChangeDate(requestedDate);
     }

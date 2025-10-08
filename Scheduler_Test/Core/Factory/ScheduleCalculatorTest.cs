@@ -26,8 +26,7 @@ public class ScheduleCalculatorTest {
     }
 
     [Fact]
-    public void GetScheduleCalculator_NullPeriodicity_ThrowsException()
-    {
+    public void GetScheduleCalculator_NullPeriodicity_ThrowsException() {
         EnumPeriodicity? calc = null;
         var result = Assert.Throws<UnsupportedPeriodicityException>(() => ScheduleCalculator.GetScheduleCalculator(calc));
         Assert.Equal("Unsupported periodicity.", result.Message);
