@@ -17,8 +17,7 @@ public class CalcRecurrent : ISchedule {
         return ResultPattern<SolvedDate>.Success(solution);
     }
 
-    private List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate)
-    {
+    private List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate) {
         var dates = new List<DateTimeOffset>();
         var endDate = requestedDate.EndDate ?? requestedDate.Date.AddDays(requestedDate.Offset.Value * 3);
         var current = requestedDate.Date.AddDays(requestedDate.Offset.Value*2);
