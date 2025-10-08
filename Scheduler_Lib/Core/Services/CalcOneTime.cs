@@ -37,9 +37,12 @@ public class CalcOneTime : ISchedule {
         return ResultPattern<SolvedDate>.Success(solution);
     }
 
-    private string BuildDescriptionForChangeDate(RequestedDate requestedDate) =>
-        $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value:dd/MM/yyyy} at {requestedDate.ChangeDate.Value:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+    private string BuildDescriptionForChangeDate(RequestedDate requestedDate) {
+        return $"Occurs once: Schedule will be used on {requestedDate.ChangeDate.Value:dd/MM/yyyy} at {requestedDate.ChangeDate.Value:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+    }
 
-    private string BuildDescriptionForOffset(DateTimeOffset newDate, RequestedDate requestedDate) =>
-        $"Occurs Once: Schedule will be used on {newDate:dd/MM/yyyy HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy HH:mm}";
+    private string BuildDescriptionForOffset(DateTimeOffset newDate, RequestedDate requestedDate) {
+        return $"Occurs Once: Schedule will be used on {newDate:dd/MM/yyyy HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy HH:mm}";
+
+    }
 }
