@@ -18,8 +18,7 @@ public class CalcDateTest
 
         var result = Service.CalcDate(requestedDate);
 
-        //Assert.Equal(change, result.Value);
-        var expectedResult = $"Occurs once: Schedule will be used on {change:dd/MM/yyyy} at {change:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+        var expectedResult = $"Occurs once: Schedule will be used on {change.Date.ToShortDateString()} at {change.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
         Assert.Equal(expectedResult, result.Value.Description);
     }
 

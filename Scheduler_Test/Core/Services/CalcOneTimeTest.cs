@@ -20,7 +20,7 @@ public class CalcOneTimeTest
         var result = preResult.CalcDate(requestedDate);
 
         Assert.Equal(change, result.Value.NewDate);
-        var expectedResult = $"Occurs once: Schedule will be used on {change:dd/MM/yyyy} at {change:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+        var expectedResult = $"Occurs once: Schedule will be used on {change.Date.ToShortDateString()} at {change.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
         Assert.Equal(expectedResult, result.Value.Description);
     }
 
@@ -42,7 +42,7 @@ public class CalcOneTimeTest
         var expectedNew = requestedDate.Date.AddDays(requestedDate.Offset.Value);
         Assert.Equal(expectedNew, result.Value.NewDate);
         var expectedDesc =
-            $"Occurs Once: Schedule will be used on {expectedNew:dd/MM/yyyy HH:mm} starting on {start:dd/MM/yyyy HH:mm}";
+            $"Occurs Once: Schedule will be used on {expectedNew.Date.ToLongDateString()} starting on {start.Date.ToLongDateString()}";
         Assert.Equal(expectedDesc, result.Value.Description);
     }
 
@@ -119,7 +119,7 @@ public class CalcOneTimeTest
         var expectedNew = requestedDate.Date.AddDays(requestedDate.Offset.Value);
         Assert.Equal(expectedNew, result.Value.NewDate);
         var expectedDesc =
-            $"Occurs Once: Schedule will be used on {expectedNew:dd/MM/yyyy HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy HH:mm}";
+            $"Occurs Once: Schedule will be used on {expectedNew.Date.ToLongDateString()} starting on {requestedDate.StartDate.Date.ToLongDateString()}";
         Assert.Equal(expectedDesc, result.Value.Description);
 
     }

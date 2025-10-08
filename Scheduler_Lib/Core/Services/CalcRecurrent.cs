@@ -31,7 +31,7 @@ public class CalcRecurrent : ISchedule {
     }
 
     private string BuildDescription(RequestedDate requestedDate) {
-        return $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
-               $" at {requestedDate.Date:HH:mm} starting on {requestedDate.StartDate:dd/MM/yyyy}";
+        return $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date.Date.ToShortDateString()}" +
+               $" at {requestedDate.Date.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
     }
 }

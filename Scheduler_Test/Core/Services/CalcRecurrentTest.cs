@@ -21,8 +21,8 @@ public class CalcRecurrentTest
         var expectedDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
         Assert.Equal(expectedDate, result.Value.NewDate);
         var expectedDesc =
-            $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date:dd/MM/yyyy}" +
-            $" at {requestedDate.Date:HH:mm} starting on {start:dd/MM/yyyy}";
+            $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date.Date.ToShortDateString()}" +
+            $" at {requestedDate.Date.Date.ToShortTimeString()} starting on {start.Date.ToShortDateString()}";
         Assert.Equal(expectedDesc, result.Value.Description);
     }
 

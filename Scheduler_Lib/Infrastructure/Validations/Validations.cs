@@ -8,8 +8,15 @@ public static class Validations {
             throw new NegativeOffsetException(Messages.ErrorPositiveOffsetRequired);
         }
 
+        //result pattern
         if (requestedDate.Date < requestedDate.StartDate || requestedDate.Date > requestedDate.EndDate) {
             throw new DateOutOfRangeException(Messages.ErrorDateOutOfRange);
+        }
+    }
+
+    public static void ValidateOnce(RequestedDate requestedDate) {
+        if (requestedDate.ChangeDate == null) {
+            throw new OnceModeException(Messages.ErrorOnceMode);
         }
     }
 
