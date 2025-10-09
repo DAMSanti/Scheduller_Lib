@@ -1,4 +1,5 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrentTest
@@ -6,20 +7,18 @@ public class CalcRecurrentTest
     [Fact]
     public void OffSet_Recurrent_Valid() {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var requestedDate = new RequestedDate
-        {
-            Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = start,
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            Offset = 1,
-            Periodicity = EnumPeriodicity.OneTime,
-        };
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = start;
+        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Offset = 1;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
         var result = preResult.CalcDate(requestedDate);
 
         var expectedDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
-        Assert.Equal(expectedDate, result.Value.NewDate);
+        Assert.Equal(expectedDate, result.Value!.NewDate);
         var expectedDesc =
             $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date.Date.ToShortDateString()}" +
             $" at {requestedDate.Date.Date.ToShortTimeString()} starting on {start.Date.ToShortDateString()}";
@@ -30,115 +29,104 @@ public class CalcRecurrentTest
     [InlineData(2024, 12, 31)]
     [InlineData(2026, 1, 1)]
     public void OutsideRange_Recurrent_Invalid(int y, int m, int d) {
-        var requestedDate = new RequestedDate
-        {
-            Date = new DateTimeOffset(y, m, d, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            Offset = 1,
-            Periodicity = EnumPeriodicity.Recurrent
-        };
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = new DateTimeOffset(y, m, d, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Offset = 1;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = Assert.Throws<DateOutOfRangeException>(() => preResult.CalcDate(requestedDate));
-        Assert.Equal("The date should be between start and end date.", result.Message);
+        var result = preResult.CalcDate(requestedDate);
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorDateOutOfRange, result.Error);
     }
 
     [Fact]
     public void CalcDate_FutureDates() {
-        var requestedDate = new RequestedDate {
-            Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero),
-            Offset = 1,
-            Periodicity = EnumPeriodicity.Recurrent
-        };
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Offset = 1;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
         var result = preResult.CalcDate(requestedDate);
 
-        var expectedDates = new List<DateTimeOffset>
-        {
-            new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2025, 1, 4, 0, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero)
-        };
+        var expectedDates = new List<DateTimeOffset>();
+        expectedDates.Add(new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero));
+        expectedDates.Add(new DateTimeOffset(2025, 1, 4, 0, 0, 0, TimeSpan.Zero));
+        expectedDates.Add(new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero));
 
-        Assert.Equal(expectedDates, result.Value.FutureDates);
+        Assert.Equal(expectedDates, result.Value!.FutureDates);
     }
 
     [Fact]
     public void CalcDate_FutureDates_noOffset() {
-        var requestedDate = new RequestedDate
-        {
-            Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = null,
-            Offset = 3,
-            Periodicity = EnumPeriodicity.Recurrent
-        };
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = null;
+        requestedDate.Offset = 3;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
         var result = preResult.CalcDate(requestedDate);
 
-        var expectedDates = new List<DateTimeOffset>
-        {
-            new DateTimeOffset(2025, 1, 7, 0, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2025, 1, 10, 0, 0, 0, TimeSpan.Zero)
-        };
+        var expectedDates = new List<DateTimeOffset>();
+        expectedDates.Add(new DateTimeOffset(2025, 1, 7, 0, 0, 0, TimeSpan.Zero));
+        expectedDates.Add(new DateTimeOffset(2025, 1, 10, 0, 0, 0, TimeSpan.Zero));
 
-        Assert.Equal(expectedDates, result.Value.FutureDates);
+        Assert.Equal(expectedDates, result.Value!.FutureDates);
     }
 
     [Fact]
-    public void CalcDate_IfCurrentLessThanEndDate()
-    {
-        var requestedDate = new RequestedDate
-        {
-            Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero),
-            Offset = 3,
-            Periodicity = EnumPeriodicity.Recurrent
-        };
+    public void CalcDate_IfCurrentLessThanEndDate() {
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Offset = 3;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
-        var result = Assert.Throws<DateOutOfRangeException>(() => Service.CalcDate(requestedDate));
+        var result = Service.CalcDate(requestedDate);
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorDateOutOfRange, result.Error);
     }
 
     [Fact]
-    public void CalcDate_IfCurrentGreaterThanEndDate()
-    {
-        var requestedDate = new RequestedDate
-        {
-            Date = new DateTimeOffset(2025, 12, 25, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 1, 0, 0, 0, TimeSpan.Zero),
-            Offset = 1,
-            Periodicity = EnumPeriodicity.Recurrent
-        };
+    public void CalcDate_IfCurrentGreaterThanEndDate() {
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = new DateTimeOffset(2025, 12, 25, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = new DateTimeOffset(2025, 12, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Offset = 1;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = Assert.Throws<DateOutOfRangeException>(() => preResult.CalcDate(requestedDate));
-        Assert.Equal("The date should be between start and end date.", result.Message);
+        var result = preResult.CalcDate(requestedDate);
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorDateOutOfRange, result.Error);
     }
 
     [Fact]
-    public void CalcDate_DatesAllEqual_OneFutureDate()
-    {
+    public void CalcDate_DatesAllEqual_OneFutureDate() {
         var date = new DateTimeOffset(2025, 3, 3, 0, 0, 0, TimeSpan.Zero);
-        var requestedDate = new RequestedDate
-        {
-            Date = date,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = date,
-            Offset = 1,
-            Periodicity = EnumPeriodicity.Recurrent
-        };
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = date;
+        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = date;
+        requestedDate.Offset = 1;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
         var result = preResult.CalcDate(requestedDate);
 
-        Assert.Empty(result.Value.FutureDates);
+        Assert.Empty(result.Value!.FutureDates);
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcDateTest
@@ -7,25 +8,25 @@ public class CalcDateTest
     public void CalcDate_Valid() {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var change = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        var requestedDate = new RequestedDate
-        {
-            Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = start,
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            ChangeDate = change,
-            Periodicity = EnumPeriodicity.OneTime,
-        };
+        var requestedDate = new RequestedDate();
+        requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = start;
+        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.ChangeDate = change;
+        requestedDate.Periodicity = EnumPeriodicity.OneTime;
 
         var result = Service.CalcDate(requestedDate);
 
         var expectedResult = $"Occurs once: Schedule will be used on {change.Date.ToShortDateString()} at {change.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
-        Assert.Equal(expectedResult, result.Value.Description);
+        Assert.Equal(expectedResult, result.Value!.Description);
     }
 
     [Fact]
     public void NullRequest() {
         RequestedDate? requestedDate = null;
-        var result = Assert.Throws<NullRequestException>(() => Service.CalcDate(requestedDate));
-        Assert.Equal("Error: The request shouldn't be null.", result.Message);
+        var result = Service.CalcDate(requestedDate!);
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorRequestNull, result.Error);
     }
 }
