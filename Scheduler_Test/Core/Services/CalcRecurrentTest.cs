@@ -2,8 +2,7 @@
 using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcRecurrentTest
-{
+public class CalcRecurrentTest {
     [Fact]
     public void OffSet_Recurrent_Valid() {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
