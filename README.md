@@ -9,13 +9,13 @@
 ## Funcionalidad Principal
 
 - **Cálculo de Fechas Únicas (OneTime):**  
-  Permite programar un evento para una fecha específica o con un desplazamiento determinado.
+  Permite programar un evento para una fecha específica o con un desplazamiento determinado. El cálculo tiene en cuenta la zona horaria y los posibles cambios por horario de verano (Daylight Saving Time).
 
 - **Cálculo de Fechas Recurrentes (Recurrent):**  
-  Permite programar eventos que se repiten cada cierto número de días, generando una lista de futuras fechas de ejecución.
+  Permite programar eventos que se repiten cada cierto número de días, generando una lista de futuras fechas de ejecución. El cálculo de cada fecha recurrente también considera la zona horaria y los cambios de offset por horario de verano.
 
 - **Validaciones:**  
-  Incluye validaciones para asegurar la coherencia de los datos de entrada (por ejemplo, que el desplazamiento sea positivo y que las fechas estén en rango).
+  Incluye validaciones para asegurar la coherencia de los datos de entrada (por ejemplo, que el desplazamiento sea positivo, que las fechas estén en rango y que los datos requeridos no sean nulos).
 
 - **Centralización de Mensajes:**  
   Todos los textos de error y mensajes relevantes están centralizados en una única clase, facilitando su modificación y traducción.
@@ -27,7 +27,6 @@
 - `Core/Model`: Modelos de datos principales (`RequestedDate`, `SolvedDate`, etc.).
 - `Core/Services`: Lógica de negocio para el cálculo de fechas (`CalcOneTime`, `CalcRecurrent`, etc.).
 - `Core/Factory`: Fábrica para obtener la estrategia de cálculo adecuada según la periodicidad.
-- `Core/Interface`: Interfaces que definen los contratos de los servicios.
 - `Infrastructure/Validations`: Validaciones de entrada y reglas de negocio.
 - `Resources`: Centralización de mensajes y textos de error.
 - `Scheduler_Test`: Pruebas unitarias para garantizar la calidad y robustez de la biblioteca.
