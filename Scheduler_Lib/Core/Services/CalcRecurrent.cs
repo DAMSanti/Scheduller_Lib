@@ -12,12 +12,18 @@ public class CalcRecurrent {
     private static SolvedDate BuildResultRecurrentDates(RequestedDate requestedDate) {
         var futureDates = CalculateFutureDates(requestedDate);
 
-        
-            return new SolvedDate
+        var nextDateLocal = requestedDate.Date.AddDays(requestedDate.Period!.Value);
+        var newDateConverted = TimeZoneInfo.ConvertTime(nextDateLocal, requestedDate.TimeZonaId);
+
+        var futureDatesConverted = futureDates
+            .Select(date => TimeZoneInfo.ConvertTime(date, requestedDate.TimeZonaId))
+            .ToList();
+
+        return new SolvedDate
         {
-            NewDate = requestedDate.Date.AddDays(requestedDate.Period!.Value),
+            NewDate = newDateConverted,
             Description = BuildDescription(requestedDate),
-            FutureDates = futureDates
+            FutureDates = futureDatesConverted
         };
 
     }

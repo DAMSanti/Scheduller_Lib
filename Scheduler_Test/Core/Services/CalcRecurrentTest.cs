@@ -129,5 +129,29 @@ public class CalcRecurrentTest {
         if (dateTimeOffsets != null) Assert.Empty(dateTimeOffsets);
     }
 
+
+    [Fact]
+    public void CalcDate_FutureDates_DLS() {
+        RequestedDate requestedDate = new();
+        requestedDate.Date = new DateTimeOffset(2025, 3, 23, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 3, 20, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = new DateTimeOffset(2025, 4, 5, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Period = 2;
+        requestedDate.Periodicity = EnumPeriodicity.Recurrent;
+
+        var preResult = new CalcRecurrent();
+        var result = preResult.CalculateDate(requestedDate);
+
+        var expectedDates = new List<DateTimeOffset>();
+        expectedDates.Add(new DateTimeOffset(2025, 3, 27, 1, 0, 0, TimeSpan.FromHours(1)));
+        expectedDates.Add(new DateTimeOffset(2025, 3, 29, 1, 0, 0, TimeSpan.FromHours(1)));
+        expectedDates.Add(new DateTimeOffset(2025, 3, 31, 2, 0, 0, TimeSpan.FromHours(2)));
+        expectedDates.Add(new DateTimeOffset(2025, 4, 2, 2, 0, 0, TimeSpan.FromHours(2)));
+        expectedDates.Add(new DateTimeOffset(2025, 4, 4, 2, 0, 0, TimeSpan.FromHours(2)));
+
+        Assert.Equal(expectedDates, result.Value!.FutureDates);
+    }
+
+
 }
 
