@@ -6,8 +6,7 @@ namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrent : ISchedule {
     public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
         var validation = Validations.ValidateRecurrent(requestedDate);
-        if (!validation.IsSuccess)
-        {
+        if (!validation.IsSuccess) {
             return ResultPattern<SolvedDate>.Failure(validation.Error!);
         }
 
