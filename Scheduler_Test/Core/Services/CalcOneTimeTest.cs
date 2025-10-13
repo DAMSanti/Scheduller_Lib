@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using Scheduler_Lib.Core.Model;
+﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
@@ -10,6 +9,7 @@ public class CalcOneTimeTest
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var change = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         var timeZone = TimeZoneInfo.Local;
+
         var requestedDate = new RequestedDate();
         requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = start;
