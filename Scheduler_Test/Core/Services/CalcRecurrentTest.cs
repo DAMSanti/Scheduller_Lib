@@ -14,7 +14,7 @@ public class CalcRecurrentTest {
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         var expectedDate = requestedDate.Date.AddDays(requestedDate.Period.Value);
         Assert.Equal(expectedDate, result.Value!.NewDate);
@@ -36,7 +36,7 @@ public class CalcRecurrentTest {
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDateOutOfRange, result.Error);
@@ -52,7 +52,7 @@ public class CalcRecurrentTest {
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         var expectedDates = new List<DateTimeOffset>();
         expectedDates.Add(new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero));
@@ -72,7 +72,7 @@ public class CalcRecurrentTest {
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         var expectedDates = new List<DateTimeOffset>();
         expectedDates.Add(new DateTimeOffset(2025, 1, 7, 0, 0, 0, TimeSpan.Zero));
@@ -90,7 +90,7 @@ public class CalcRecurrentTest {
         requestedDate.Period = 3;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
-        var result = Service.CalcDate(requestedDate);
+        var result = Service.CalculateDate(requestedDate);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDateOutOfRange, result.Error);
@@ -106,7 +106,7 @@ public class CalcRecurrentTest {
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDateOutOfRange, result.Error);
@@ -123,7 +123,7 @@ public class CalcRecurrentTest {
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         Assert.Empty(result.Value!.FutureDates);
     }

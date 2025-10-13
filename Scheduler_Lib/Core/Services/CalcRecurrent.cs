@@ -1,10 +1,9 @@
 ﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Core.Interface;
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcRecurrent : ISchedule {
-    public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
+public class CalcRecurrent {
+    public ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
         var validation = Validations.ValidateRecurrent(requestedDate);
         if (!validation.IsSuccess) {
             return ResultPattern<SolvedDate>.Failure(validation.Error!);
@@ -16,12 +15,14 @@ public class CalcRecurrent : ISchedule {
     private static SolvedDate BuildResultRecurrentDates(RequestedDate requestedDate) {
         var futureDates = CalculateFutureDates(requestedDate);
 
-        var solution = new SolvedDate();
-        solution.NewDate = requestedDate.Date.AddDays(requestedDate.Period!.Value);
-        solution.Description = BuildDescription(requestedDate);
-        solution.FutureDates = futureDates;
+        
+            return new SolvedDate
+        {
+            NewDate = requestedDate.Date.AddDays(requestedDate.Period!.Value),
+            Description = BuildDescription(requestedDate),
+            FutureDates = futureDates
+        };
 
-        return solution;
     }
 
     private static List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate) {

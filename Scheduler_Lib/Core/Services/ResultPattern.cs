@@ -21,6 +21,4 @@ public class ResultPattern<T> {
 
     public static ResultPattern<T> Success(T value) => new(value);
     public static ResultPattern<T> Failure(string error) => new(error);
-    public static ResultPattern<T> Failure(StringBuilder errorBuilder)
-        => new(errorBuilder.ToString().Trim());
 }

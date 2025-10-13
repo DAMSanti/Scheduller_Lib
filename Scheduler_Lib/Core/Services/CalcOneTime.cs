@@ -1,10 +1,9 @@
-﻿using Scheduler_Lib.Core.Interface;
-using Scheduler_Lib.Core.Model;
+﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcOneTime : ISchedule {
-    public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
+public class CalcOneTime {
+    public ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
         var validation = Validations.ValidateOnce(requestedDate);
         if (!validation.IsSuccess) {
             return ResultPattern<SolvedDate>.Failure(validation.Error!);
@@ -17,11 +16,11 @@ public class CalcOneTime : ISchedule {
         var newDateLocal = requestedDate.ChangeDate!.Value.DateTime;
         var newDateConverted = new DateTimeOffset(newDateLocal, requestedDate.TimeZonaId.GetUtcOffset(newDateLocal));
         
-        var solution = new SolvedDate();
-        solution.NewDate = newDateConverted;
-        solution.Description = BuildDescriptionForChangeDate(requestedDate, newDateConverted);
-        
-        return solution;
+        return new SolvedDate
+        {
+            NewDate = newDateConverted,
+            Description = BuildDescriptionForChangeDate(requestedDate, newDateConverted)
+        };
     }
 
     private static string BuildDescriptionForChangeDate(RequestedDate requestedDate, DateTimeOffset newDateConverted) {

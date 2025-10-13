@@ -21,7 +21,7 @@ public static class Validations {
         }
 
         if (errors.Length > 0) {
-            return ResultPattern<bool>.Failure(errors);
+            return ResultPattern<bool>.Failure(errors.ToString());
         }
 
         return ResultPattern<bool>.Success(true);
@@ -50,7 +50,7 @@ public static class Validations {
         }
 
         if (errors.Length > 0) {
-            return ResultPattern<bool>.Failure(errors);
+            return ResultPattern<bool>.Failure(errors.ToString());
         }
 
         return ResultPattern<bool>.Success(true);

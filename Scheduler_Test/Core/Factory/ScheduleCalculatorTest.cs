@@ -1,35 +1,42 @@
-﻿using Scheduler_Lib.Core.Interface;
-using Scheduler_Lib.Core.Model;
+﻿using Scheduler_Lib.Core.Model;
 
 namespace Scheduler_Lib.Core.Factory;
 
 public class ScheduleCalculatorTest {
+    private readonly RequestedDate? _requestedDate = new RequestedDate();
+
     [Fact]
-    public void GetScheduleCalculator_Once() {
-        var calc = ScheduleCalculator.GetScheduleCalculator(EnumPeriodicity.OneTime);
-        Assert.IsAssignableFrom<ISchedule>(calc);
-        Assert.Equal("Scheduler_Lib.Core.Services.CalcOneTime", calc.GetType().FullName);
+    public void GetScheduleCalculator_Once()
+    {
+        _requestedDate.Periodicity = EnumPeriodicity.OneTime;
+        _requestedDate.ChangeDate = DateTimeOffset.Now.AddDays(15);
+        _requestedDate.StartDate = DateTimeOffset.Now;
+        _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
+        _requestedDate.TimeZonaId = TimeZoneInfo.Local;
+
+        var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
+
+        Assert.True(result.IsSuccess);
+        Assert.IsType<SolvedDate>(result.Value);
     }
 
     [Fact]
     public void GetScheduleCalculator_Recurrent() {
-        var calc = ScheduleCalculator.GetScheduleCalculator(EnumPeriodicity.Recurrent);
-        Assert.IsAssignableFrom<ISchedule>(calc);
-        Assert.Equal("Scheduler_Lib.Core.Services.CalcRecurrent", calc.GetType().FullName);
+        _requestedDate.Periodicity = EnumPeriodicity.Recurrent;
+        _requestedDate.Date = DateTimeOffset.Now.AddDays(15);
+        _requestedDate.StartDate = DateTimeOffset.Now;
+        _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
+        _requestedDate.Period = 1;
+
+        var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
+        Assert.True(result.IsSuccess);
+        Assert.IsType<SolvedDate>(result.Value);
     }
 
     [Fact]
     public void GetScheduleCalculator_Unsupported() {
-        var calc = (EnumPeriodicity)5;
-        var result = Assert.Throws<UnsupportedPeriodicityException>(() => ScheduleCalculator.GetScheduleCalculator(calc));
-        Assert.Equal("Unsupported periodicity.", result.Message);
+        _requestedDate.Periodicity = (EnumPeriodicity) 5;
+        var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
+        Assert.Equal("Unsupported periodicity.", result.Error);
     }
-
-    [Fact]
-    public void GetScheduleCalculator_NullPeriodicity_ThrowsException() {
-        EnumPeriodicity? calc = null;
-        var result = Assert.Throws<UnsupportedPeriodicityException>(() => ScheduleCalculator.GetScheduleCalculator(calc));
-        Assert.Equal("Unsupported periodicity.", result.Message);
-    }
-
 }

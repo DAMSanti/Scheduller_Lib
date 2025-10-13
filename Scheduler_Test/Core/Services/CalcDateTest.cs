@@ -15,7 +15,7 @@ public class CalcDateTest
         requestedDate.ChangeDate = change;
         requestedDate.Periodicity = EnumPeriodicity.OneTime;
 
-        var result = Service.CalcDate(requestedDate);
+        var result = Service.CalculateDate(requestedDate);
 
         var expectedResult = $"Occurs once: Schedule will be used on {change.Date.ToShortDateString()} at {change.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
         Assert.Equal(expectedResult, result.Value!.Description);
@@ -24,7 +24,7 @@ public class CalcDateTest
     [Fact]
     public void NullRequest() {
         RequestedDate? requestedDate = null;
-        var result = Service.CalcDate(requestedDate!);
+        var result = Service.CalculateDate(requestedDate!);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorRequestNull, result.Error);

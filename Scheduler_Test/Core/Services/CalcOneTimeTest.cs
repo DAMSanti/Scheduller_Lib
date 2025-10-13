@@ -19,7 +19,7 @@ public class CalcOneTimeTest
         requestedDate.TimeZonaId = timeZone;
 
         var preResult = new CalcOneTime();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         var expectedNewDate = new DateTimeOffset(change.DateTime, timeZone.GetUtcOffset(change.DateTime));
         Assert.Equal(expectedNewDate, result.Value!.NewDate);
@@ -36,7 +36,7 @@ public class CalcOneTimeTest
         requestedDate.Periodicity = EnumPeriodicity.OneTime;
 
         var preResult = new CalcOneTime();
-        var result = preResult.CalcDate(requestedDate);
+        var result = preResult.CalculateDate(requestedDate);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceMode, result.Error);
