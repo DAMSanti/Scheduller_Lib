@@ -14,17 +14,17 @@ public class CalcOneTime : ISchedule {
     }
 
     private static SolvedDate BuildResultForChangeDate(RequestedDate requestedDate) {
-        var NewDateLocal = requestedDate.ChangeDate!.Value.DateTime;
-        var NewDateConverted = new DateTimeOffset(NewDateLocal, requestedDate.TimeZonaId.GetUtcOffset(NewDateLocal));
+        var newDateLocal = requestedDate.ChangeDate!.Value.DateTime;
+        var newDateConverted = new DateTimeOffset(newDateLocal, requestedDate.TimeZonaId.GetUtcOffset(newDateLocal));
         
         var solution = new SolvedDate();
-        solution.NewDate = NewDateConverted;
-        solution.Description = BuildDescriptionForChangeDate(requestedDate, NewDateConverted);
+        solution.NewDate = newDateConverted;
+        solution.Description = BuildDescriptionForChangeDate(requestedDate, newDateConverted);
         
         return solution;
     }
 
-    private static string BuildDescriptionForChangeDate(RequestedDate requestedDate, DateTimeOffset NewDateConverted) {
-        return $"Occurs once: Schedule will be used on {NewDateConverted.Date.ToShortDateString()} at {NewDateConverted.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
+    private static string BuildDescriptionForChangeDate(RequestedDate requestedDate, DateTimeOffset newDateConverted) {
+        return $"Occurs once: Schedule will be used on {newDateConverted.Date.ToShortDateString()} at {newDateConverted.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
     }
 }

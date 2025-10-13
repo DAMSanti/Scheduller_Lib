@@ -28,8 +28,7 @@ public class CalcOneTimeTest
     }
 
     [Fact]
-    public void NoChange_MissingData()
-    {
+    public void NoChange_MissingData() {
         var requestedDate = new RequestedDate();
         requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
