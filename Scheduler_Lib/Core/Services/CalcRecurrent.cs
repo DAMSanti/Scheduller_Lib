@@ -19,8 +19,7 @@ public class CalcRecurrent {
             .Select(date => TimeZoneInfo.ConvertTime(date, requestedDate.TimeZonaId))
             .ToList();
 
-        return new SolvedDate
-        {
+        return new SolvedDate {
             NewDate = newDateConverted,
             Description = BuildDescription(requestedDate),
             FutureDates = futureDatesConverted

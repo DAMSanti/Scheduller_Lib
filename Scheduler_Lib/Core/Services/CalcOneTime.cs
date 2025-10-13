@@ -13,8 +13,7 @@ public class CalcOneTime {
         var newDateLocal = requestedDate.ChangeDate!.Value.DateTime;
         var newDateConverted = new DateTimeOffset(newDateLocal, requestedDate.TimeZonaId.GetUtcOffset(newDateLocal));
         
-        return new SolvedDate
-        {
+        return new SolvedDate {
             NewDate = newDateConverted,
             Description = BuildDescriptionForChangeDate(requestedDate, newDateConverted)
         };

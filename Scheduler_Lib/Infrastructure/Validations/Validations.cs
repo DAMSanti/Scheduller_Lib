@@ -48,8 +48,7 @@ public static class Validations {
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 
-    public static ResultPattern<bool> ValidateCalc(RequestedDate? requestedDate)
-    {
+    public static ResultPattern<bool> ValidateCalc(RequestedDate? requestedDate) {
         return requestedDate == null ? ResultPattern<bool>.Failure(Messages.ErrorRequestNull) : ResultPattern<bool>.Success(true);
     }
 }
