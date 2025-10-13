@@ -10,16 +10,16 @@ public class CalcRecurrentTest {
         requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = start;
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Offset = 1;
+        requestedDate.Period = 1;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
         var result = preResult.CalcDate(requestedDate);
 
-        var expectedDate = requestedDate.Date.AddDays(requestedDate.Offset.Value);
+        var expectedDate = requestedDate.Date.AddDays(requestedDate.Period.Value);
         Assert.Equal(expectedDate, result.Value!.NewDate);
         var expectedDesc =
-            $"Occurs every {requestedDate.Offset.Value} days. Schedule will be used on {requestedDate.Date.Date.ToShortDateString()}" +
+            $"Occurs every {requestedDate.Period.Value} days. Schedule will be used on {requestedDate.Date.Date.ToShortDateString()}" +
             $" at {requestedDate.Date.Date.ToShortTimeString()} starting on {start.Date.ToShortDateString()}";
         Assert.Equal(expectedDesc, result.Value.Description);
     }
@@ -32,7 +32,7 @@ public class CalcRecurrentTest {
         requestedDate.Date = new DateTimeOffset(y, m, d, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Offset = 1;
+        requestedDate.Period = 1;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
@@ -48,7 +48,7 @@ public class CalcRecurrentTest {
         requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Offset = 1;
+        requestedDate.Period = 1;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
@@ -68,7 +68,7 @@ public class CalcRecurrentTest {
         requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = null;
-        requestedDate.Offset = 3;
+        requestedDate.Period = 3;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
@@ -87,7 +87,7 @@ public class CalcRecurrentTest {
         requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Offset = 3;
+        requestedDate.Period = 3;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var result = Service.CalcDate(requestedDate);
@@ -102,7 +102,7 @@ public class CalcRecurrentTest {
         requestedDate.Date = new DateTimeOffset(2025, 12, 25, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 1, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Offset = 1;
+        requestedDate.Period = 1;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();
@@ -119,7 +119,7 @@ public class CalcRecurrentTest {
         requestedDate.Date = date;
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = date;
-        requestedDate.Offset = 1;
+        requestedDate.Period = 1;
         requestedDate.Periodicity = EnumPeriodicity.Recurrent;
 
         var preResult = new CalcRecurrent();

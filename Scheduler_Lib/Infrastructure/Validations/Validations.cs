@@ -8,7 +8,7 @@ public static class Validations {
     public static ResultPattern<bool> ValidateRecurrent(RequestedDate requestedDate) {
         var errors = new StringBuilder();
 
-        if (requestedDate.Offset == null || requestedDate.Offset.Value <= 0) {
+        if (requestedDate.Period == null || requestedDate.Period.Value <= 0) {
             errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
         }
 

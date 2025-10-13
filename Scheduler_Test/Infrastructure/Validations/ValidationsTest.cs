@@ -11,7 +11,7 @@ namespace Scheduler_Lib.Infrastructure.Validations {
                 Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
                 StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-                Offset = null,
+                Period = null,
                 Periodicity = EnumPeriodicity.Recurrent
             };
 
@@ -26,7 +26,7 @@ namespace Scheduler_Lib.Infrastructure.Validations {
                 Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
                 StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-                Offset = -1,
+                Period = -1,
                 Periodicity = EnumPeriodicity.Recurrent
             };
 
@@ -41,7 +41,7 @@ namespace Scheduler_Lib.Infrastructure.Validations {
                 Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
                 StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-                Offset = null,
+                Period = null,
                 Periodicity = EnumPeriodicity.Recurrent
             };
 
@@ -99,7 +99,7 @@ namespace Scheduler_Lib.Infrastructure.Validations {
                 Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
                 StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
                 EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-                Offset = 1,
+                Period = 1,
                 Periodicity = EnumPeriodicity.Recurrent
             };
 

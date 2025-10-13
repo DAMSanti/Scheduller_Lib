@@ -10,18 +10,21 @@ public class CalcOneTime : ISchedule {
             return ResultPattern<SolvedDate>.Failure(validation.Error!);
         }
 
-        return BuildResultForChangeDate(requestedDate);
+        return ResultPattern<SolvedDate>.Success(BuildResultForChangeDate(requestedDate));
     }
 
-    private ResultPattern<SolvedDate> BuildResultForChangeDate(RequestedDate requestedDate) {
-        var solution = new SolvedDate();
-        solution.NewDate = requestedDate.ChangeDate!.Value;
-        solution.Description = BuildDescriptionForChangeDate(requestedDate);
+    private static SolvedDate BuildResultForChangeDate(RequestedDate requestedDate) {
+        var NewDateLocal = requestedDate.ChangeDate!.Value.DateTime;
+        var NewDateConverted = new DateTimeOffset(NewDateLocal, requestedDate.TimeZonaId.GetUtcOffset(NewDateLocal));
         
-        return ResultPattern<SolvedDate>.Success(solution);
+        var solution = new SolvedDate();
+        solution.NewDate = NewDateConverted;
+        solution.Description = BuildDescriptionForChangeDate(requestedDate, NewDateConverted);
+        
+        return solution;
     }
 
-    private string BuildDescriptionForChangeDate(RequestedDate requestedDate) {
-        return $"Occurs once: Schedule will be used on {requestedDate.ChangeDate!.Value.Date.ToShortDateString()} at {requestedDate.ChangeDate.Value.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
+    private static string BuildDescriptionForChangeDate(RequestedDate requestedDate, DateTimeOffset NewDateConverted) {
+        return $"Occurs once: Schedule will be used on {NewDateConverted.Date.ToShortDateString()} at {NewDateConverted.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
     }
 }

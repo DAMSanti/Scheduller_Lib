@@ -6,5 +6,6 @@ public class RequestedDate {
     public DateTimeOffset? EndDate { get; set; }
     public DateTimeOffset? ChangeDate { get; set; }
     public EnumPeriodicity Periodicity { get; set; }
-    public int? Offset { get; set; }
+    public int? Period { get; set; }
+    public TimeZoneInfo TimeZonaId { get; set; } = TimeZoneInfo.Local;
 }
