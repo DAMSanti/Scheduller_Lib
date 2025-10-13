@@ -26,7 +26,7 @@ public class ScheduleCalculatorTest {
         _requestedDate.Date = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
-        _requestedDate.Period = 1;
+        _requestedDate.Period = TimeSpan.FromDays(1);
 
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
         Assert.True(result.IsSuccess);

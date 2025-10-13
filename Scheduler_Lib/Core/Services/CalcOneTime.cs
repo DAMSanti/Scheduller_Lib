@@ -12,7 +12,9 @@ public class CalcOneTime {
     private static SolvedDate BuildResultForChangeDate(RequestedDate requestedDate) {
         var newDateLocal = requestedDate.ChangeDate!.Value.DateTime;
         var newDateConverted = new DateTimeOffset(newDateLocal, requestedDate.TimeZonaId.GetUtcOffset(newDateLocal));
-        
+       
+        // Aquí debo calcular la recurrencia semanal en caso de existir. Hacerlo desde otro método.
+
         return new SolvedDate {
             NewDate = newDateConverted,
             Description = BuildDescriptionForChangeDate(requestedDate, newDateConverted)
@@ -23,3 +25,4 @@ public class CalcOneTime {
         return $"Occurs once: Schedule will be used on {newDateConverted.Date.ToShortDateString()} at {newDateConverted.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
     }
 }
+ 

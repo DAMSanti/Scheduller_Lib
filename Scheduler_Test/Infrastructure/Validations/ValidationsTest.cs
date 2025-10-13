@@ -25,7 +25,7 @@ public class ValidationsTest {
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            Period = -1,
+            Period = TimeSpan.FromDays(-1),
             Periodicity = EnumPeriodicity.Recurrent
         };
 
@@ -98,7 +98,7 @@ public class ValidationsTest {
             Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
             StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            Period = 1,
+            Period = TimeSpan.FromDays(1),
             Periodicity = EnumPeriodicity.Recurrent
         };
 

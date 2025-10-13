@@ -6,9 +6,12 @@ public class RequestedDate {
     public DateTimeOffset? EndDate { get; set; }
     public DateTimeOffset? ChangeDate { get; set; }
     public EnumPeriodicity Periodicity { get; set; }
-    /// <summary>
-    /// PERIODO EN DIAS
-    /// </summary>
-    public int? Period { get; set; }
+    public TimeSpan? Period { get; set; }
     public TimeZoneInfo TimeZonaId { get; set; } = TimeZoneInfo.Local;
+    public EnumOcurrence Ocurrence { get; set; }
+    public TimeSpan? DailyFrequency { get; set; }
+    public TimeSpan? DailyStartTime { get; set; }
+    public TimeSpan? DailyEndTime { get; set; }
+    public int? WeeklyPeriod { get; set; }
+    public List<DayOfWeek>? DaysOfWeek { get; set; }
 }
