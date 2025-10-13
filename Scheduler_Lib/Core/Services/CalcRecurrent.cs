@@ -4,8 +4,7 @@ using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrent : ISchedule {
-    public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate)
-    {
+    public ResultPattern<SolvedDate> CalcDate(RequestedDate requestedDate) {
         var validation = Validations.ValidateRecurrent(requestedDate);
         if (!validation.IsSuccess)
         {
