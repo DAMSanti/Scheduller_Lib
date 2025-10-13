@@ -3,13 +3,10 @@ using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcRecurrent {
-    public ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
+    public virtual ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
         var validation = Validations.ValidateRecurrent(requestedDate);
-        if (!validation.IsSuccess) {
-            return ResultPattern<SolvedDate>.Failure(validation.Error!);
-        }
 
-        return ResultPattern<SolvedDate>.Success(BuildResultRecurrentDates(requestedDate));
+        return !validation.IsSuccess ? ResultPattern<SolvedDate>.Failure(validation.Error!) : ResultPattern<SolvedDate>.Success(BuildResultRecurrentDates(requestedDate));
     }
 
     private static SolvedDate BuildResultRecurrentDates(RequestedDate requestedDate) {

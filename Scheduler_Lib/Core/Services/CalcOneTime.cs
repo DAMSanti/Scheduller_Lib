@@ -3,13 +3,10 @@ using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcOneTime {
-    public ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
+    public virtual ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
         var validation = Validations.ValidateOnce(requestedDate);
-        if (!validation.IsSuccess) {
-            return ResultPattern<SolvedDate>.Failure(validation.Error!);
-        }
 
-        return ResultPattern<SolvedDate>.Success(BuildResultForChangeDate(requestedDate));
+        return !validation.IsSuccess ? ResultPattern<SolvedDate>.Failure(validation.Error!) : ResultPattern<SolvedDate>.Success(BuildResultForChangeDate(requestedDate));
     }
 
     private static SolvedDate BuildResultForChangeDate(RequestedDate requestedDate) {

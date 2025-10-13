@@ -8,7 +8,7 @@ public static class Validations {
     public static ResultPattern<bool> ValidateRecurrent(RequestedDate requestedDate) {
         var errors = new StringBuilder();
 
-        if (requestedDate.Period == null || requestedDate.Period.Value <= 0) {
+        if (requestedDate.Period is not > 0) {
             errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
         }
 
@@ -20,11 +20,7 @@ public static class Validations {
             errors.AppendLine(Messages.ErrorDateOutOfRange);
         }
 
-        if (errors.Length > 0) {
-            return ResultPattern<bool>.Failure(errors.ToString());
-        }
-
-        return ResultPattern<bool>.Success(true);
+        return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 
     public static ResultPattern<bool> ValidateOnce(RequestedDate requestedDate) {
@@ -49,18 +45,11 @@ public static class Validations {
             errors.AppendLine(Messages.ErrorChangeDateAfterEndDate);
         }
 
-        if (errors.Length > 0) {
-            return ResultPattern<bool>.Failure(errors.ToString());
-        }
-
-        return ResultPattern<bool>.Success(true);
+        return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 
-    public static ResultPattern<bool> ValidateCalc(RequestedDate requestedDate) {
-        if (requestedDate == null) {
-            return ResultPattern<bool>.Failure(Messages.ErrorRequestNull);
-        }
-
-        return ResultPattern<bool>.Success(true);
+    public static ResultPattern<bool> ValidateCalc(RequestedDate? requestedDate)
+    {
+        return requestedDate == null ? ResultPattern<bool>.Failure(Messages.ErrorRequestNull) : ResultPattern<bool>.Success(true);
     }
 }

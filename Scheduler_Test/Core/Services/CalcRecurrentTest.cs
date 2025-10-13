@@ -6,7 +6,7 @@ public class CalcRecurrentTest {
     [Fact]
     public void OffSet_Recurrent_Valid() {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = start;
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -28,7 +28,7 @@ public class CalcRecurrentTest {
     [InlineData(2024, 12, 31)]
     [InlineData(2026, 1, 1)]
     public void OutsideRange_Recurrent_Invalid(int y, int m, int d) {
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = new DateTimeOffset(y, m, d, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -44,7 +44,7 @@ public class CalcRecurrentTest {
 
     [Fact]
     public void CalcDate_FutureDates() {
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 1, 5, 0, 0, 0, TimeSpan.Zero);
@@ -64,7 +64,7 @@ public class CalcRecurrentTest {
 
     [Fact]
     public void CalcDate_FutureDates_noOffset() {
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = null;
@@ -83,7 +83,7 @@ public class CalcRecurrentTest {
 
     [Fact]
     public void CalcDate_IfCurrentLessThanEndDate() {
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero);
@@ -98,7 +98,7 @@ public class CalcRecurrentTest {
 
     [Fact]
     public void CalcDate_IfCurrentGreaterThanEndDate() {
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = new DateTimeOffset(2025, 12, 25, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 1, 0, 0, 0, TimeSpan.Zero);
@@ -115,7 +115,7 @@ public class CalcRecurrentTest {
     [Fact]
     public void CalcDate_DatesAllEqual_OneFutureDate() {
         var date = new DateTimeOffset(2025, 3, 3, 0, 0, 0, TimeSpan.Zero);
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = date;
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = date;
@@ -125,7 +125,8 @@ public class CalcRecurrentTest {
         var preResult = new CalcRecurrent();
         var result = preResult.CalculateDate(requestedDate);
 
-        Assert.Empty(result.Value!.FutureDates);
+        var dateTimeOffsets = result.Value!.FutureDates;
+        if (dateTimeOffsets != null) Assert.Empty(dateTimeOffsets);
     }
 
 }

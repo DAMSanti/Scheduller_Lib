@@ -3,12 +3,12 @@
 namespace Scheduler_Lib.Core.Factory;
 
 public class ScheduleCalculatorTest {
-    private readonly RequestedDate? _requestedDate = new RequestedDate();
+    private readonly RequestedDate? _requestedDate = new();
 
     [Fact]
     public void GetScheduleCalculator_Once()
     {
-        _requestedDate.Periodicity = EnumPeriodicity.OneTime;
+        _requestedDate!.Periodicity = EnumPeriodicity.OneTime;
         _requestedDate.ChangeDate = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
@@ -22,7 +22,7 @@ public class ScheduleCalculatorTest {
 
     [Fact]
     public void GetScheduleCalculator_Recurrent() {
-        _requestedDate.Periodicity = EnumPeriodicity.Recurrent;
+        _requestedDate!.Periodicity = EnumPeriodicity.Recurrent;
         _requestedDate.Date = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
@@ -35,7 +35,7 @@ public class ScheduleCalculatorTest {
 
     [Fact]
     public void GetScheduleCalculator_Unsupported() {
-        _requestedDate.Periodicity = (EnumPeriodicity) 5;
+        _requestedDate!.Periodicity = (EnumPeriodicity) 5;
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
         Assert.Equal("Unsupported periodicity.", result.Error);
     }

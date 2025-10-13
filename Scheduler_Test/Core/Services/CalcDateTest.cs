@@ -8,7 +8,7 @@ public class CalcDateTest
     public void CalcDate_Valid() {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var change = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        var requestedDate = new RequestedDate();
+        RequestedDate requestedDate = new();
         requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = start;
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);

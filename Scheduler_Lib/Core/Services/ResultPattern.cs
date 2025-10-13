@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Scheduler_Lib.Core.Services;
+﻿namespace Scheduler_Lib.Core.Services;
 
 public class ResultPattern<T> {
     public bool IsSuccess { get; }
