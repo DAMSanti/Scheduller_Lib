@@ -7,7 +7,6 @@ public class RequestedDate {
     public DateTimeOffset? ChangeDate { get; set; }
     public EnumPeriodicity Periodicity { get; set; }
     public TimeSpan? Period { get; set; }
-    public TimeZoneInfo TimeZonaId { get; set; } = TimeZoneInfo.Local;
     public EnumOcurrence Ocurrence { get; set; }
     public TimeSpan? DailyFrequency { get; set; }
     public TimeSpan? DailyStartTime { get; set; }

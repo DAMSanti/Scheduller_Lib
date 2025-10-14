@@ -2,22 +2,23 @@
 using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcDateTest
-{
+public class CalcDateTest {
+    private readonly RequestedDate? _requestedDate = new();
+
     [Fact]
     public void CalcDate_Valid() {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var change = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        RequestedDate requestedDate = new();
-        requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.StartDate = start;
-        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.ChangeDate = change;
-        requestedDate.Periodicity = EnumPeriodicity.OneTime;
+        _requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        _requestedDate.StartDate = start;
+        _requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        _requestedDate.ChangeDate = change;
+        _requestedDate.Periodicity = EnumPeriodicity.OneTime;
+        _requestedDate.Ocurrence = EnumOcurrence.None;
 
-        var result = Service.CalculateDate(requestedDate);
+        var result = Service.CalculateDate(_requestedDate);
 
-        var expectedResult = $"Occurs once: Schedule will be used on {change.Date.ToShortDateString()} at {change.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
+        var expectedResult = $"Occurs once: Schedule will be used on {change.Date.ToShortDateString()} at {change.Date.ToShortTimeString()} starting on {_requestedDate.StartDate.Date.ToShortDateString()}";
         Assert.Equal(expectedResult, result.Value!.Description);
     }
 

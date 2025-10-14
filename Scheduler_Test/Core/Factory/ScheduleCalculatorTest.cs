@@ -6,13 +6,12 @@ public class ScheduleCalculatorTest {
     private readonly RequestedDate? _requestedDate = new();
 
     [Fact]
-    public void GetScheduleCalculator_Once()
-    {
+    public void GetScheduleCalculator_Once() {
         _requestedDate!.Periodicity = EnumPeriodicity.OneTime;
         _requestedDate.ChangeDate = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
-        _requestedDate.TimeZonaId = TimeZoneInfo.Local;
+        _requestedDate.Ocurrence = EnumOcurrence.None;
 
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
 
@@ -27,6 +26,7 @@ public class ScheduleCalculatorTest {
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
         _requestedDate.Period = TimeSpan.FromDays(1);
+        _requestedDate.Ocurrence = EnumOcurrence.None;
 
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
         Assert.True(result.IsSuccess);

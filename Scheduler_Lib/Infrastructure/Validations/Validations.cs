@@ -20,6 +20,13 @@ public static class Validations {
             errors.AppendLine(Messages.ErrorDateOutOfRange);
         }
 
+        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
+            var weeklyResult = ValidateWeekly(requestedDate);
+            if (!weeklyResult.IsSuccess) {
+                errors.AppendLine(weeklyResult.Error);
+            }
+        }
+
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 
@@ -44,6 +51,34 @@ public static class Validations {
         if (requestedDate.ChangeDate < requestedDate.StartDate || requestedDate.ChangeDate > requestedDate.EndDate) {
             errors.AppendLine(Messages.ErrorChangeDateAfterEndDate);
         }
+
+        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
+            var weeklyResult = ValidateWeekly(requestedDate);
+            if (!weeklyResult.IsSuccess) {
+                errors.AppendLine(weeklyResult.Error);
+            }
+        }
+
+        return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
+    }
+
+    private static ResultPattern<bool> ValidateWeekly(RequestedDate requestedDate) {
+        var errors = new StringBuilder();
+
+        if (!requestedDate.WeeklyPeriod.HasValue || requestedDate.WeeklyPeriod.Value <= 0)
+            errors.AppendLine(Messages.ErrorWeeklyPeriodRequired);
+
+        if (requestedDate.DaysOfWeek == null || requestedDate.DaysOfWeek.Count == 0)
+            errors.AppendLine(Messages.ErrorDaysOfWeekRequired);
+
+        bool hasStart = requestedDate.DailyStartTime.HasValue;
+        bool hasEnd = requestedDate.DailyEndTime.HasValue;
+
+        if (hasStart ^ hasEnd)
+            errors.AppendLine(Messages.ErrorDailyTimeWindowIncomplete);
+
+        if (hasStart && hasEnd && requestedDate.DailyStartTime.Value >= requestedDate.DailyEndTime.Value)
+            errors.AppendLine(Messages.ErrorDailyStartAfterEnd);
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }

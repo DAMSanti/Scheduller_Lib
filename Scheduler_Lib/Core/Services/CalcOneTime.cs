@@ -10,56 +10,48 @@ public class CalcOneTime {
     }
 
     private static SolvedDate BuildResultForChangeDate(RequestedDate requestedDate) {
-        var newDateLocal = requestedDate.ChangeDate!.Value.DateTime;
-        var newDateConverted = new DateTimeOffset(newDateLocal, requestedDate.TimeZonaId.GetUtcOffset(newDateLocal));
+        var newDate = requestedDate.ChangeDate!.Value;
 
         List<DateTimeOffset>? futureDates = null;
-        if (requestedDate.Ocurrence == EnumOcurrence.Weekly && requestedDate.WeeklyPeriod.HasValue && requestedDate.DaysOfWeek != null && requestedDate.DaysOfWeek.Count > 0) {
-            futureDates = CalculateWeeklyRecurrence(requestedDate, newDateConverted);
+        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
+            futureDates = CalculateWeeklyRecurrence(requestedDate);
         }
 
         return new SolvedDate {
-            NewDate = newDateConverted,
-            Description = BuildDescriptionForChangeDate(requestedDate, newDateConverted),
+            NewDate = newDate,
+            Description = BuildDescriptionForChangeDate(requestedDate, newDate),
             FutureDates = futureDates
         };
     }
 
-    private static List<DateTimeOffset> CalculateWeeklyRecurrence(RequestedDate requestedDate, DateTimeOffset startDate) {
+    private static List<DateTimeOffset> CalculateWeeklyRecurrence(RequestedDate requestedDate) {
         var dates = new List<DateTimeOffset>();
-        var endDate = requestedDate.EndDate ?? startDate.AddDays(7 * 3);
+        var endDate = requestedDate.EndDate ?? requestedDate.StartDate.AddDays(7 * 3);
         var weeklyPeriod = requestedDate.WeeklyPeriod!.Value;
         var daysOfWeek = requestedDate.DaysOfWeek!;
 
-        var current = startDate.Date;
+        DateTimeOffset current = requestedDate.ChangeDate.HasValue ? requestedDate.ChangeDate.Value : requestedDate.StartDate;
+
         while (current <= endDate) {
             foreach (var day in daysOfWeek) {
                 var nextDate = NextWeekday(current, day);
                 if (nextDate > endDate) continue;
                 if (!dates.Contains(nextDate)) {
-                    var dateWithOffset = new DateTimeOffset(nextDate, requestedDate.TimeZonaId.GetUtcOffset(nextDate));
-                    dates.Add(dateWithOffset);
+                    dates.Add(nextDate);
                 }
             }
             current = current.AddDays(7 * weeklyPeriod);
         }
-        dates.Sort();
         return dates;
     }
 
-    private static DateTime NextWeekday(DateTime start, DayOfWeek day) {
+    private static DateTimeOffset NextWeekday(DateTimeOffset start, DayOfWeek day) {
         var daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
         return start.AddDays(daysToAdd);
     }
 
     private static string BuildDescriptionForChangeDate(RequestedDate requestedDate, DateTimeOffset newDateConverted) {
-        if (requestedDate.Ocurrence == EnumOcurrence.Weekly
-            && requestedDate.WeeklyPeriod.HasValue
-            && requestedDate.DaysOfWeek != null
-            && requestedDate.DaysOfWeek.Count > 0
-            && requestedDate.DailyStartTime.HasValue
-            && requestedDate.DailyEndTime.HasValue)
-        {
+        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
             var daysOfWeek = string.Join(", ", requestedDate.DaysOfWeek.Select(d => d.ToString()));
             var period = requestedDate.Period.HasValue ? $"{requestedDate.Period.Value.TotalDays} days" : "1 week";
             var horaInicio = TimeSpanToString(requestedDate.DailyStartTime.Value);

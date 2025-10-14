@@ -13,16 +13,11 @@ public class CalcRecurrent {
         var futureDates = CalculateFutureDates(requestedDate);
 
         var nextDateLocal = requestedDate.Date.Add(requestedDate.Period!.Value);
-        var newDateConverted = TimeZoneInfo.ConvertTime(nextDateLocal, requestedDate.TimeZonaId);
-
-        var futureDatesConverted = futureDates
-            .Select(date => TimeZoneInfo.ConvertTime(date, requestedDate.TimeZonaId))
-            .ToList();
 
         return new SolvedDate {
-            NewDate = newDateConverted,
+            NewDate = nextDateLocal,
             Description = BuildDescription(requestedDate),
-            FutureDates = futureDatesConverted
+            FutureDates = futureDates
         };
 
     }
