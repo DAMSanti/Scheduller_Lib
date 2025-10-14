@@ -25,8 +25,11 @@ public class ScheduleCalculatorTest {
         _requestedDate.Date = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
-        _requestedDate.Period = TimeSpan.FromDays(1);
+        _requestedDate.Period = TimeSpan.FromHours(1);
         _requestedDate.Ocurrence = EnumOcurrence.None;
+        _requestedDate.WeeklyPeriod = 1;
+        _requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }; ;
+
 
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
         Assert.True(result.IsSuccess);

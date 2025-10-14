@@ -52,13 +52,13 @@ public class CalcOneTime {
 
     private static string BuildDescriptionForChangeDate(RequestedDate requestedDate, DateTimeOffset newDateConverted) {
         if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
-            var daysOfWeek = string.Join(", ", requestedDate.DaysOfWeek.Select(d => d.ToString()));
+            var daysOfWeek = string.Join(", ", requestedDate.DaysOfWeek!.Select(d => d.ToString()));
             var period = requestedDate.Period.HasValue ? $"{requestedDate.Period.Value.TotalDays} days" : "1 week";
-            var horaInicio = TimeSpanToString(requestedDate.DailyStartTime.Value);
-            var horaFin = TimeSpanToString(requestedDate.DailyEndTime.Value);
+            var StartTime = TimeSpanToString(requestedDate.DailyStartTime!.Value);
+            var EndTime = TimeSpanToString(requestedDate.DailyEndTime!.Value);
             var startingDate = requestedDate.StartDate.Date.ToShortDateString();
 
-            return $"Occurs every {requestedDate.WeeklyPeriod} week(s) on {daysOfWeek} every {period} between {horaInicio} and {horaFin} starting on {startingDate}";
+            return $"Occurs every {requestedDate.WeeklyPeriod} week(s) on {daysOfWeek} every {period} between {StartTime} and {EndTime} starting on {startingDate}";
         }
 
         return $"Occurs once: Schedule will be used on {newDateConverted.Date.ToShortDateString()} at {newDateConverted.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";

@@ -25,14 +25,46 @@ public class CalcRecurrent {
     private static List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate) {
         var dates = new List<DateTimeOffset>();
         var endDate = requestedDate.EndDate ?? requestedDate.Date.Add(requestedDate.Period!.Value * 3);
+        var weeklyPeriod = requestedDate.WeeklyPeriod!.Value;
+        var daysOfWeek = requestedDate.DaysOfWeek!;
+        var period = requestedDate.Period!.Value;
+
         var current = requestedDate.Date.Add(requestedDate.Period!.Value*2);
 
         while (current <= endDate) {
-            dates.Add(current);
-            current = current.Add(requestedDate.Period.Value);
+            foreach (var day in daysOfWeek) {
+                var dayDate = NextWeekday(current, day);   
+
+                if (dayDate < requestedDate.StartDate || dayDate > endDate)
+                    continue;
+
+                if (requestedDate.DailyStartTime.HasValue && requestedDate.DailyEndTime.HasValue) {
+                    var slot = (dayDate.Date + requestedDate.DailyStartTime.Value).ToUniversalTime();
+
+                    var lastSlot = (dayDate.Date + requestedDate.DailyEndTime.Value).ToUniversalTime();
+
+                    while (slot <= lastSlot) {
+                        if (slot > endDate) break;
+                        if (slot >= requestedDate.StartDate && slot <= endDate)
+                            dates.Add(slot);
+
+                        slot = slot.Add(period);
+                    }
+                }
+                else {
+                    if (dayDate >= requestedDate.StartDate && dayDate <= endDate)
+                        dates.Add(dayDate);
+                }
+            }
+            current = current.AddDays(7 * weeklyPeriod);
         }
 
         return dates;
+    }
+
+    private static DateTimeOffset NextWeekday(DateTimeOffset start, DayOfWeek day) {
+        var daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+        return start.AddDays(daysToAdd);
     }
 
     private static string BuildDescription(RequestedDate requestedDate) {
