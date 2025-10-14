@@ -12,7 +12,7 @@ public class CalcRecurrent {
     private static SolvedDate BuildResultRecurrentDates(RequestedDate requestedDate) {
         var futureDates = CalculateFutureDates(requestedDate);
 
-        var nextDateLocal = requestedDate.Date.AddDays(requestedDate.Period!.Value);
+        var nextDateLocal = requestedDate.Date.Add(requestedDate.Period!.Value);
         var newDateConverted = TimeZoneInfo.ConvertTime(nextDateLocal, requestedDate.TimeZonaId);
 
         var futureDatesConverted = futureDates
@@ -29,12 +29,12 @@ public class CalcRecurrent {
 
     private static List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate) {
         var dates = new List<DateTimeOffset>();
-        var endDate = requestedDate.EndDate ?? requestedDate.Date.AddDays(requestedDate.Period!.Value * 3);
-        var current = requestedDate.Date.AddDays(requestedDate.Period!.Value*2);
+        var endDate = requestedDate.EndDate ?? requestedDate.Date.Add(requestedDate.Period!.Value * 3);
+        var current = requestedDate.Date.Add(requestedDate.Period!.Value*2);
 
         while (current <= endDate) {
             dates.Add(current);
-            current = current.AddDays(requestedDate.Period.Value);
+            current = current.Add(requestedDate.Period.Value);
         }
 
         return dates;
