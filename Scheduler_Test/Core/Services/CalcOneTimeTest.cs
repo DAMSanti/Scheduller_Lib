@@ -3,14 +3,7 @@ using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcOneTimeTest
-{
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public CalcOneTimeTest(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
+public class CalcOneTimeTest {
 
     [Fact]
     public void ChangeDate_OneTime() {
