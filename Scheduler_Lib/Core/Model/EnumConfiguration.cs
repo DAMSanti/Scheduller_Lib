@@ -1,6 +1,6 @@
 ﻿namespace Scheduler_Lib.Core.Model;
 
-public enum EnumPeriodicity {
+public enum EnumConfiguration {
     OneTime,
     Recurrent
 }

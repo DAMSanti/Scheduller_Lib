@@ -8,7 +8,7 @@ public static class Messages {
     public const string ErrorOnceMode = "ERROR: New date time required in Once mode.";
     public const string ErrorChangeDateAfterEndDate = "ERROR: The given date must be before the end date.";
     public const string ErrorStartDatePostEndDate = "ERROR: Start date must be before or equal to end date.";
-    public const string ErrorChangeDateNull = "ERROR: ChangeDate must have a value";
+    public const string ErrorChangeDateNull = "ERROR: TargetDate must have a value";
     public const string ErrorEndDateNull = "ERROR: EndDate must have a value";
     public const string ErrorWeeklyPeriodRequired = "ERROR: Weekly Period is required";
     public const string ErrorDaysOfWeekRequired = "ERROR: You need to select some days of the week";

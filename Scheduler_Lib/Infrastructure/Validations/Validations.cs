@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 public static class Validations {
-    public static ResultPattern<bool> ValidateRecurrent(RequestedDate requestedDate) {
+    public static ResultPattern<bool> ValidateRecurrent(SchedulerInput requestedDate) {
         var errors = new StringBuilder();
 
         if (requestedDate.Period == null || requestedDate.Period.Value <= TimeSpan.Zero) {
@@ -16,11 +16,11 @@ public static class Validations {
             errors.AppendLine(Messages.ErrorStartDatePostEndDate);
         }
 
-        if (requestedDate.Date < requestedDate.StartDate || requestedDate.Date > requestedDate.EndDate) {
+        if (requestedDate.CurrentDate < requestedDate.StartDate || requestedDate.CurrentDate > requestedDate.EndDate) {
             errors.AppendLine(Messages.ErrorDateOutOfRange);
         }
 
-        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
+        if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
             var weeklyResult = ValidateWeekly(requestedDate);
             if (!weeklyResult.IsSuccess) {
                 errors.AppendLine(weeklyResult.Error);
@@ -30,17 +30,17 @@ public static class Validations {
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 
-    public static ResultPattern<bool> ValidateOnce(RequestedDate requestedDate) {
+    public static ResultPattern<bool> ValidateOnce(SchedulerInput requestedDate) {
         var errors = new StringBuilder();
 
-        if (requestedDate.ChangeDate == null) {
+        if (requestedDate.TargetDate == null) {
             errors.AppendLine(Messages.ErrorOnceMode);
         }
         if (requestedDate.StartDate > requestedDate.EndDate) {
             errors.AppendLine(Messages.ErrorChangeDateAfterEndDate);
         }
 
-        if (requestedDate.ChangeDate == null) {
+        if (requestedDate.TargetDate == null) {
             errors.AppendLine(Messages.ErrorChangeDateNull);
         }
 
@@ -48,11 +48,11 @@ public static class Validations {
             errors.AppendLine(Messages.ErrorEndDateNull);
         }
 
-        if (requestedDate.ChangeDate < requestedDate.StartDate || requestedDate.ChangeDate > requestedDate.EndDate) {
+        if (requestedDate.TargetDate < requestedDate.StartDate || requestedDate.TargetDate > requestedDate.EndDate) {
             errors.AppendLine(Messages.ErrorChangeDateAfterEndDate);
         }
 
-        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
+        if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
             var weeklyResult = ValidateWeekly(requestedDate);
             if (!weeklyResult.IsSuccess) {
                 errors.AppendLine(weeklyResult.Error);
@@ -62,7 +62,7 @@ public static class Validations {
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 
-    private static ResultPattern<bool> ValidateWeekly(RequestedDate requestedDate) {
+    private static ResultPattern<bool> ValidateWeekly(SchedulerInput requestedDate) {
         var errors = new StringBuilder();
 
         if (!requestedDate.WeeklyPeriod.HasValue || requestedDate.WeeklyPeriod.Value <= 0)
@@ -83,7 +83,7 @@ public static class Validations {
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 
-    public static ResultPattern<bool> ValidateCalc(RequestedDate? requestedDate) {
+    public static ResultPattern<bool> ValidateCalc(SchedulerInput? requestedDate) {
         return requestedDate == null ? ResultPattern<bool>.Failure(Messages.ErrorRequestNull) : ResultPattern<bool>.Success(true);
     }
 }

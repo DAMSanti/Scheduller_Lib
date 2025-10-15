@@ -2,34 +2,34 @@
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcRecurrent {
-    public virtual ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
+public class CalculateRecurrent {
+    public virtual ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
         var validation = Validations.ValidateRecurrent(requestedDate);
 
-        return !validation.IsSuccess ? ResultPattern<SolvedDate>.Failure(validation.Error!) : ResultPattern<SolvedDate>.Success(BuildResultRecurrentDates(requestedDate));
+        return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : ResultPattern<SchedulerOutput>.Success(BuildResultRecurrentDates(requestedDate));
     }
 
-    private static SolvedDate BuildResultRecurrentDates(RequestedDate requestedDate) {
+    private static SchedulerOutput BuildResultRecurrentDates(SchedulerInput requestedDate) {
         var futureDates = CalculateFutureDates(requestedDate);
 
-        var nextDateLocal = requestedDate.Date.Add(requestedDate.Period!.Value);
+        var nextDateLocal = requestedDate.CurrentDate.Add(requestedDate.Period!.Value);
 
-        return new SolvedDate {
-            NewDate = nextDateLocal,
+        return new SchedulerOutput {
+            NextDate = nextDateLocal,
             Description = BuildDescription(requestedDate),
             FutureDates = futureDates
         };
 
     }
 
-    private static List<DateTimeOffset> CalculateFutureDates(RequestedDate requestedDate) {
+    private static List<DateTimeOffset> CalculateFutureDates(SchedulerInput requestedDate) {
         var dates = new List<DateTimeOffset>();
-        var endDate = requestedDate.EndDate ?? requestedDate.Date.Add(requestedDate.Period!.Value * 3);
+        var endDate = requestedDate.EndDate ?? requestedDate.CurrentDate.Add(requestedDate.Period!.Value * 3);
         var weeklyPeriod = requestedDate.WeeklyPeriod!.Value;
         var daysOfWeek = requestedDate.DaysOfWeek!;
         var period = requestedDate.Period!.Value;
 
-        var current = requestedDate.Date.Add(requestedDate.Period!.Value*2);
+        var current = requestedDate.CurrentDate.Add(requestedDate.Period!.Value*2);
 
         while (current <= endDate) {
             foreach (var day in daysOfWeek) {
@@ -67,8 +67,8 @@ public class CalcRecurrent {
         return start.AddDays(daysToAdd);
     }
 
-    private static string BuildDescription(RequestedDate requestedDate) {
-        return $"Occurs every {requestedDate.Period!.Value} days. Schedule will be used on {requestedDate.Date.Date.ToShortDateString()}" +
-               $" at {requestedDate.Date.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
+    private static string BuildDescription(SchedulerInput requestedDate) {
+        return $"Occurs every {requestedDate.Period!.Value} days. Schedule will be used on {requestedDate.CurrentDate.Date.ToShortDateString()}" +
+               $" at {requestedDate.CurrentDate.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
     }
 }

@@ -3,42 +3,42 @@
 namespace Scheduler_Lib.Core.Factory;
 
 public class ScheduleCalculatorTest {
-    private readonly RequestedDate? _requestedDate = new();
+    private readonly SchedulerInput? _requestedDate = new();
 
     [Fact]
     public void GetScheduleCalculator_Once() {
-        _requestedDate!.Periodicity = EnumPeriodicity.OneTime;
-        _requestedDate.ChangeDate = DateTimeOffset.Now.AddDays(15);
+        _requestedDate!.Periodicity = EnumConfiguration.OneTime;
+        _requestedDate.TargetDate = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
-        _requestedDate.Ocurrence = EnumOcurrence.None;
+        _requestedDate.Recurrency = EnumRecurrency.Daily;
 
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
 
         Assert.True(result.IsSuccess);
-        Assert.IsType<SolvedDate>(result.Value);
+        Assert.IsType<SchedulerOutput>(result.Value);
     }
 
     [Fact]
     public void GetScheduleCalculator_Recurrent() {
-        _requestedDate!.Periodicity = EnumPeriodicity.Recurrent;
-        _requestedDate.Date = DateTimeOffset.Now.AddDays(15);
+        _requestedDate!.Periodicity = EnumConfiguration.Recurrent;
+        _requestedDate.CurrentDate = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
         _requestedDate.Period = TimeSpan.FromHours(1);
-        _requestedDate.Ocurrence = EnumOcurrence.None;
+        _requestedDate.Recurrency = EnumRecurrency.Daily;
         _requestedDate.WeeklyPeriod = 1;
         _requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }; ;
 
 
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
         Assert.True(result.IsSuccess);
-        Assert.IsType<SolvedDate>(result.Value);
+        Assert.IsType<SchedulerOutput>(result.Value);
     }
 
     [Fact]
     public void GetScheduleCalculator_Unsupported() {
-        _requestedDate!.Periodicity = (EnumPeriodicity) 5;
+        _requestedDate!.Periodicity = (EnumConfiguration) 5;
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
         Assert.Equal("Unsupported periodicity.", result.Error);
     }

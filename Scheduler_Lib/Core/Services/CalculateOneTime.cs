@@ -2,35 +2,35 @@
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcOneTime {
-    public virtual ResultPattern<SolvedDate> CalculateDate(RequestedDate requestedDate) {
+public class CalculateOneTime {
+    public virtual ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
         var validation = Validations.ValidateOnce(requestedDate);
 
-        return !validation.IsSuccess ? ResultPattern<SolvedDate>.Failure(validation.Error!) : ResultPattern<SolvedDate>.Success(BuildResultForChangeDate(requestedDate));
+        return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : ResultPattern<SchedulerOutput>.Success(BuildResultForChangeDate(requestedDate));
     }
 
-    private static SolvedDate BuildResultForChangeDate(RequestedDate requestedDate) {
-        var newDate = requestedDate.ChangeDate!.Value;
+    private static SchedulerOutput BuildResultForChangeDate(SchedulerInput requestedDate) {
+        var newDate = requestedDate.TargetDate!.Value;
 
         List<DateTimeOffset>? futureDates = null;
-        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
+        if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
             futureDates = CalculateWeeklyRecurrence(requestedDate);
         }
 
-        return new SolvedDate {
-            NewDate = newDate,
-            Description = BuildDescriptionForChangeDate(requestedDate, newDate),
+        return new SchedulerOutput {
+            NextDate = newDate,
+            Description = BuildDescriptionForTargetDate(requestedDate, newDate),
             FutureDates = futureDates
         };
     }
 
-    private static List<DateTimeOffset> CalculateWeeklyRecurrence(RequestedDate requestedDate) {
+    private static List<DateTimeOffset> CalculateWeeklyRecurrence(SchedulerInput requestedDate) {
         var dates = new List<DateTimeOffset>();
         var endDate = requestedDate.EndDate ?? requestedDate.StartDate.AddDays(7 * 3);
         var weeklyPeriod = requestedDate.WeeklyPeriod!.Value;
         var daysOfWeek = requestedDate.DaysOfWeek!;
 
-        DateTimeOffset current = requestedDate.ChangeDate.HasValue ? requestedDate.ChangeDate.Value : requestedDate.StartDate;
+        DateTimeOffset current = requestedDate.TargetDate.HasValue ? requestedDate.TargetDate.Value : requestedDate.StartDate;
 
         while (current <= endDate) {
             foreach (var day in daysOfWeek) {
@@ -50,8 +50,8 @@ public class CalcOneTime {
         return start.AddDays(daysToAdd);
     }
 
-    private static string BuildDescriptionForChangeDate(RequestedDate requestedDate, DateTimeOffset newDateConverted) {
-        if (requestedDate.Ocurrence == EnumOcurrence.Weekly) {
+    private static string BuildDescriptionForTargetDate(SchedulerInput requestedDate, DateTimeOffset newDateConverted) {
+        if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
             var daysOfWeek = string.Join(", ", requestedDate.DaysOfWeek!.Select(d => d.ToString()));
             var period = requestedDate.Period.HasValue ? $"{requestedDate.Period.Value.TotalDays} days" : "1 week";
             var StartTime = TimeSpanToString(requestedDate.DailyStartTime!.Value);

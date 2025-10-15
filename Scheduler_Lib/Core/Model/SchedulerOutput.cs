@@ -1,7 +1,7 @@
 ﻿namespace Scheduler_Lib.Core.Model;
 
-public struct SolvedDate() {
+public struct SchedulerOutput() {
     public string Description { get; set; } = string.Empty;
-    public DateTimeOffset NewDate { get; set; }
+    public DateTimeOffset NextDate { get; set; }
     public List<DateTimeOffset>? FutureDates { get; set; }
 }

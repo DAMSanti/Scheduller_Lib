@@ -3,18 +3,18 @@ using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcDateTest {
-    private readonly RequestedDate? _requestedDate = new();
+    private readonly SchedulerInput? _requestedDate = new();
 
     [Fact]
     public void CalcDate_Valid() {
         var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var change = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        _requestedDate.Date = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        _requestedDate.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         _requestedDate.StartDate = start;
         _requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        _requestedDate.ChangeDate = change;
-        _requestedDate.Periodicity = EnumPeriodicity.OneTime;
-        _requestedDate.Ocurrence = EnumOcurrence.None;
+        _requestedDate.TargetDate = change;
+        _requestedDate.Periodicity = EnumConfiguration.OneTime;
+        _requestedDate.Recurrency = EnumRecurrency.Daily;
 
         var result = Service.CalculateDate(_requestedDate);
 
@@ -24,7 +24,7 @@ public class CalcDateTest {
 
     [Fact]
     public void NullRequest() {
-        RequestedDate? requestedDate = null;
+        SchedulerInput? requestedDate = null;
         var result = Service.CalculateDate(requestedDate!);
 
         Assert.False(result.IsSuccess);

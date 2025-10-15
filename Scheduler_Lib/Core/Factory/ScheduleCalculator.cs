@@ -4,11 +4,11 @@ using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Factory;
 public static class ScheduleCalculator {
-    public static ResultPattern<SolvedDate> GetScheduleCalculator(RequestedDate requestedDate) {
+    public static ResultPattern<SchedulerOutput> GetScheduleCalculator(SchedulerInput requestedDate) {
         return requestedDate.Periodicity switch {
-            EnumPeriodicity.OneTime => new CalcOneTime().CalculateDate(requestedDate),
-            EnumPeriodicity.Recurrent => new CalcRecurrent().CalculateDate(requestedDate),
-            _ => ResultPattern<SolvedDate>.Failure(Messages.ErrorUnsupportedPeriodicity)
+            EnumConfiguration.OneTime => new CalculateOneTime().CalculateDate(requestedDate),
+            EnumConfiguration.Recurrent => new CalculateRecurrent().CalculateDate(requestedDate),
+            _ => ResultPattern<SchedulerOutput>.Failure(Messages.ErrorUnsupportedPeriodicity)
         };
     }
 }
