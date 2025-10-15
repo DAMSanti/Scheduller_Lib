@@ -6,16 +6,14 @@ public class CalculateOneTime {
     public virtual ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
         var validation = Validations.ValidateOnce(requestedDate);
 
-        return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : ResultPattern<SchedulerOutput>.Success(BuildResultForChangeDate(requestedDate));
+        return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : ResultPattern<SchedulerOutput>.Success(BuildResultForTargetDate(requestedDate));
     }
 
-    private static SchedulerOutput BuildResultForChangeDate(SchedulerInput requestedDate) {
+    private static SchedulerOutput BuildResultForTargetDate(SchedulerInput requestedDate) {
         var newDate = requestedDate.TargetDate!.Value;
 
         List<DateTimeOffset>? futureDates = null;
-        if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
-            futureDates = CalculateWeeklyRecurrence(requestedDate);
-        }
+        if (requestedDate.Recurrency == EnumRecurrency.Weekly)  futureDates = CalculateWeeklyRecurrence(requestedDate);
 
         return new SchedulerOutput {
             NextDate = newDate,

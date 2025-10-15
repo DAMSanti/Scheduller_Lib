@@ -5,12 +5,12 @@ using Scheduler_Lib.Infrastructure.Validations;
 namespace Scheduler_Lib.Core.Services;
 public class Service {
     public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
-        var validation = Validations.ValidateCalc(requestedDate);
-        if (!validation.IsSuccess) {
-            return ResultPattern<SchedulerOutput>.Failure(validation.Error!);
-        }
+        var validation = Validations.ValidateCalculateDate(requestedDate);
 
-        var calcDate = ScheduleCalculator.GetScheduleCalculator(requestedDate);
-        return calcDate;
+        if (!validation.IsSuccess) return ResultPattern<SchedulerOutput>.Failure(validation.Error!);
+
+        var calculateDate = ScheduleCalculator.GetScheduleCalculator(requestedDate);
+
+        return calculateDate;
     }
 }
