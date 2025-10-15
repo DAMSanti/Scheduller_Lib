@@ -56,7 +56,7 @@ public class ValidationsTest {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             TargetDate = null,
-            Periodicity = EnumConfiguration.OneTime
+            Periodicity = EnumConfiguration.Once
         };
 
         var result = Validations.ValidateOnce(requestedDate);
@@ -71,7 +71,7 @@ public class ValidationsTest {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             TargetDate = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.OneTime
+            Periodicity = EnumConfiguration.Once
         };
 
         var result = Validations.ValidateOnce(requestedDate);
@@ -85,7 +85,7 @@ public class ValidationsTest {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = null,
             TargetDate = new DateTimeOffset(2025, 1, 2, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.OneTime
+            Periodicity = EnumConfiguration.Once
         };
 
         var result = Validations.ValidateOnce(requestedDate);
@@ -113,7 +113,7 @@ public class ValidationsTest {
             StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             TargetDate = new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.OneTime
+            Periodicity = EnumConfiguration.Once
         };
 
         var result = Validations.ValidateOnce(requestedDate);

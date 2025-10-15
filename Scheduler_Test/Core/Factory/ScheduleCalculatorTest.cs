@@ -7,7 +7,7 @@ public class ScheduleCalculatorTest {
 
     [Fact]
     public void GetScheduleCalculator_Once() {
-        _requestedDate!.Periodicity = EnumConfiguration.OneTime;
+        _requestedDate!.Periodicity = EnumConfiguration.Once;
         _requestedDate.TargetDate = DateTimeOffset.Now.AddDays(15);
         _requestedDate.StartDate = DateTimeOffset.Now;
         _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
@@ -40,6 +40,6 @@ public class ScheduleCalculatorTest {
     public void GetScheduleCalculator_Unsupported() {
         _requestedDate!.Periodicity = (EnumConfiguration) 5;
         var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
-        Assert.Equal("Unsupported periodicity.", result.Error);
+        Assert.Equal("ERROR: Unsupported periodicity.", result.Error);
     }
 }

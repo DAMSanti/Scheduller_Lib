@@ -13,7 +13,7 @@ public class CalcDateTest {
         _requestedDate.StartDate = start;
         _requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
         _requestedDate.TargetDate = change;
-        _requestedDate.Periodicity = EnumConfiguration.OneTime;
+        _requestedDate.Periodicity = EnumConfiguration.Once;
         _requestedDate.Recurrency = EnumRecurrency.Daily;
 
         var result = Service.CalculateDate(_requestedDate);

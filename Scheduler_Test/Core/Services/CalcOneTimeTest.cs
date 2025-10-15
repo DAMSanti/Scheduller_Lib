@@ -14,7 +14,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
         requestedDate.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Periodicity = EnumConfiguration.OneTime;
+        requestedDate.Periodicity = EnumConfiguration.Once;
         requestedDate.Recurrency = EnumRecurrency.None;
 
         var result = new CalculateOneTime().CalculateDate(requestedDate);
@@ -147,7 +147,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         requestedDate!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Periodicity = EnumConfiguration.OneTime;
+        requestedDate.Periodicity = EnumConfiguration.Once;
 
         var result = new CalculateOneTime().CalculateDate(requestedDate);
 

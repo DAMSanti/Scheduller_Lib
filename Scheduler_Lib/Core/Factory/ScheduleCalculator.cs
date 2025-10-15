@@ -6,7 +6,7 @@ namespace Scheduler_Lib.Core.Factory;
 public static class ScheduleCalculator {
     public static ResultPattern<SchedulerOutput> GetScheduleCalculator(SchedulerInput requestedDate) {
         return requestedDate.Periodicity switch {
-            EnumConfiguration.OneTime => new CalculateOneTime().CalculateDate(requestedDate),
+            EnumConfiguration.Once => new CalculateOneTime().CalculateDate(requestedDate),
             EnumConfiguration.Recurrent => new CalculateRecurrent().CalculateDate(requestedDate),
             _ => ResultPattern<SchedulerOutput>.Failure(Messages.ErrorUnsupportedPeriodicity)
         };
