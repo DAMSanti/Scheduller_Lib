@@ -11,30 +11,45 @@ public class CalculateOneTime {
 
     private static SchedulerOutput BuildResultForTargetDate(SchedulerInput requestedDate) {
         List<DateTimeOffset>? futureDates = null;
-        if (requestedDate.Recurrency == EnumRecurrency.Weekly)  futureDates = CalculateWeeklyRecurrence(requestedDate);
+        if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
+            futureDates = CalculateWeeklyRecurrence(requestedDate);
+        }
 
         return new SchedulerOutput {
-            NextDate = requestedDate.TargetDate!.Value,
+            NextDate = requestedDate.Recurrency == EnumRecurrency.Weekly ? SelectNextEligibleDate(requestedDate.TargetDate!.Value.UtcDateTime, requestedDate.DaysOfWeek!).UtcDateTime : requestedDate.TargetDate!.Value.UtcDateTime,
             Description = BuildDescriptionForTargetDate(requestedDate),
             FutureDates = futureDates
         };
     }
+    private static DateTimeOffset SelectNextEligibleDate(DateTimeOffset targetDate, List<DayOfWeek> daysOfWeek) {
+        var candidates = daysOfWeek
+            .Select(day => NextWeekday(targetDate, day))
+            .Where(date => date >= targetDate)
+            .OrderBy(date => date)
+            .ToList();
 
-    private static List<DateTimeOffset> CalculateWeeklyRecurrence(SchedulerInput requestedDate) {
+        return (DateTimeOffset)(candidates.Count > 0 ? candidates.First() : targetDate)!;
+    }
+
+    private static List<DateTimeOffset>? CalculateWeeklyRecurrence(SchedulerInput requestedDate) {
         var dates = new List<DateTimeOffset>();
-        var endDate = requestedDate.EndDate ?? requestedDate.StartDate.AddDays(7 * 3);
-        var current = requestedDate.TargetDate ?? requestedDate.StartDate;
+        var current = requestedDate.TargetDate;
+        int iteration = 0;
 
-        while (current <= endDate) {
+        for (var from = current; from <= requestedDate.EndDate && iteration < requestedDate.MaxIterations; from = from.Value.UtcDateTime.AddDays(7 * requestedDate.WeeklyPeriod!.Value), iteration++) {
             foreach (var day in requestedDate.DaysOfWeek!) {
-                var nextDate = NextWeekday(current, day);
-                if (nextDate > endDate) continue;
-                if (!dates.Contains(nextDate)) {
-                    dates.Add(nextDate);
+                var nextDate = NextWeekday(from, day);
+                if (nextDate > requestedDate.EndDate) break;
+                if (!dates.Contains(nextDate.Value.UtcDateTime)) {
+                    dates.Add(nextDate.Value);
+                    if (requestedDate.MaxIterations.HasValue && dates.Count >= requestedDate.MaxIterations.Value)
+                        return dates;
                 }
             }
-            current = current.AddDays(7 * requestedDate.WeeklyPeriod!.Value);
+            if (requestedDate.MaxIterations.HasValue && dates.Count >= requestedDate.MaxIterations.Value)
+                break;
         }
+        dates.Sort();
         return dates;
     }
 
@@ -49,17 +64,19 @@ public class CalculateOneTime {
                    $"{requestedDate.StartDate.Date.ToShortDateString()}";
         }
 
-        return $"Occurs once: Schedule will be used on {requestedDate.TargetDate!.Value.Date.ToShortDateString()} " +
-               $"at {requestedDate.TargetDate!.Value.Date.ToShortTimeString()} starting on " +
+        return $"Occurs once: Schedule will be used on {requestedDate.TargetDate!.Value.UtcDateTime.Date.ToShortDateString()} " +
+               $"at {requestedDate.TargetDate!.Value.UtcDateTime.Date.ToShortTimeString()} starting on " +
                $"{requestedDate.StartDate.Date.ToShortDateString()}";
     }
 
     private static string TimeSpanToString(TimeSpan timeSpan) {
         return timeSpan.ToString(@"hh\:mm");
     }
-    private static DateTimeOffset NextWeekday(DateTimeOffset start, DayOfWeek day)
-    {
-        var daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
-        return start.AddDays(daysToAdd);
+
+    private static DateTimeOffset? NextWeekday(DateTimeOffset? start, DayOfWeek day) {
+        var date = start;
+        while (date.Value.DayOfWeek != day)
+            date = date.Value.AddDays(1);
+        return date;
     }
 }

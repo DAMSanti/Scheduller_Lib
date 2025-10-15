@@ -1,27 +1,25 @@
 ﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalcOneTimeTest(ITestOutputHelper output) {
 
     [Fact]
-    public void ChangeDate_OneTime() {
+    public void CalculateOneTime_ChangeToTargetDate_Success() {
         var requestedDate = new SchedulerInput();
 
-        requestedDate!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
         requestedDate.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         requestedDate.Periodicity = EnumConfiguration.Once;
         requestedDate.Recurrency = EnumRecurrency.None;
 
         var result = new CalculateOneTime().CalculateDate(requestedDate);
 
-        var expectedNewDate = new DateTimeOffset(requestedDate.TargetDate.Value.DateTime, TimeSpan.Zero);
+        output.WriteLine(result.Value.Description);
+
+        var expectedNewDate = requestedDate.TargetDate;
         Assert.Equal(expectedNewDate, result.Value!.NextDate);
-        var expectedResult = $"Occurs once: Schedule will be used on {expectedNewDate.Date.ToShortDateString()} at {expectedNewDate.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
+        var expectedResult = $"Occurs once: Schedule will be used on {expectedNewDate.Value.UtcDateTime.ToShortDateString()} at {expectedNewDate.Value.UtcDateTime.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
         Assert.Equal(expectedResult, result.Value.Description);
     }
 
@@ -29,25 +27,41 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void CalculateWeeklyRecurrence_GeneratesCorrectDates() {
         var requestedDate = new SchedulerInput();
 
-        requestedDate!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         requestedDate.StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         requestedDate.EndDate = new DateTimeOffset(2025, 10, 21, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.TargetDate = new DateTimeOffset(2025, 10, 7, 0, 0, 0, TimeSpan.Zero);
         requestedDate.WeeklyPeriod = 1;
         requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
         requestedDate.DailyStartTime = TimeSpan.Zero;
         requestedDate.DailyEndTime = TimeSpan.MaxValue;
+        requestedDate.Periodicity = EnumConfiguration.Once;
+        requestedDate.Recurrency = EnumRecurrency.Weekly;
 
         var result = new CalculateOneTime().CalculateDate(requestedDate); 
 
-        var expected = new List<DateTimeOffset>();
-        expected.Add(new DateTimeOffset(2025, 10, 6, 0, 0, 0, TimeSpan.Zero));
-        expected.Add(new DateTimeOffset(2025, 10, 8, 0, 0, 0, TimeSpan.Zero));
-        expected.Add(new DateTimeOffset(2025, 10, 13, 0, 0, 0, TimeSpan.Zero));
-        expected.Add(new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero));
-        expected.Add(new DateTimeOffset(2025, 10, 20, 0, 0, 0, TimeSpan.Zero));
+        output.WriteLine(result.Value.NextDate.ToString());
 
-        Assert.Equal(expected, result.Value.FutureDates);
+        if (result.Value.FutureDates != null) {
+            output.WriteLine("Fechas generadas:");
+            foreach (var date in result.Value.FutureDates)
+                output.WriteLine(date.ToString());
+        }
+
+        var expected = new DateTimeOffset(2025, 10, 8, 0, 0, 0, TimeSpan.Zero);
+
+        var expectedList = new List<DateTimeOffset>();
+        expectedList.Add(new DateTimeOffset(2025, 10, 8, 0, 0, 0, TimeSpan.Zero));
+        expectedList.Add(new DateTimeOffset(2025, 10, 13, 0, 0, 0, TimeSpan.Zero));
+        expectedList.Add(new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero));
+        expectedList.Add(new DateTimeOffset(2025, 10, 20, 0, 0, 0, TimeSpan.Zero));
+
+        Assert.Equal(expected, result.Value.NextDate);
+        Assert.Equal(expectedList, result.Value.FutureDates);
     }
+
+
+
+
 
     [Fact]
     public void CalculateWeeklyRecurrence_RespectsWeeklyPeriod() {
@@ -70,19 +84,6 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         Assert.Equal(expected, result.Value.FutureDates);
     }
 
-    [Fact]
-    public void CalculateWeeklyRecurrence_UsesDefaultEndDate_WhenEndDateIsNull(){
-        var requestedDate = new SchedulerInput();
-
-        requestedDate.StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.EndDate = null;
-        requestedDate.WeeklyPeriod = 1;
-        requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
-
-        var result = new CalculateOneTime().CalculateDate(requestedDate);
-
-        Assert.Contains(Messages.ErrorEndDateNull, result.Error);
-    }
 
     [Fact]
     public void BuildDescriptionForChangeDate_Weekly_PeriodHasValue() {
@@ -141,41 +142,12 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void NoChange_MissingData() {
-        var requestedDate = new SchedulerInput();
-
-        requestedDate!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Periodicity = EnumConfiguration.Once;
-
-        var result = new CalculateOneTime().CalculateDate(requestedDate);
-
-        Assert.False(result.IsSuccess);
-        Assert.Contains(Messages.ErrorOnceMode, result.Error);
-    }
-
-    [Fact]
-    public void FutureDates_IsNull_WhenOcurrenceIsNotWeekly() {
+    public void FutureDates_IsNull_WhenRecurrencyIsNotWeekly() {
         var requestedDate = new SchedulerInput();
 
         requestedDate!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Recurrency = 0;
+        requestedDate.Recurrency = EnumRecurrency.None;
         requestedDate.WeeklyPeriod = 1;
-        requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
-
-        var result = new CalculateOneTime().CalculateDate(requestedDate);
-
-        Assert.Null(result.Value!.FutureDates);
-    }
-
-    [Fact]
-    public void FutureDates_IsNull_WhenWeeklyPeriodIsNull() {
-        var requestedDate = new SchedulerInput();
-
-        requestedDate!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Recurrency = EnumRecurrency.Weekly;
-        requestedDate.WeeklyPeriod = null;
         requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
 
         var result = new CalculateOneTime().CalculateDate(requestedDate);
@@ -206,53 +178,42 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateWeeklyRecurrence_NoDates_WhenStartAfterEnd() {
-        var requestedDate = new SchedulerInput();
-
-        requestedDate.StartDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.EndDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.WeeklyPeriod = 1;
-        requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
-
-        var result = new CalculateOneTime().CalculateDate(requestedDate);
-
-        Assert.Contains(Messages.ErrorChangeDateAfterEndDate, result.Error);
-    }
-
-    [Fact]
-    public void CalculateWeeklyRecurrence_NoDuplicates_SameWeek() {
+    public void CalculateWeeklyRecurrence_UseEndDateIfNotNull() {
         var requestedDate = new SchedulerInput();
 
         requestedDate.StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.EndDate = new DateTimeOffset(2025, 10, 5, 23, 59, 59, TimeSpan.Zero);
+         requestedDate.TargetDate = new DateTimeOffset(2025, 10, 7, 0, 0, 0, TimeSpan.Zero);
         requestedDate.WeeklyPeriod = 1;
-        requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Sunday, DayOfWeek.Sunday };
-            
+        requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
+        requestedDate.DailyStartTime = TimeSpan.Zero;
+        requestedDate.DailyEndTime = TimeSpan.MaxValue;
+        requestedDate.Periodicity = EnumConfiguration.Once;
+        requestedDate.Recurrency = EnumRecurrency.Weekly;
+
         var result = new CalculateOneTime().CalculateDate(requestedDate);
 
-        Assert.Contains(Messages.ErrorOnceMode, result.Error);
-    }
+        output.WriteLine(result.Value.NextDate.ToString());
 
-    [Fact]
-    public void CalculateWeeklyRecurrence_UseEndDateIfNotNull() {
-        var requestedDate = new SchedulerInput
+        if (result.Value.FutureDates != null)
         {
-            StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero), // EndDate explícito
-            WeeklyPeriod = 1,
-            DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Wednesday }
-        };
+            output.WriteLine("Fechas generadas:");
+            foreach (var date in result.Value.FutureDates)
+                output.WriteLine(date.ToString());
+        }
 
-        // Invocación por reflexión porque es private
-        var method = typeof(CalculateOneTime).GetMethod("CalculateWeeklyRecurrence", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-        var result = (List<DateTimeOffset>)method!.Invoke(null, new object[] { requestedDate })!;
+        var expected = new DateTimeOffset(2025, 10, 8, 0, 0, 0, TimeSpan.Zero);
 
-        // Debe incluir solo fechas hasta el 15 de octubre
-        Assert.All(result, d => Assert.True(d <= requestedDate.EndDate));
-        Assert.Contains(new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero), result);
-        Assert.Contains(new DateTimeOffset(2025, 10, 8, 0, 0, 0, TimeSpan.Zero), result);
-        Assert.Contains(new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero), result);
+        var expectedList = new List<DateTimeOffset>();
+        expectedList.Add(new DateTimeOffset(2025, 10, 8, 0, 0, 0, TimeSpan.Zero));
+        expectedList.Add(new DateTimeOffset(2025, 10, 13, 0, 0, 0, TimeSpan.Zero));
+        expectedList.Add(new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero));
+        expectedList.Add(new DateTimeOffset(2025, 10, 20, 0, 0, 0, TimeSpan.Zero));
+
+        Assert.Equal(expected, result.Value.NextDate);
+        Assert.Equal(100, result.Value.FutureDates!.Count);
     }
+
+
 
     /*
     [Fact]

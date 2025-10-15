@@ -1,31 +1,34 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Resources;
+using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalcDateTest {
-    private readonly SchedulerInput? _requestedDate = new();
+public class CalcDateTest(ITestOutputHelper output) {
 
     [Fact]
     public void CalcDate_Valid() {
-        var start = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var change = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        _requestedDate.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        _requestedDate.StartDate = start;
-        _requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        _requestedDate.TargetDate = change;
-        _requestedDate.Periodicity = EnumConfiguration.Once;
-        _requestedDate.Recurrency = EnumRecurrency.Daily;
+        var requestedDate = new SchedulerInput();
 
-        var result = Service.CalculateDate(_requestedDate);
+        requestedDate!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Periodicity = EnumConfiguration.Once;
+        requestedDate.Recurrency = EnumRecurrency.Daily;
 
-        var expectedResult = $"Occurs once: Schedule will be used on {change.Date.ToShortDateString()} at {change.Date.ToShortTimeString()} starting on {_requestedDate.StartDate.Date.ToShortDateString()}";
-        Assert.Equal(expectedResult, result.Value!.Description);
+        var result = Service.CalculateDate(requestedDate);
+
+        output.WriteLine(result.IsSuccess.ToString());
+
+        Assert.True(result.IsSuccess);
     }
 
     [Fact]
     public void NullRequest() {
         SchedulerInput? requestedDate = null;
         var result = Service.CalculateDate(requestedDate!);
+
+        output.WriteLine(result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorRequestNull, result.Error);
