@@ -194,8 +194,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         output.WriteLine(result.Value.NextDate.ToString());
 
-        if (result.Value.FutureDates != null)
-        {
+        if (result.Value.FutureDates != null) {
             output.WriteLine("Fechas generadas:");
             foreach (var date in result.Value.FutureDates)
                 output.WriteLine(date.ToString());
