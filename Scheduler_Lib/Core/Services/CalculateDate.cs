@@ -1,5 +1,4 @@
 ﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Core.Factory;
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;

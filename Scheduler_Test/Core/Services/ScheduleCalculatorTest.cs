@@ -1,6 +1,6 @@
 ﻿using Scheduler_Lib.Core.Model;
 
-namespace Scheduler_Lib.Core.Factory;
+namespace Scheduler_Lib.Core.Services;
 
 public class ScheduleCalculatorTest {
     [Fact]

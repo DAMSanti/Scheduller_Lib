@@ -1,8 +1,7 @@
 ﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
 
-namespace Scheduler_Lib.Core.Factory;
+namespace Scheduler_Lib.Core.Services;
 public static class ScheduleCalculator {
     public static ResultPattern<SchedulerOutput> GetScheduleCalculator(SchedulerInput requestedDate) {
         return requestedDate.Periodicity switch {
