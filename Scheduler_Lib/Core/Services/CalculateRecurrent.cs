@@ -3,11 +3,36 @@ using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalculateRecurrent {
-    public virtual ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
+    private readonly DescriptionBuilder _description;
+    private readonly RecurrenceCalculator _recurrence;
+
+    public CalculateRecurrent() : this(new DescriptionBuilder(), new RecurrenceCalculator()) { }
+
+    public CalculateRecurrent(DescriptionBuilder description, RecurrenceCalculator recurrence) {
+        _description = description;
+        _recurrence = recurrence;
+    }
+
+    public ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
         var validation = ValidationRecurrent.ValidateRecurrent(requestedDate);
 
         return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : ResultPattern<SchedulerOutput>.Success(BuildResultRecurrentDates(requestedDate));
     }
+
+
+
+
+
+
+
+
+
+
+
+    /*
+
+
+
 
     private static SchedulerOutput BuildResultRecurrentDates(SchedulerInput requestedDate) {
         var tz = GetTimeZone(requestedDate);
@@ -73,8 +98,10 @@ public class CalculateRecurrent {
         return $"Occurs every {requestedDate.Period!.Value} days. Schedule will be used on {requestedDate.CurrentDate.Date.ToShortDateString()}" +
                $" at {requestedDate.CurrentDate.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
     }
+    */
     private static TimeZoneInfo GetTimeZone(SchedulerInput requestedDate)
     {
         return TimeZoneInfo.FindSystemTimeZoneById(requestedDate.TimeZoneId!);
     }
+    
 }

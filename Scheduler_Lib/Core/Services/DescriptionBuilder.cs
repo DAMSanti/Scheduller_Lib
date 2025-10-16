@@ -33,6 +33,7 @@ public class DescriptionBuilder {
         var startInZone = TimeZoneInfo.ConvertTime(requestedDate.StartDate, tz);
         return startInZone.Date;
     }
+
     private static string FormatDate(DateTimeOffset dto) => dto.Date.ToShortDateString();
 
     private static string FormatTime(DateTimeOffset dto) => dto.DateTime.ToShortTimeString();
