@@ -13,5 +13,6 @@ public class SchedulerInput {
     public TimeSpan? DailyEndTime { get; set; }
     public int? WeeklyPeriod { get; set; }
     public List<DayOfWeek>? DaysOfWeek { get; set; }
-    public int? MaxIterations { get; set; } = 100;
+    public int? MaxIterations { get; set; } = 9999;
+    public string? TimeZoneId { get; set; } = TimeZoneInfo.Local.Id;
 }    

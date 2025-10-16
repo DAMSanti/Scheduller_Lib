@@ -3,17 +3,17 @@
 namespace Scheduler_Lib.Core.Factory;
 
 public class ScheduleCalculatorTest {
-    private readonly SchedulerInput? _requestedDate = new();
-
     [Fact]
     public void GetScheduleCalculator_Once() {
-        _requestedDate!.Periodicity = EnumConfiguration.Once;
-        _requestedDate.TargetDate = DateTimeOffset.Now.AddDays(15);
-        _requestedDate.StartDate = DateTimeOffset.Now;
-        _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
-        _requestedDate.Recurrency = EnumRecurrency.Daily;
+        var requestedDate = new SchedulerInput();
 
-        var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
+        requestedDate!.Periodicity = EnumConfiguration.Once;
+        requestedDate.TargetDate = DateTimeOffset.Now.AddDays(15);
+        requestedDate.StartDate = DateTimeOffset.Now;
+        requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
+        requestedDate.Recurrency = EnumRecurrency.Daily;
+
+        var result = ScheduleCalculator.GetScheduleCalculator(requestedDate);
 
         Assert.True(result.IsSuccess);
         Assert.IsType<SchedulerOutput>(result.Value);
@@ -21,25 +21,29 @@ public class ScheduleCalculatorTest {
 
     [Fact]
     public void GetScheduleCalculator_Recurrent() {
-        _requestedDate!.Periodicity = EnumConfiguration.Recurrent;
-        _requestedDate.CurrentDate = DateTimeOffset.Now.AddDays(15);
-        _requestedDate.StartDate = DateTimeOffset.Now;
-        _requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
-        _requestedDate.Period = TimeSpan.FromHours(1);
-        _requestedDate.Recurrency = EnumRecurrency.Daily;
-        _requestedDate.WeeklyPeriod = 1;
-        _requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }; ;
+        var requestedDate = new SchedulerInput();
+
+        requestedDate!.Periodicity = EnumConfiguration.Recurrent;
+        requestedDate.CurrentDate = DateTimeOffset.Now.AddDays(15);
+        requestedDate.StartDate = DateTimeOffset.Now;
+        requestedDate.EndDate = DateTimeOffset.Now.AddDays(180);
+        requestedDate.Period = TimeSpan.FromHours(1);
+        requestedDate.Recurrency = EnumRecurrency.Daily;
+        requestedDate.WeeklyPeriod = 1;
+        requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }; ;
 
 
-        var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
+        var result = ScheduleCalculator.GetScheduleCalculator(requestedDate);
         Assert.True(result.IsSuccess);
         Assert.IsType<SchedulerOutput>(result.Value);
     }
 
     [Fact]
     public void GetScheduleCalculator_Unsupported() {
-        _requestedDate!.Periodicity = (EnumConfiguration) 5;
-        var result = ScheduleCalculator.GetScheduleCalculator(_requestedDate);
+        var requestedDate = new SchedulerInput();
+
+        requestedDate!.Periodicity = (EnumConfiguration) 5;
+        var result = ScheduleCalculator.GetScheduleCalculator(requestedDate);
         Assert.Equal("ERROR: Unsupported periodicity.", result.Error);
     }
 }

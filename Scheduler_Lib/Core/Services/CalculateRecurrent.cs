@@ -4,7 +4,7 @@ using Scheduler_Lib.Infrastructure.Validations;
 namespace Scheduler_Lib.Core.Services;
 public class CalculateRecurrent {
     public virtual ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
-        var validation = Validations.ValidateRecurrent(requestedDate);
+        var validation = ValidationRecurrent.ValidateRecurrent(requestedDate);
 
         return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : ResultPattern<SchedulerOutput>.Success(BuildResultRecurrentDates(requestedDate));
     }
