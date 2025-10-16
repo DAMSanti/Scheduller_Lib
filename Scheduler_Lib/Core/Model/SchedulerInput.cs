@@ -14,5 +14,5 @@ public class SchedulerInput {
     public int? WeeklyPeriod { get; set; }
     public List<DayOfWeek>? DaysOfWeek { get; set; }
     public int? MaxIterations { get; set; } = 9999;
-    public string? TimeZoneId { get; set; } = TimeZoneInfo.Local.Id;
+    public string? TimeZoneId { get; set; } = "Romance Standard Time";
 }    

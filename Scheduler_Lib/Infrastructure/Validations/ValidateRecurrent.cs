@@ -25,6 +25,9 @@ public class ValidationRecurrent {
             errors.AppendLine(Messages.ErrorDateOutOfRange);
         }
 
+        if (requestedDate.TargetDate == null)
+            requestedDate.MaxIterations = 9999;
+
         if (requestedDate.Recurrency == EnumRecurrency.Weekly)
         {
             /*var weeklyResult = ValidateWeeklyOnce(requestedDate);

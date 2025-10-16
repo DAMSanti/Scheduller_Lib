@@ -10,6 +10,8 @@ public class CalculateRecurrent {
     }
 
     private static SchedulerOutput BuildResultRecurrentDates(SchedulerInput requestedDate) {
+        var tz = GetTimeZone(requestedDate);
+
         var futureDates = CalculateFutureDates(requestedDate);
 
         var nextDateLocal = requestedDate.CurrentDate.Add(requestedDate.Period!.Value);
@@ -70,5 +72,9 @@ public class CalculateRecurrent {
     private static string BuildDescription(SchedulerInput requestedDate) {
         return $"Occurs every {requestedDate.Period!.Value} days. Schedule will be used on {requestedDate.CurrentDate.Date.ToShortDateString()}" +
                $" at {requestedDate.CurrentDate.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
+    }
+    private static TimeZoneInfo GetTimeZone(SchedulerInput requestedDate)
+    {
+        return TimeZoneInfo.FindSystemTimeZoneById(requestedDate.TimeZoneId!);
     }
 }
