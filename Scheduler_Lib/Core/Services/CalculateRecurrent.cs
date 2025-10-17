@@ -29,7 +29,7 @@ public class CalculateRecurrent {
 
 
 
-    /*
+    
 
 
 
@@ -48,7 +48,7 @@ public class CalculateRecurrent {
         };
 
     }
-
+    
     private static List<DateTimeOffset> CalculateFutureDates(SchedulerInput requestedDate) {
         var dates = new List<DateTimeOffset>();
         var endDate = requestedDate.EndDate ?? requestedDate.CurrentDate.Add(requestedDate.Period!.Value * 3);
@@ -98,7 +98,7 @@ public class CalculateRecurrent {
         return $"Occurs every {requestedDate.Period!.Value} days. Schedule will be used on {requestedDate.CurrentDate.Date.ToShortDateString()}" +
                $" at {requestedDate.CurrentDate.Date.ToShortTimeString()} starting on {requestedDate.StartDate.Date.ToShortDateString()}";
     }
-    */
+    
     private static TimeZoneInfo GetTimeZone(SchedulerInput requestedDate)
     {
         return TimeZoneInfo.FindSystemTimeZoneById(requestedDate.TimeZoneId!);

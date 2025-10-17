@@ -3,7 +3,7 @@
 namespace Scheduler_Lib.Core.Services;
 
 public class RecurrenceCalculator {
-    public DateTimeOffset SelectNextEligibleDate(DateTimeOffset targetDate, List<DayOfWeek> daysOfWeek, TimeZoneInfo tz) {
+    public static DateTimeOffset SelectNextEligibleDate(DateTimeOffset targetDate, List<DayOfWeek> daysOfWeek, TimeZoneInfo tz) {
         var targetLocal = targetDate.DateTime;
         var candidates = daysOfWeek
             .Select(d => NextWeekday(targetLocal, d, tz))
@@ -17,7 +17,7 @@ public class RecurrenceCalculator {
             : new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
     }
 
-    public List<DateTimeOffset>? CalculateWeeklyRecurrence(SchedulerInput requestedDate, TimeZoneInfo tz) {
+    public static List<DateTimeOffset>? CalculateWeeklyRecurrence(SchedulerInput requestedDate, TimeZoneInfo tz) {
         if (requestedDate.DaysOfWeek == null || requestedDate.WeeklyPeriod == null) return null;
 
         var dates = new List<DateTimeOffset>();
