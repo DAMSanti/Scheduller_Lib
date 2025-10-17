@@ -18,9 +18,6 @@ public class ValidationOnce {
         if (requestedDate.TargetDate != null && ((requestedDate.TargetDate < requestedDate.StartDate || requestedDate.TargetDate > requestedDate.EndDate)))
             errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
 
-        if (requestedDate.TargetDate == null)
-            requestedDate.MaxIterations = 9999;
-
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 }

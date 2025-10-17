@@ -1,9 +1,9 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
-    public class RecurrenceCalculatorTest(ITestOutputHelper output)
-    {
+    public class RecurrenceCalculatorTest(ITestOutputHelper output) {
 
         [Fact]
         public void SelectNextEligibleDate_WhenTargetIsOnADesiredDay_ReturnsSameInstantWithTzOffset()
@@ -56,13 +56,12 @@ namespace Scheduler_Lib.Core.Services;
                 EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
                 DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday },
                 WeeklyPeriod = 1,
-                MaxIterations = 2
             };
 
             var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
 
             Assert.NotNull(result);
-            Assert.True(result!.Count <= requested.MaxIterations.Value * requested.DaysOfWeek!.Count);
+            Assert.True(result!.Count <= Config.MaxIterations * requested.DaysOfWeek!.Count);
             Assert.True(result.Count > 0);
         }
 
@@ -77,7 +76,6 @@ namespace Scheduler_Lib.Core.Services;
                 EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
                 DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday },
                 WeeklyPeriod = 1,
-                MaxIterations = null
             };
 
             var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
@@ -97,7 +95,6 @@ namespace Scheduler_Lib.Core.Services;
                 EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
                 DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday },
                 WeeklyPeriod = 2,
-                MaxIterations = 10
             };
 
             var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
@@ -122,7 +119,6 @@ namespace Scheduler_Lib.Core.Services;
                 EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
                 DaysOfWeek = null!,
                 WeeklyPeriod = 1,
-                MaxIterations = 3
             };
 
             Assert.ThrowsAny<NullReferenceException>(() => RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz));
