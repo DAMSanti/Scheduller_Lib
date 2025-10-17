@@ -13,5 +13,4 @@ public class SchedulerInput {
     public TimeSpan? DailyEndTime { get; set; }
     public int? WeeklyPeriod { get; set; }
     public List<DayOfWeek>? DaysOfWeek { get; set; }
-    public int? MaxIterations { get; set; } = 9999;
 }    

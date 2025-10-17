@@ -1,4 +1,5 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services;
 
@@ -27,7 +28,7 @@ public class RecurrenceCalculator {
         var weekStart = baseLocal.Date;
         var endLocal = requestedDate.EndDate?.DateTime ?? DateTime.MaxValue;
 
-        while (weekStart <= endLocal && iteration < requestedDate.MaxIterations) {
+        while (weekStart <= endLocal && iteration < Config.MaxIterations) {
             foreach (var day in requestedDate.DaysOfWeek!) {
                 var timeOfDay = requestedDate.TargetDate?.TimeOfDay ?? requestedDate.StartDate.TimeOfDay;
                 var candidateLocal = new DateTime(weekStart.Year, weekStart.Month, weekStart.Day, timeOfDay.Hours,
@@ -41,7 +42,7 @@ public class RecurrenceCalculator {
                 if (candidate <= nextEligible) continue;
                 if (!dates.Contains(candidate)) dates.Add(candidate);
 
-                if (requestedDate.MaxIterations.HasValue && dates.Count >= requestedDate.MaxIterations.Value)
+                if (dates.Count >= Config.MaxIterations)
                     return dates;
             }
 
