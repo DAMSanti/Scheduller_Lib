@@ -11,7 +11,7 @@ public class CalculateOneTime {
     }
 
     private SchedulerOutput BuildResultForTargetDate(SchedulerInput requestedDate) {
-        var tz = GetTimeZone(requestedDate);
+        var tz = RecurrenceCalculator.GetTimeZone();
 
         List<DateTimeOffset>? futureDates = null;
         if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
@@ -29,7 +29,4 @@ public class CalculateOneTime {
         };
     }
 
-    private static TimeZoneInfo GetTimeZone(SchedulerInput requestedDate) {
-        return TimeZoneInfo.FindSystemTimeZoneById(requestedDate.TimeZoneId!);
-    }
 }

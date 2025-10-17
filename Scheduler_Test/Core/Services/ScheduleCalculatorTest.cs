@@ -32,7 +32,6 @@ public class ScheduleCalculatorTest {
         requestedDate.WeeklyPeriod = 1;
         requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }; ;
 
-
         var result = ScheduleCalculator.GetScheduleCalculator(requestedDate);
         Assert.True(result.IsSuccess);
         Assert.IsType<SchedulerOutput>(result.Value);

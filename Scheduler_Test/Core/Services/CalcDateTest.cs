@@ -4,12 +4,10 @@ using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
 
-public class CalcDateTest(ITestOutputHelper output)
-{
+public class CalcDateTest(ITestOutputHelper output) {
 
     [Fact]
-    public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationOnceDaily()
-    {
+    public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationOnceDaily() {
         var requestedDate = new SchedulerInput();
 
         requestedDate!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -28,8 +26,7 @@ public class CalcDateTest(ITestOutputHelper output)
     }
 
     [Fact]
-    public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationOnceWeekly()
-    {
+    public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationOnceWeekly() {
         var requestedDate = new SchedulerInput();
 
         requestedDate!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
