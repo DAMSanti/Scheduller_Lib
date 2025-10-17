@@ -46,12 +46,6 @@ public class DescriptionBuilder {
         return startInZone.Date;
     }
 
-    private static string FormatDate(DateTimeOffset dto) => dto.Date.ToShortDateString();
-
-    private static string FormatTime(DateTimeOffset dto) => dto.DateTime.ToShortTimeString();
-
-    public static string TimeSpanToString(TimeSpan timeSpan) => timeSpan.ToString(@"hh\:mm");
-
     public static string FormatPeriod(TimeSpan period) {
         if (period.TotalDays >= 1) {
             return FormatUnit(period.TotalDays, "day", "days");
@@ -66,6 +60,10 @@ public class DescriptionBuilder {
         return FormatUnit(period.TotalSeconds, "second", "seconds");
     }
 
+    private static string FormatDate(DateTimeOffset dto) => dto.Date.ToShortDateString();
+
+    private static string FormatTime(DateTimeOffset dto) => dto.DateTime.ToShortTimeString();
+
     private static string FormatUnit(double value, string singular, string plural) {
         var rounded = Math.Round(value);
         if (Math.Abs(value - rounded) < 1e-9) {
@@ -76,4 +74,7 @@ public class DescriptionBuilder {
         var formatted = value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
         return Math.Abs(value - 1.0) < 1e-9 ? $"{formatted} {singular}" : $"{formatted} {plural}";
     }
+
+    public static string TimeSpanToString(TimeSpan timeSpan) => timeSpan.ToString(@"hh\:mm");
+
 }

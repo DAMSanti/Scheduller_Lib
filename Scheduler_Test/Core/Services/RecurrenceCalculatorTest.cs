@@ -9,7 +9,7 @@ namespace Scheduler_Lib.Core.Services;
         public void SelectNextEligibleDate_WhenTargetIsOnADesiredDay_ReturnsSameInstantWithTzOffset()
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified); // Monday
+            var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
             var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 
             var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, new List<DayOfWeek> { DayOfWeek.Monday }, tz);
@@ -22,12 +22,12 @@ namespace Scheduler_Lib.Core.Services;
         public void SelectNextEligibleDate_WhenTargetBeforeDesiredDay_ReturnsNextDesiredDay()
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified); // Saturday
+            var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
             var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 
             var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, new List<DayOfWeek> { DayOfWeek.Monday }, tz);
 
-            var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified); // next Monday
+            var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
             var expected = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
             Assert.Equal(expected, result);
         }
@@ -37,7 +37,7 @@ namespace Scheduler_Lib.Core.Services;
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
             var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
-            var targetDto = new DateTimeOffset(targetLocal, TimeSpan.Zero); // different offset intentionally
+            var targetDto = new DateTimeOffset(targetLocal, TimeSpan.Zero);
 
             var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, new List<DayOfWeek>(), tz);
 
@@ -56,12 +56,11 @@ namespace Scheduler_Lib.Core.Services;
                 EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
                 DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday },
                 WeeklyPeriod = 1,
-                MaxIterations = 2 // limit the number of generated weeks/iterations
+                MaxIterations = 2
             };
 
             var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
 
-            // Should not return more than MaxIterations items (note: MaxIterations applies per the loop logic)
             Assert.NotNull(result);
             Assert.True(result!.Count <= requested.MaxIterations.Value * requested.DaysOfWeek!.Count);
             Assert.True(result.Count > 0);
@@ -71,8 +70,6 @@ namespace Scheduler_Lib.Core.Services;
         public void CalculateWeeklyRecurrence_WhenMaxIterationsIsNull_CurrentImplementationReturnsEmpty()
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            // Behavior observation test: current implementation compares iteration < MaxIterations (nullable)
-            // If MaxIterations is null the lifted comparison is false and the loop does not execute -> empty list
             var requested = new SchedulerInput
             {
                 StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
@@ -85,7 +82,6 @@ namespace Scheduler_Lib.Core.Services;
 
             var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
 
-            // Documenting current behaviour: empty list
             Assert.NotNull(result);
             Assert.Empty(result);
         }
@@ -107,8 +103,7 @@ namespace Scheduler_Lib.Core.Services;
             var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
 
             Assert.NotNull(result);
-            // Expect generated Mondays spaced by 14 days (weeklyPeriod * 7)
-            // Verify that difference between consecutive entries is multiple of 14 days
+
             for (int i = 1; i < result!.Count; i++)
             {
                 var diff = (result[i].Date - result[i - 1].Date).TotalDays;
@@ -160,7 +155,7 @@ namespace Scheduler_Lib.Core.Services;
                 CurrentDate = new DateTimeOffset(2025, 10, 1, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1, 8, 0, 0, DateTimeKind.Unspecified))),
                 StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
                 EndDate = new DateTimeOffset(2025, 10, 3, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 3))),
-                Period = TimeSpan.FromDays(1) // slotStep
+                Period = TimeSpan.FromDays(1)
             };
 
             var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
@@ -192,10 +187,8 @@ namespace Scheduler_Lib.Core.Services;
 
             var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
 
-            // Two days: 2025-10-01 and 2025-10-02, three slots each: 08:00,09:00,10:00 => total 6
             Assert.Equal(6, result.Count);
 
-            // verify first day slots
             var firstDay = requested.StartDate.Date;
             var slot1 = new DateTime(firstDay.Year, firstDay.Month, firstDay.Day, 8, 0, 0, DateTimeKind.Unspecified);
             var dto1 = new DateTimeOffset(slot1, tz.GetUtcOffset(slot1));
@@ -214,13 +207,11 @@ namespace Scheduler_Lib.Core.Services;
                 EndDate = new DateTimeOffset(2025, 10, 21, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 21))),
                 DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday },
                 WeeklyPeriod = 1,
-                // no DailyStartTime/DailyEndTime -> one slot per day chosen
             };
 
             var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
 
             Assert.True(result.Count > 0);
-            // verify that all generated items are on Mondays
             Assert.All(result, dto => Assert.Equal(DayOfWeek.Monday, dto.Date.DayOfWeek));
         }
 
@@ -243,10 +234,8 @@ namespace Scheduler_Lib.Core.Services;
 
             var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
 
-            // Wednesdays in the window: 2025-10-01, 2025-10-08 -> 2 days * 3 slots each (09:00,10:00,11:00) = 6
             Assert.Equal(6, result.Count);
 
-            // verify that all generated items are on Wednesday and within the expected time range
             Assert.All(result, dto => {
                 Assert.Equal(DayOfWeek.Wednesday, dto.Date.DayOfWeek);
                 var hour = dto.DateTime.Hour;
@@ -264,7 +253,7 @@ namespace Scheduler_Lib.Core.Services;
             Recurrency = EnumRecurrency.Weekly,
             StartDate = new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
             EndDate = new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31))),
-            DaysOfWeek = null // explicit null -> should return empty list
+            DaysOfWeek = null
         };
 
         var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
@@ -283,7 +272,7 @@ namespace Scheduler_Lib.Core.Services;
             Recurrency = EnumRecurrency.Weekly,
             StartDate = new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
             EndDate = new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31))),
-            DaysOfWeek = new List<DayOfWeek>() // empty list -> should return empty list
+            DaysOfWeek = new List<DayOfWeek>()
         };
 
         var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
@@ -297,7 +286,6 @@ namespace Scheduler_Lib.Core.Services;
     {
         var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
 
-        // TargetDate has a distinct time that should be used as timeOfDay
         var targetDate = new DateTimeOffset(2025, 10, 5, 15, 30, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 15, 30, 0, DateTimeKind.Unspecified))); // Sunday 15:30
 
@@ -305,10 +293,10 @@ namespace Scheduler_Lib.Core.Services;
         {
             Periodicity = EnumConfiguration.Recurrent,
             Recurrency = EnumRecurrency.Weekly,
-            TargetDate = targetDate, // baseLocal should be taken from TargetDate
+            TargetDate = targetDate,
             StartDate = new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1, 9, 0, 0, DateTimeKind.Unspecified))),
             EndDate = new DateTimeOffset(2025, 10, 14, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 14))),
-            DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }, // next Monday after 2025-10-05 is 2025-10-06
+            DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday },
             WeeklyPeriod = 1
         };
 
@@ -317,14 +305,12 @@ namespace Scheduler_Lib.Core.Services;
         Assert.NotNull(result);
         Assert.NotEmpty(result);
 
-        // Expect Monday entries with time equal to TargetDate.TimeOfDay (15:30)
         Assert.All(result, dto => {
             Assert.Equal(DayOfWeek.Monday, dto.Date.DayOfWeek);
             Assert.Equal(15, dto.DateTime.Hour);
             Assert.Equal(30, dto.DateTime.Minute);
         });
 
-        // also assert at least one expected date exists (2025-10-06 15:30)
         var expectedLocal = new DateTime(2025, 10, 6, 15, 30, 0, DateTimeKind.Unspecified);
         var expectedDto = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
         Assert.Contains(expectedDto, result);
@@ -335,7 +321,6 @@ namespace Scheduler_Lib.Core.Services;
     {
         var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
 
-        // TargetDate is null; timeOfDay must come from StartDate
         var startDate = new DateTimeOffset(2025, 10, 3, 9, 45, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 3, 9, 45, 0, DateTimeKind.Unspecified))); // StartDate time 09:45
 
@@ -355,7 +340,6 @@ namespace Scheduler_Lib.Core.Services;
         Assert.NotNull(result);
         Assert.NotEmpty(result);
 
-        // Expect Monday entries with time equal to StartDate.TimeOfDay (09:45)
         Assert.All(result, dto => {
             Assert.Equal(DayOfWeek.Monday, dto.Date.DayOfWeek);
             Assert.Equal(9, dto.DateTime.Hour);

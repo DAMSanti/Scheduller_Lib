@@ -11,7 +11,6 @@ public class CalculateRecurrentTests
         var input = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
-            // Period intentionally null to force validation error
             StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
             CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
@@ -54,7 +53,6 @@ public class CalculateRecurrentTests
 
         Assert.Equal(expectedNext, result.Value!.NextDate);
 
-        // FutureDates for weekly recurrent should be non-empty (given the wide endDate)
         Assert.NotNull(result.Value.FutureDates);
         Assert.True(result.Value.FutureDates!.Count > 0);
     }
@@ -99,7 +97,7 @@ public class CalculateRecurrentTests
         var input = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
-            Period = TimeSpan.FromHours(1), // validation requires Period non-null
+            Period = TimeSpan.FromHours(1),
             StartDate = current.AddDays(-1),
             EndDate = current.AddDays(10),
             CurrentDate = current,
@@ -126,14 +124,13 @@ public class CalculateRecurrentTests
         var input = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
-            Period = TimeSpan.FromHours(1), // keep for validation, but logic will fall back to CurrentDate
+            Period = TimeSpan.FromHours(1), 
             StartDate = current.AddDays(-1),
             EndDate = current.AddDays(2),
             CurrentDate = current,
             Recurrency = EnumRecurrency.Daily
         };
 
-        // Explicitly remove TargetDate and leave Period but the code path without Period.Value branch uses CurrentDate
         input.TargetDate = null;
 
         var result = new CalculateRecurrent().CalculateDate(input);
@@ -186,7 +183,7 @@ public class CalculateRecurrentTests
             EndDate = current.AddDays(30),
             CurrentDate = current,
             Recurrency = EnumRecurrency.Weekly,
-            DaysOfWeek = null // should default to current.DayOfWeek
+            DaysOfWeek = null
         };
 
         var result = new CalculateRecurrent().CalculateDate(input);
@@ -214,7 +211,7 @@ public class CalculateRecurrentTests
             EndDate = current.AddDays(10),
             CurrentDate = current,
             Recurrency = EnumRecurrency.Weekly,
-            DaysOfWeek = new List<DayOfWeek>() // empty list -> no candidates
+            DaysOfWeek = new List<DayOfWeek>()
         };
 
         var result = new CalculateRecurrent().CalculateDate(input);
@@ -266,7 +263,7 @@ public class CalculateRecurrentTests
         var input = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
-            Period = TimeSpan.FromHours(4), // used to compute NextDate = Current + Period
+            Period = TimeSpan.FromHours(4),
             StartDate = start,
             EndDate = start.AddDays(2),
             CurrentDate = current,
@@ -281,12 +278,10 @@ public class CalculateRecurrentTests
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
 
-        // Next should be current + period (with tz offset)
         var nextLocal = input.CurrentDate.Add(input.Period!.Value);
         var expectedNext = new DateTimeOffset(nextLocal.DateTime, tz.GetUtcOffset(nextLocal.DateTime));
         Assert.Equal(expectedNext, result.Value!.NextDate);
 
-        // FutureDates should contain slots between DailyStartTime and DailyEndTime across the range
         Assert.NotNull(result.Value.FutureDates);
         Assert.True(result.Value.FutureDates!.Count > 0);
     }
@@ -317,7 +312,6 @@ public class CalculateRecurrentTests
         var expected = new DateTimeOffset(target.DateTime, tz.GetUtcOffset(target.DateTime));
         Assert.Equal(expected, result.Value!.NextDate);
 
-        // For Once periodicity future dates list must be empty (CalculateFutureDates returns empty for non-Recurrent)
         Assert.True(result.Value.FutureDates == null || result.Value.FutureDates.Count == 0);
     }
 
@@ -331,13 +325,12 @@ public class CalculateRecurrentTests
 
         var input = new SchedulerInput
         {
-            // Period intentionally left null to force the daily TargetDate branch
             StartDate = current.AddDays(-1),
             EndDate = current.AddDays(10),
             CurrentDate = current,
             TargetDate = target,
             Recurrency = EnumRecurrency.Daily,
-            Periodicity = EnumConfiguration.Recurrent // validation will be bypassed by invoking private method
+            Periodicity = EnumConfiguration.Recurrent
         };
 
         var method = typeof(CalculateRecurrent).GetMethod("BuildResultRecurrentDates", BindingFlags.NonPublic | BindingFlags.Static);
@@ -361,13 +354,12 @@ public class CalculateRecurrentTests
 
         var input = new SchedulerInput
         {
-            // Period intentionally left null to exercise fallback to CurrentDate
             StartDate = current.AddDays(-1),
             EndDate = current.AddDays(2),
             CurrentDate = current,
             TargetDate = null,
             Recurrency = EnumRecurrency.Daily,
-            Periodicity = EnumConfiguration.Recurrent // validation bypassed by direct invocation
+            Periodicity = EnumConfiguration.Recurrent
         };
 
         var method = typeof(CalculateRecurrent).GetMethod("BuildResultRecurrentDates", BindingFlags.NonPublic | BindingFlags.Static);
@@ -391,12 +383,11 @@ public class CalculateRecurrentTests
 
         var input = new SchedulerInput
         {
-            // Provide Period so validation passes and CalculateDate executes BuildResultRecurrentDates
             Period = TimeSpan.FromHours(1),
             StartDate = current,
             EndDate = current.AddMonths(2),
             CurrentDate = current,
-            TargetDate = null, // no target -> fallback to current
+            TargetDate = null,
             Recurrency = EnumRecurrency.None,
             Periodicity = EnumConfiguration.Recurrent
         };

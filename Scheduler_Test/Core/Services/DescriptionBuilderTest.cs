@@ -62,7 +62,8 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
             Periodicity = EnumConfiguration.Recurrent,
             Recurrency = EnumRecurrency.Daily,
-            Period = TimeSpan.FromDays(2) // note: BuildDailyDescription uses the raw TimeSpan value in the message
+            Period = TimeSpan.FromDays(2)
+
         };
 
         var nextLocal = new DateTimeOffset(2025, 10, 5, 10, 15, 0,
@@ -84,7 +85,8 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var requestedDate = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 3, 2, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 3, 2))),
             Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily // BuildOnceDescription is fallback when not Weekly/Daily in switch; but BuildOnceDescription is also returned for Daily+Once
+            Recurrency = EnumRecurrency.Daily
+
         };
 
         var nextLocal = new DateTimeOffset(2025, 10, 5, 14, 45, 0,
