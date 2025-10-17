@@ -10,7 +10,7 @@ public class CalculateOneTime {
             ResultPattern<SchedulerOutput>.Success(BuildResultForTargetDate(requestedDate));
     }
 
-    private SchedulerOutput BuildResultForTargetDate(SchedulerInput requestedDate) {
+    private static SchedulerOutput BuildResultForTargetDate(SchedulerInput requestedDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         List<DateTimeOffset>? futureDates = null;

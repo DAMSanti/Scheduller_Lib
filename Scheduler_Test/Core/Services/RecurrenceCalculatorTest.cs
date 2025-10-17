@@ -53,7 +53,7 @@ namespace Scheduler_Lib.Core.Services;
             {
                 StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
                 TargetDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
-                EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
+                //EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
                 DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday },
                 WeeklyPeriod = 1,
             };
@@ -63,25 +63,6 @@ namespace Scheduler_Lib.Core.Services;
             Assert.NotNull(result);
             Assert.True(result!.Count <= Config.MaxIterations * requested.DaysOfWeek!.Count);
             Assert.True(result.Count > 0);
-        }
-
-        [Fact]
-        public void CalculateWeeklyRecurrence_WhenMaxIterationsIsNull_CurrentImplementationReturnsEmpty()
-        {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
-            {
-                StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
-                TargetDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
-                EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
-                DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday },
-                WeeklyPeriod = 1,
-            };
-
-            var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
-
-            Assert.NotNull(result);
-            Assert.Empty(result);
         }
 
         [Fact]

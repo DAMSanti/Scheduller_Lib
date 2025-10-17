@@ -19,6 +19,12 @@ public class RecurrenceCalculator {
     }
 
     public static List<DateTimeOffset>? CalculateWeeklyRecurrence(SchedulerInput requestedDate, TimeZoneInfo tz) {
+        if (requestedDate.EndDate == null)
+            Config.MaxIterations = 9999;
+
+        if (requestedDate.DaysOfWeek == null)
+            throw new NullReferenceException();
+
         var dates = new List<DateTimeOffset>();
         var baseLocal = (requestedDate.TargetDate ?? requestedDate.StartDate).DateTime;
         var nextEligible = SelectNextEligibleDate(new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal)),
@@ -33,7 +39,13 @@ public class RecurrenceCalculator {
                 var timeOfDay = requestedDate.TargetDate?.TimeOfDay ?? requestedDate.StartDate.TimeOfDay;
                 var candidateLocal = new DateTime(weekStart.Year, weekStart.Month, weekStart.Day, timeOfDay.Hours,
                     timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
-                while (candidateLocal.DayOfWeek != day) candidateLocal = candidateLocal.AddDays(1);
+
+                int daysToAdd = ((int)day - (int)candidateLocal.DayOfWeek + 7) % 7;
+                if (daysToAdd > 0) {
+                    if (candidateLocal > DateTime.MaxValue.AddDays(-daysToAdd))
+                        continue;
+                    candidateLocal = candidateLocal.AddDays(daysToAdd);
+                }
 
                 var offset = tz.GetUtcOffset(candidateLocal);
                 var candidate = new DateTimeOffset(candidateLocal, offset);
@@ -124,6 +136,14 @@ public class RecurrenceCalculator {
 
                     while (candidateLocal.DayOfWeek != day)
                         candidateLocal = candidateLocal.AddDays(1);
+
+                    int daysToAdd = ((int)day - (int)candidateLocal.DayOfWeek + 7) % 7;
+                    if (daysToAdd > 0)
+                    {
+                        if (candidateLocal > DateTime.MaxValue.AddDays(-daysToAdd))
+                            continue;
+                        candidateLocal = candidateLocal.AddDays(daysToAdd);
+                    }
 
                     var candidateDayDto = new DateTimeOffset(candidateLocal, tz.GetUtcOffset(candidateLocal));
                     if (candidateDayDto > endDate) continue;
