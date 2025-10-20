@@ -17,7 +17,7 @@ public class CalculateRecurrentTests
             Recurrency = EnumRecurrency.Daily
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);
@@ -43,10 +43,9 @@ public class CalculateRecurrentTests
             DailyEndTime = new TimeSpan(17, 30, 0)
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var baseDate = input.TargetDate ?? input.CurrentDate;
         var expectedNext = RecurrenceCalculator.SelectNextEligibleDate(baseDate, input.DaysOfWeek!, tz);
@@ -75,10 +74,9 @@ public class CalculateRecurrentTests
             Recurrency = EnumRecurrency.Daily
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var nextLocal = input.CurrentDate.Add(input.Period!.Value);
         var expected = new DateTimeOffset(nextLocal.DateTime, tz.GetUtcOffset(nextLocal.DateTime));
@@ -105,10 +103,9 @@ public class CalculateRecurrentTests
             Recurrency = EnumRecurrency.Daily
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var expected = new DateTimeOffset(target.DateTime, tz.GetUtcOffset(target.DateTime));
         Assert.Equal(expected, result.Value!.NextDate);
@@ -133,10 +130,9 @@ public class CalculateRecurrentTests
 
         input.TargetDate = null;
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var expected = new DateTimeOffset(input.CurrentDate.DateTime, tz.GetUtcOffset(input.CurrentDate.DateTime));
         Assert.Equal(expected, result.Value!.NextDate);
@@ -161,10 +157,9 @@ public class CalculateRecurrentTests
             Recurrency = EnumRecurrency.None
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var expected = new DateTimeOffset(target.DateTime, tz.GetUtcOffset(target.DateTime));
         Assert.Equal(expected, result.Value!.NextDate);
@@ -186,10 +181,9 @@ public class CalculateRecurrentTests
             DaysOfWeek = null
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var baseDate = input.TargetDate ?? input.CurrentDate;
         var expectedNext = RecurrenceCalculator.SelectNextEligibleDate(baseDate, new List<DayOfWeek> { baseDate.DayOfWeek }, tz);
@@ -214,10 +208,9 @@ public class CalculateRecurrentTests
             DaysOfWeek = new List<DayOfWeek>()
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var baseDate = input.TargetDate ?? input.CurrentDate;
         var expected = new DateTimeOffset(baseDate.DateTime, tz.GetUtcOffset(baseDate.DateTime));
@@ -244,10 +237,9 @@ public class CalculateRecurrentTests
             DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var expectedNext = RecurrenceCalculator.SelectNextEligibleDate(input.TargetDate!.Value, input.DaysOfWeek!, tz);
         Assert.Equal(expectedNext, result.Value!.NextDate);
@@ -273,10 +265,9 @@ public class CalculateRecurrentTests
             DailyFrequency = new TimeSpan(2, 0, 0)
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var nextLocal = input.CurrentDate.Add(input.Period!.Value);
         var expectedNext = new DateTimeOffset(nextLocal.DateTime, tz.GetUtcOffset(nextLocal.DateTime));
@@ -304,10 +295,9 @@ public class CalculateRecurrentTests
             Recurrency = EnumRecurrency.None
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var expected = new DateTimeOffset(target.DateTime, tz.GetUtcOffset(target.DateTime));
         Assert.Equal(expected, result.Value!.NextDate);
@@ -392,9 +382,8 @@ public class CalculateRecurrentTests
             Periodicity = EnumConfiguration.Recurrent
         };
 
-        var result = new CalculateRecurrent().CalculateDate(input);
+        var result = CalculateRecurrent.CalculateDate(input);
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
 
         var expected = new DateTimeOffset(current.DateTime, tz.GetUtcOffset(current.DateTime));
         Assert.Equal(expected, result.Value!.NextDate);

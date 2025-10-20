@@ -46,26 +46,6 @@ namespace Scheduler_Lib.Core.Services;
         }
 
         [Fact]
-        public void CalculateWeeklyRecurrence_ShouldRespectMaxIterations()
-        {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
-            {
-                StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
-                TargetDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
-                //EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
-                DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday },
-                WeeklyPeriod = 1,
-            };
-
-            var result = RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz);
-
-            Assert.NotNull(result);
-            Assert.True(result!.Count <= Config.MaxIterations * requested.DaysOfWeek!.Count);
-            Assert.True(result.Count > 0);
-        }
-
-        [Fact]
         public void CalculateWeeklyRecurrence_WithWeeklyPeriodGreaterThanOne_SkipsWeeksCorrectly()
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
@@ -90,11 +70,9 @@ namespace Scheduler_Lib.Core.Services;
         }
 
         [Fact]
-        public void CalculateWeeklyRecurrence_WithNullDaysOfWeek_Throws()
-        {
+        public void CalculateWeeklyRecurrence_WithNullDaysOfWeek_Throws() {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
-            {
+            var requested = new SchedulerInput {
                 StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
                 TargetDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
                 EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),

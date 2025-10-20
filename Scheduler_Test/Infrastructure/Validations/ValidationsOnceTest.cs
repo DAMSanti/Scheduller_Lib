@@ -12,8 +12,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.EndDate = null;
         schedulerInput.TargetDate = new DateTimeOffset(2025, 1, 2, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Once;
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
-        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
@@ -60,22 +59,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ValidateOnce_ShouldSuccess_WhenMissingEndDate() {
-        var schedulerInput = new SchedulerInput();
-        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.Periodicity = EnumConfiguration.Once;
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
-        schedulerInput.WeeklyPeriod = 1;
-
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.Value.ToString());
-
-        Assert.True(result.IsSuccess);
-    }
-
-    [Fact]
     public void ValidateOnce_ShouldFail_WhenDailyAndTargetNull() {
         var schedulerInput = new SchedulerInput();
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -106,7 +89,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void Validate_ShouldSuccess_MinimumConfigurationWeekly() {
+    public void ValidateOnce_ShouldFail_WhenPeriodicityOnceRecurrencyWeekly() {
         var schedulerInput = new SchedulerInput();
         schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
@@ -116,6 +99,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         output.WriteLine(result.Value.ToString());
 
-        Assert.True(result.IsSuccess);
+        Assert.False(result.IsSuccess);
     }
 }

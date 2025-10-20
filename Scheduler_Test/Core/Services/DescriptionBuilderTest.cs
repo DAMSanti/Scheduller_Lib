@@ -69,8 +69,9 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var nextLocal = new DateTimeOffset(2025, 10, 5, 10, 15, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 10, 15, 0)));
 
+        var periodStr = DescriptionBuilder.FormatPeriod(requestedDate.Period.Value);
         var startDateStr = DescriptionBuilder.ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
-        var expected = $"Occurs every {requestedDate.Period!.Value} days. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
+        var expected = $"Occurs every {periodStr}. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
                        $"at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
         var actual = DescriptionBuilder.BuildDescriptionForTargetDate(requestedDate, tz, nextLocal);
