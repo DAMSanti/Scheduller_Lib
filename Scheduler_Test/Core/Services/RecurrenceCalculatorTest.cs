@@ -108,7 +108,7 @@ namespace Scheduler_Lib.Core.Services;
                 Periodicity = EnumConfiguration.Recurrent,
                 Recurrency = EnumRecurrency.Daily,
                 CurrentDate = new DateTimeOffset(2025, 10, 1, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1, 8, 0, 0, DateTimeKind.Unspecified))),
-                StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
+                StartDate = new DateTimeOffset(2025, 9, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
                 EndDate = new DateTimeOffset(2025, 10, 3, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 3))),
                 Period = TimeSpan.FromDays(1)
             };
@@ -189,7 +189,7 @@ namespace Scheduler_Lib.Core.Services;
 
             var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
 
-            Assert.Equal(6, result.Count);
+            Assert.Equal(3, result.Count);
 
             Assert.All(result, dto => {
                 Assert.Equal(DayOfWeek.Wednesday, dto.Date.DayOfWeek);

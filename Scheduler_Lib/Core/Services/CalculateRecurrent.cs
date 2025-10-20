@@ -26,17 +26,39 @@ public class CalculateRecurrent {
         DateTimeOffset next;
 
         if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
-            var baseDate = requestedDate.TargetDate ?? requestedDate.CurrentDate;
-            var days = requestedDate.DaysOfWeek ?? [baseDate.DayOfWeek];
 
-            next = RecurrenceCalculator.SelectNextEligibleDate(baseDate, days, tz);
-        } else {
+            DateTime baseLocal;
+            if (requestedDate.TargetDate.HasValue) {
+                baseLocal = requestedDate.TargetDate.Value.DateTime;
+            }
+            else {
+                var cur = requestedDate.CurrentDate.DateTime;
+                var startTime = requestedDate.StartDate.TimeOfDay;
+                baseLocal = new DateTime(cur.Year, cur.Month, cur.Day,
+                    startTime.Hours, startTime.Minutes, startTime.Seconds, DateTimeKind.Unspecified);
+            }
+
+            var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+            var days = requestedDate.DaysOfWeek ?? [baseDtoForNext.DayOfWeek];
+
+            next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, days, tz);
+
+            if (futureDates != null && futureDates.Count > 0) {
+                futureDates.RemoveAll(d => d == next);
+            }
+        }
+        else {
             if (requestedDate.TargetDate.HasValue) {
                 var td = requestedDate.TargetDate.Value;
                 next = new DateTimeOffset(td.DateTime, tz.GetUtcOffset(td.DateTime));
-            } else {
+            }
+            else {
                 var cur = requestedDate.CurrentDate;
                 next = new DateTimeOffset(cur.DateTime, tz.GetUtcOffset(cur.DateTime));
+            }
+
+            if (futureDates != null && futureDates.Count > 0) {
+                futureDates.RemoveAll(d => d == next);
             }
         }
 

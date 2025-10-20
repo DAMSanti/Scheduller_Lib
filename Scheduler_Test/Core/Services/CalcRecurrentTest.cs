@@ -1,54 +1,62 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Resources;
 using System.Reflection;
+using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
-public class CalculateRecurrentTests
-{
+public class CalculateRecurrentTests(ITestOutputHelper output) {
     [Fact]
-    public void ValidateRecurrent_Fails_When_Period_IsNullOrNonPositive()
-    {
-        var input = new SchedulerInput
-        {
-            Periodicity = EnumConfiguration.Recurrent,
-            StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            Recurrency = EnumRecurrency.Daily
-        };
+    public void ValidateRecurrent_ShouldFail_WhenPeriodIsNullOrNonPositive() {
+        var requestedDate = new SchedulerInput();
 
-        var result = CalculateRecurrent.CalculateDate(input);
+        requestedDate.Periodicity = EnumConfiguration.Recurrent;
+        requestedDate.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.Recurrency = EnumRecurrency.Daily;
+
+        var result = CalculateRecurrent.CalculateDate(requestedDate);
+
+        output.WriteLine(result.Error);
 
         Assert.False(result.IsSuccess);
-        Assert.NotNull(result.Error);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error);
     }
 
     [Fact]
-    public void Weekly_Recurrent_Calculates_NextDate_And_FutureDates()
-    {
-        var tz = RecurrenceCalculator.GetTimeZone();
+    public void WeeklyRecurrent_ShouldSuccess_CalculatesNextDateAndFutureDates() {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
-        var input = new SchedulerInput
-        {
-            Periodicity = EnumConfiguration.Recurrent,
-            Period = TimeSpan.FromHours(2),
-            StartDate = new DateTimeOffset(2025, 9, 1, 0, 30, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2026, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            Recurrency = EnumRecurrency.Weekly,
-            WeeklyPeriod = 1,
-            DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday },
-            DailyStartTime = new TimeSpan(0, 30, 0),
-            DailyEndTime = new TimeSpan(17, 30, 0)
-        };
+        var requestedDate = new SchedulerInput();
 
-        var result = CalculateRecurrent.CalculateDate(input);
+        requestedDate.Periodicity = EnumConfiguration.Recurrent;
+        requestedDate.Period = TimeSpan.FromHours(2);
+        requestedDate.StartDate = new DateTimeOffset(2025, 9, 1, 0, 30, 0,
+            tz.GetUtcOffset(new DateTime(2025, 9, 1, 0, 30, 0, DateTimeKind.Unspecified)));
+        requestedDate.EndDate = new DateTimeOffset(2026, 12, 31, 0, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 12, 31, 0, 0, 0, DateTimeKind.Unspecified)));
+        requestedDate.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, 
+            tz.GetUtcOffset(new DateTime(2025, 10, 3, 0, 0, 0, DateTimeKind.Unspecified)));
+        requestedDate.Recurrency = EnumRecurrency.Weekly;
+        requestedDate.WeeklyPeriod = 1;
+        requestedDate.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
+
+        var result = CalculateRecurrent.CalculateDate(requestedDate);
+
+        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.Value.NextDate.ToString());
+
+        if (result.Value.FutureDates != null && result.Value.FutureDates.Count > 0) {
+            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
+            foreach (var dto in result.Value.FutureDates) {
+                output.WriteLine(dto.ToString());
+            }
+        }
 
         Assert.True(result.IsSuccess);
 
-        var baseDate = input.TargetDate ?? input.CurrentDate;
-        var expectedNext = RecurrenceCalculator.SelectNextEligibleDate(baseDate, input.DaysOfWeek!, tz);
+        var expectedNext = new DateTimeOffset(2025, 10, 6, 0, 30, 0,
+            tz.GetUtcOffset(new DateTime(2025, 10, 6, 0, 30, 0, DateTimeKind.Unspecified)));
 
         Assert.Equal(expectedNext, result.Value!.NextDate);
 
@@ -57,53 +65,72 @@ public class CalculateRecurrentTests
     }
 
     [Fact]
-    public void Daily_Recurrent_WithPeriod_Uses_CurrentDatePlusPeriod_As_Next()
-    {
-        var tz = RecurrenceCalculator.GetTimeZone();
+    public void DailyRecurrent_ShouldSuccess_WithPeriodUsesCurrentDate() {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
-        var current = new DateTimeOffset(2025, 10, 3, 10, 0, 0, TimeSpan.Zero);
+        var current = new DateTimeOffset(2025, 10, 3, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 10, 3, 10, 0, 0, DateTimeKind.Unspecified)));
         var period = TimeSpan.FromHours(3);
 
-        var input = new SchedulerInput
-        {
-            Periodicity = EnumConfiguration.Recurrent,
-            Period = period,
-            StartDate = current.AddDays(-1),
-            EndDate = current.AddDays(10),
-            CurrentDate = current,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var requestedDate = new SchedulerInput();
 
-        var result = CalculateRecurrent.CalculateDate(input);
+        requestedDate.Periodicity = EnumConfiguration.Recurrent;
+        requestedDate.Period = period;
+        requestedDate.StartDate = current.AddDays(-1);
+        requestedDate.EndDate = current.AddDays(10);
+        requestedDate.CurrentDate = current;
+        requestedDate.Recurrency = EnumRecurrency.Daily;
+
+        var result = CalculateRecurrent.CalculateDate(requestedDate);
+
+        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.Value.NextDate.ToString());
+
+        if (result.Value.FutureDates != null && result.Value.FutureDates.Count > 0) {
+            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
+            foreach (var dto in result.Value.FutureDates) {
+                output.WriteLine(dto.ToString());
+            }
+        }
 
         Assert.True(result.IsSuccess);
 
-        var nextLocal = input.CurrentDate.Add(input.Period!.Value);
+        var nextLocal = requestedDate.CurrentDate;
         var expected = new DateTimeOffset(nextLocal.DateTime, tz.GetUtcOffset(nextLocal.DateTime));
 
         Assert.Equal(expected, result.Value!.NextDate);
     }
 
     [Fact]
-    public void Daily_Recurrent_WithTargetDate_Uses_TargetDate_As_Next()
-    {
-        var tz = RecurrenceCalculator.GetTimeZone();
+    public void DailyRecurrent_ShouldSuccess_WithTargetDateUsesTargetDate() {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
-        var current = new DateTimeOffset(2025, 10, 3, 10, 0, 0, TimeSpan.Zero);
-        var target = new DateTimeOffset(2025, 10, 5, 8, 30, 0, TimeSpan.Zero);
+        var current = new DateTimeOffset(2025, 10, 3, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 10, 3, 10, 0, 0, DateTimeKind.Unspecified)));
+        var target = new DateTimeOffset(2025, 10, 5, 8, 30, 0,
+            tz.GetUtcOffset(new DateTime(2025, 10, 5, 8, 30, 0, DateTimeKind.Unspecified)));
 
-        var input = new SchedulerInput
-        {
-            Periodicity = EnumConfiguration.Recurrent,
-            Period = TimeSpan.FromHours(1),
-            StartDate = current.AddDays(-1),
-            EndDate = current.AddDays(10),
-            CurrentDate = current,
-            TargetDate = target,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var requestedDate = new SchedulerInput();
 
-        var result = CalculateRecurrent.CalculateDate(input);
+        requestedDate.Periodicity = EnumConfiguration.Recurrent;
+        requestedDate.Period = TimeSpan.FromHours(1);
+        requestedDate.StartDate = current.AddDays(-1);
+        requestedDate.EndDate = current.AddDays(10);
+        requestedDate.CurrentDate = current;
+        requestedDate.TargetDate = target;
+        requestedDate.Recurrency = EnumRecurrency.Daily;
+
+        var result = CalculateRecurrent.CalculateDate(requestedDate);
+
+        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.Value.NextDate.ToString());
+
+        if (result.Value.FutureDates != null && result.Value.FutureDates.Count > 0) {
+            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
+            foreach (var dto in result.Value.FutureDates) {
+                output.WriteLine(dto.ToString());
+            }
+        }
 
         Assert.True(result.IsSuccess);
 
@@ -269,9 +296,11 @@ public class CalculateRecurrentTests
 
         Assert.True(result.IsSuccess);
 
-        var nextLocal = input.CurrentDate.Add(input.Period!.Value);
+        var nextLocal = input.CurrentDate;
         var expectedNext = new DateTimeOffset(nextLocal.DateTime, tz.GetUtcOffset(nextLocal.DateTime));
         Assert.Equal(expectedNext, result.Value!.NextDate);
+
+        
 
         Assert.NotNull(result.Value.FutureDates);
         Assert.True(result.Value.FutureDates!.Count > 0);

@@ -9,7 +9,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void CalculateOnce_ShouldSuccess_WhenTargetDatePresentOnceDaily() {
         var requestedDate = new SchedulerInput();
 
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
         requestedDate.StartDate = new DateTimeOffset(
             2025, 1, 1, 0, 0, 0,
@@ -37,7 +37,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void CalculateOnce_ShouldFail_WhenRecurrencyIsNotWeeklyFutureDatesIsNull() {
         var requestedDate = new SchedulerInput();
 
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
         requestedDate!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 0, 0, 0, DateTimeKind.Unspecified)));
@@ -58,13 +58,16 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void ValidateOnce_ShouldFail_WhenStartDateAfterEndDate() {
         var requestedDate = new SchedulerInput();
 
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
-        requestedDate.StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, 
+            tz.GetUtcOffset(new DateTime(2025, 12, 31, 0, 0, 0, DateTimeKind.Unspecified)));
+        requestedDate.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, 
+            tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
         requestedDate.Periodicity = EnumConfiguration.Once;
         requestedDate.Recurrency = EnumRecurrency.Daily;
-        requestedDate.TargetDate = new DateTimeOffset(2025, 5, 1, 0, 0, 0, TimeSpan.Zero);
+        requestedDate.TargetDate = new DateTimeOffset(2025, 5, 1, 0, 0, 0, 
+            tz.GetUtcOffset(new DateTime(2025, 5, 1, 0, 0, 0, DateTimeKind.Unspecified)));
 
         var result = CalculateOneTime.CalculateDate(requestedDate);
 
@@ -79,9 +82,12 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void ValidateOnce_ShouldFail_WhenTargetDateNullAndNotWeekly() {
         var requestedDate = new SchedulerInput();
 
-        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
+
+        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, 
+            tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
         requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.Recurrency = EnumRecurrency.Daily; // not weekly
+        requestedDate.Recurrency = EnumRecurrency.Daily;
         requestedDate.TargetDate = null;
 
         var result = CalculateOneTime.CalculateDate(requestedDate);
@@ -97,7 +103,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void ValidateOnce_ShouldFail_WhenTargetDateOutsideRange() {
         var requestedDate = new SchedulerInput();
 
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 10, 0, 0, 0,
             tz.GetUtcOffset(new DateTime(2025, 1, 10, 0, 0, 0, DateTimeKind.Unspecified)));
