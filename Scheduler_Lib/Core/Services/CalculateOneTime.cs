@@ -13,19 +13,12 @@ public class CalculateOneTime {
     private static SchedulerOutput BuildResultForTargetDate(SchedulerInput requestedDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
-        List<DateTimeOffset>? futureDates = null;
-        if (requestedDate.Recurrency == EnumRecurrency.Weekly) {
-            futureDates = RecurrenceCalculator.CalculateWeeklyRecurrence(requestedDate, tz);
-        }
-
-        var next = requestedDate.Recurrency == EnumRecurrency.Weekly
-            ? RecurrenceCalculator.SelectNextEligibleDate(requestedDate.TargetDate!.Value, requestedDate.DaysOfWeek!, tz)
-            : new DateTimeOffset(requestedDate.TargetDate!.Value.DateTime, tz.GetUtcOffset(requestedDate.TargetDate!.Value.DateTime));
+        var next = new DateTimeOffset(requestedDate.TargetDate!.Value.DateTime, tz.GetUtcOffset(requestedDate.TargetDate!.Value.DateTime));
 
         return new SchedulerOutput {
             NextDate = next,
             Description = DescriptionBuilder.BuildDescriptionForTargetDate(requestedDate, tz, next),
-            FutureDates = futureDates
+            FutureDates = null
         };
     }
 

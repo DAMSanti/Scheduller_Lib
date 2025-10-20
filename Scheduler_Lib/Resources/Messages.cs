@@ -13,6 +13,7 @@ public static class Messages {
     public const string ErrorWeeklyPeriodRequired = "ERROR: Weekly Period is required.";
     public const string ErrorDaysOfWeekRequired = "ERROR: You need to select some days of the week.";
     public const string ErrorStartDateMissing = "ERROR: StartDate required.";
+    public const string ErrorOnceWeekly = "ERROR: You can't use the scheduler with that configuration.";
     public const string ErrorDailyTimeWindowIncomplete = "ERROR: You lack some of the required dates.";
     public const string ErrorDailyStartAfterEnd = "ERROR: Your StartTime is after your EndTime.";
 }
