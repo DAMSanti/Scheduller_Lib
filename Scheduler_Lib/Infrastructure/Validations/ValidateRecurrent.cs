@@ -6,17 +6,31 @@ using System.Text;
 namespace Scheduler_Lib.Infrastructure.Validations;
 
 public class ValidationRecurrent {
-    public static ResultPattern<bool> ValidateRecurrent(SchedulerInput requestedDate) {
+    public static ResultPattern<bool> ValidateRecurrent(SchedulerInput schedulerInput) {
         var errors = new StringBuilder();
 
-        if (requestedDate.Period == null || requestedDate.Period.Value <= TimeSpan.Zero)
+        if (schedulerInput.Period == null || schedulerInput.Period.Value <= TimeSpan.Zero)
             errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
 
-        if (requestedDate.StartDate > requestedDate.EndDate)
+        if (schedulerInput.StartDate > schedulerInput.EndDate)
             errors.AppendLine(Messages.ErrorStartDatePostEndDate);
 
-        if (requestedDate.CurrentDate < requestedDate.StartDate || requestedDate.CurrentDate > requestedDate.EndDate)
+        if (schedulerInput.CurrentDate < schedulerInput.StartDate || schedulerInput.CurrentDate > schedulerInput.EndDate)
             errors.AppendLine(Messages.ErrorDateOutOfRange);
+
+        if (schedulerInput.Recurrency == EnumRecurrency.Daily &&
+            (schedulerInput.DailyStartTime == null || schedulerInput.DailyEndTime == null))
+            errors.AppendLine(Messages.ErrorDailyTimeWindowIncomplete);
+
+        if (schedulerInput.Recurrency == EnumRecurrency.Daily && 
+            (schedulerInput.DailyStartTime < schedulerInput.DailyEndTime))
+            errors.AppendLine(Messages.ErrorDailyStartAfterEnd);
+
+        if (!schedulerInput.WeeklyPeriod.HasValue)
+            errors.AppendLine(Messages.ErrorWeeklyPeriodRequired);
+
+        if (schedulerInput.DaysOfWeek == null || schedulerInput.DaysOfWeek.Count == 0)
+            errors.AppendLine(Messages.ErrorDaysOfWeekRequired);
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }

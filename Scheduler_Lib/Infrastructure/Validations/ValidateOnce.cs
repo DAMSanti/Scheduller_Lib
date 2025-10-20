@@ -6,19 +6,22 @@ using System.Text;
 namespace Scheduler_Lib.Infrastructure.Validations;
 
 public class ValidationOnce {
-    public static ResultPattern<bool> ValidateOnce(SchedulerInput requestedDate) {
+    public static ResultPattern<bool> ValidateOnce(SchedulerInput schedulerInput) {
         var errors = new StringBuilder();
 
-        if (requestedDate.EndDate != null && requestedDate.StartDate > requestedDate.EndDate)
+        if (schedulerInput.Periodicity == EnumConfiguration.Recurrent)
+            errors.AppendLine(Messages.ErrorUnsupportedPeriodicity);
+
+        if (schedulerInput.EndDate != null && schedulerInput.StartDate > schedulerInput.EndDate)
             errors.AppendLine(Messages.ErrorStartDatePostEndDate);
 
-        if (requestedDate.TargetDate == null && requestedDate.Recurrency != EnumRecurrency.Weekly)
+        if (schedulerInput.TargetDate == null && schedulerInput.Recurrency != EnumRecurrency.Weekly)
             errors.AppendLine(Messages.ErrorTargetDateNull);
 
-        if (requestedDate.TargetDate != null && ((requestedDate.TargetDate < requestedDate.StartDate || requestedDate.TargetDate > requestedDate.EndDate)))
+        if (schedulerInput.TargetDate != null && ((schedulerInput.TargetDate < schedulerInput.StartDate || schedulerInput.TargetDate > schedulerInput.EndDate)))
             errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
 
-        if (requestedDate.Periodicity == EnumConfiguration.Once && requestedDate.Recurrency == EnumRecurrency.Weekly)
+        if (schedulerInput is { Periodicity: EnumConfiguration.Once, Recurrency: EnumRecurrency.Weekly })
             errors.AppendLine(Messages.ErrorOnceWeekly);
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);

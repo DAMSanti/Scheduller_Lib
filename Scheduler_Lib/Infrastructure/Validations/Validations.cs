@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using Scheduler_Lib.Core.Model;
+﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
 using System.Text;
@@ -28,7 +27,7 @@ public static class Validations {
 
         return ResultPattern<bool>.Success(true);
     }
-    
+  
     private static ResultPattern<bool> ValidateWeekly(SchedulerInput requestedDate) {
         var errors = new StringBuilder();
 
@@ -49,5 +48,5 @@ public static class Validations {
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
-
+  
 }
