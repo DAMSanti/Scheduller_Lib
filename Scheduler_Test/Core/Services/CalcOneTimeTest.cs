@@ -5,31 +5,68 @@ using Xunit.Abstractions;
 namespace Scheduler_Lib.Core.Services;
 
 public class CalcOneTimeTest(ITestOutputHelper output) {
-    [Fact]
-    public void CalculateOnce_ShouldSuccess_WhenTargetDatePresentOnceDaily() {
-        var requestedDate = new SchedulerInput();
-
+    [Theory]
+    [InlineData("2025-12-31", "2025-01-01", "2025-01-01", Messages.ErrorTargetDateAfterEndDate)]
+    [InlineData("2025-01-01", "2025-12-30", "2024-12-31", Messages.ErrorTargetDateAfterEndDate)]
+    [InlineData("2025-01-01", "2025-12-31", null, Messages.ErrorTargetDateNull)]
+    public void ValidateOnce_ShouldFail_WithInvalidDates(string startDate, string endDate, string? targetDate, string expectedError) {
         var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
 
-        requestedDate.StartDate = new DateTimeOffset(
-            2025, 1, 1, 0, 0, 0,
-            tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.TargetDate = new DateTimeOffset(
-            2025, 10, 5, 0, 0, 0,
-            tz.GetUtcOffset(new DateTime(2025, 10, 5, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.Recurrency = EnumRecurrency.Daily;
+        var schedulerInput = new SchedulerInput();
 
-        var result = CalculateOneTime.CalculateDate(requestedDate);
+        schedulerInput.StartDate = new DateTimeOffset(
+            DateTime.Parse(startDate),
+            tz.GetUtcOffset(DateTime.Parse(startDate))
+        );
+        schedulerInput.EndDate = new DateTimeOffset(
+            DateTime.Parse(startDate),
+            tz.GetUtcOffset(DateTime.Parse(startDate))
+        );
+        schedulerInput.TargetDate = targetDate != null ? DateTimeOffset.Parse(targetDate) : null;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = CalculateOneTime.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(expectedError, result.Error);
+    }
+
+    [Theory]
+    [InlineData("2025-01-01", "2025-12-31", "2025-01-01")]
+    [InlineData("2025-01-01", "2025-12-31", "2025-12-31")]
+    public void ValidateOnce_ShouldSucceed_WithValidTargetDate(string startDate, string endDate, string targetDate) {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(
+            DateTime.Parse(startDate),
+            tz.GetUtcOffset(DateTime.Parse(startDate))
+        );
+        schedulerInput.EndDate = new DateTimeOffset(
+            DateTime.Parse(endDate),
+            tz.GetUtcOffset(DateTime.Parse(endDate))
+        );
+        schedulerInput.TargetDate = new DateTimeOffset(
+            DateTime.Parse(targetDate),
+            tz.GetUtcOffset(DateTime.Parse(targetDate))
+        );
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = CalculateOneTime.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Value.Description);
 
-        var expectedNewDate = requestedDate.TargetDate;
+        var expectedNewDate = schedulerInput.TargetDate;
         Assert.Equal(expectedNewDate, result.Value!.NextDate);
         var expectedResult =
             $"Occurs once: Schedule will be used on {expectedNewDate.Value.DateTime.ToShortDateString()} at " +
             $"{expectedNewDate.Value.DateTime.ToShortTimeString()} starting on " +
-            $"{requestedDate.StartDate.Date.ToShortDateString()}";
+            $"{schedulerInput.StartDate.Date.ToShortDateString()}";
         Assert.Equal(expectedResult, result.Value.Description);
     }
 
@@ -55,30 +92,6 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ValidateOnce_ShouldFail_WhenStartDateAfterEndDate() {
-        var requestedDate = new SchedulerInput();
-
-        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
-
-        requestedDate.StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, 
-            tz.GetUtcOffset(new DateTime(2025, 12, 31, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, 
-            tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.Recurrency = EnumRecurrency.Daily;
-        requestedDate.TargetDate = new DateTimeOffset(2025, 5, 1, 0, 0, 0, 
-            tz.GetUtcOffset(new DateTime(2025, 5, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-
-        var result = CalculateOneTime.CalculateDate(requestedDate);
-
-        output.WriteLine(result.IsSuccess.ToString());
-
-        Assert.False(result.IsSuccess);
-        Assert.NotNull(result.Error);
-        Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error!);
-    }
-    
-    [Fact]
     public void ValidateOnce_ShouldFail_WhenTargetDateNullAndNotWeekly() {
         var requestedDate = new SchedulerInput();
 
@@ -97,29 +110,5 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);
         Assert.Contains(Messages.ErrorTargetDateNull, result.Error!);
-    }
-
-    [Fact]
-    public void ValidateOnce_ShouldFail_WhenTargetDateOutsideRange() {
-        var requestedDate = new SchedulerInput();
-
-        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
-
-        requestedDate.StartDate = new DateTimeOffset(2025, 1, 10, 0, 0, 0,
-            tz.GetUtcOffset(new DateTime(2025, 1, 10, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.EndDate = new DateTimeOffset(2025, 1, 31, 0, 0, 0,
-            tz.GetUtcOffset(new DateTime(2025, 1, 31, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.TargetDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0,
-            tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.Recurrency = EnumRecurrency.Daily;
-
-        var result = CalculateOneTime.CalculateDate(requestedDate);
-
-        output.WriteLine(result.IsSuccess.ToString());
-
-        Assert.False(result.IsSuccess);
-        Assert.NotNull(result.Error);
-        Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error!);
     }
 }

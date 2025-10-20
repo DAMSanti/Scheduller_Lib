@@ -7,17 +7,17 @@ public class CalcDateTest(ITestOutputHelper output) {
 
     [Fact]
     public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationOnceDaily() {
-        var requestedDate = new SchedulerInput();
+        var schedulerInput = new SchedulerInput();
 
-        requestedDate!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.Recurrency = EnumRecurrency.Daily;
-        requestedDate.Period = new TimeSpan(1, 0, 0, 0);
+        schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.Period = new TimeSpan(1, 0, 0, 0);
 
-        var result = Service.CalculateDate(requestedDate);
+        var result = Service.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess.ToString());
 
