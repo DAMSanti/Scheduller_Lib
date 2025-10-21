@@ -1,7 +1,7 @@
 ﻿namespace Scheduler_Lib.Resources;
 
 public static class Messages {
-    public const string ErrorPositiveOffsetRequired = "ERROR: Positive Period required.";
+    public const string ErrorPositiveOffsetRequired = "ERROR: Positive DailyPeriod required.";
     public const string ErrorCurrentDateNull = "ERROR: The current date cannot be null.";
     public const string ErrorDateOutOfRange = "ERROR: The date should be between start and end date.";
     public const string ErrorRequestNull = "ERROR: The request shouldn't be null.";

@@ -1,5 +1,4 @@
 ﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
@@ -110,7 +109,7 @@ namespace Scheduler_Lib.Core.Services;
                 CurrentDate = new DateTimeOffset(2025, 10, 1, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1, 8, 0, 0, DateTimeKind.Unspecified))),
                 StartDate = new DateTimeOffset(2025, 9, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
                 EndDate = new DateTimeOffset(2025, 10, 3, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 3))),
-                Period = TimeSpan.FromDays(1)
+                DailyPeriod = TimeSpan.FromDays(1)
             };
 
             var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
@@ -304,6 +303,112 @@ namespace Scheduler_Lib.Core.Services;
         var expectedLocal = new DateTime(2025, 10, 6, 9, 45, 0, DateTimeKind.Unspecified);
         var expectedDto = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
         Assert.Contains(expectedDto, result);
+    }
+
+    [Fact]
+    public void SelectNextEligibleDate_WithMinValue_ReturnsMinValueWithTzOffset()
+    {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var minDate = DateTimeOffset.MinValue;
+
+        var result = RecurrenceCalculator.SelectNextEligibleDate(minDate, new List<DayOfWeek> { DayOfWeek.Monday }, tz);
+
+        Assert.Equal(minDate, result);
+    }
+
+    [Fact]
+    public void CalculateFutureDates_WithMaxValue_ReturnsEmpty()
+    {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var requested = new SchedulerInput
+        {
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Daily,
+            StartDate = DateTimeOffset.MaxValue,
+            EndDate = DateTimeOffset.MaxValue,
+            DailyPeriod = TimeSpan.FromDays(1)
+        };
+
+        var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
+
+        Assert.NotNull(result);
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void CalculateFutureDates_WithPeriodicityNone_ReturnsEmpty()
+    {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var requested = new SchedulerInput
+        {
+            Periodicity = EnumConfiguration.None,
+            Recurrency = EnumRecurrency.None,
+            StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
+            EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 31)))
+        };
+
+        var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
+
+        Assert.NotNull(result);
+        Assert.Empty(result);
+    }
+
+    [Theory]
+    [InlineData("2025-10-6", new[] { DayOfWeek.Monday }, "2025-10-6")] // Target is desired day
+    [InlineData("2025-10-4", new[] { DayOfWeek.Monday }, "2025-10-6")] // Target before desired day
+    [InlineData("2025-10-4", new DayOfWeek[0], "2025-10-4")] // Empty days
+    public void SelectNextEligibleDate_VariousScenarios_ReturnsExpected(string targetDate, DayOfWeek[] days, string expectedDate)
+    {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var targetLocal = DateTime.Parse(targetDate);
+        var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
+
+        var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, days.ToList(), tz);
+
+        var expectedLocal = DateTime.Parse(expectedDate);
+        var expectedDto = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
+        Assert.Equal(expectedDto, result);
+    }
+
+    [Theory]
+    [InlineData("2025-10-3", "2025-10-4", "2025-10-5", 3)] // Daily without window
+    [InlineData("2025-10-1", "2025-10-2", "2025-10-3", 6)] // Daily with window
+    public void CalculateFutureDates_DailyScenarios_ReturnsExpected(string startDate, string endDate, string currentDate, int expectedCount)
+    {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var requested = new SchedulerInput
+        {
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Daily,
+            StartDate = new DateTimeOffset(DateTime.Parse(startDate), tz.GetUtcOffset(DateTime.Parse(startDate))),
+            EndDate = new DateTimeOffset(DateTime.Parse(endDate), tz.GetUtcOffset(DateTime.Parse(endDate))),
+            CurrentDate = new DateTimeOffset(DateTime.Parse(currentDate), tz.GetUtcOffset(DateTime.Parse(currentDate))),
+            DailyPeriod = TimeSpan.FromDays(1)
+        };
+
+        var result = RecurrenceCalculator.CalculateFutureDates(requested, tz);
+
+        Assert.Equal(expectedCount, result.Count);
+    }
+
+    [Fact]
+    public void SelectNextEligibleDate_FiltersNullAndPastDates()
+    {
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
+        var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
+
+        // Days of the week include a mix of valid and invalid candidates
+        var daysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Sunday };
+
+        // Mock the NextWeekday method to return a mix of null and past dates
+        var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, daysOfWeek, tz);
+
+        // Expected: Only Monday (2025-10-6) is valid and >= targetLocal
+        var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
+        var expected = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
+
+        Assert.Equal(expected, result);
     }
 }
 

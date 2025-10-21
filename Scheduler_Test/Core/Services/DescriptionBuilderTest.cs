@@ -14,7 +14,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
             Recurrency = EnumRecurrency.Weekly,
             WeeklyPeriod = 2,
             DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday },
-            Period = TimeSpan.FromDays(7),
+            DailyPeriod = TimeSpan.FromDays(7),
             DailyStartTime = new TimeSpan(8, 30, 0),
             DailyEndTime = new TimeSpan(17, 0, 0)
         };
@@ -22,7 +22,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var nextLocal = new DateTimeOffset(2025, 10, 6, 8, 30, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 6, 8, 30, 0)));
 
-        var periodStr = DescriptionBuilder.FormatPeriod(requestedDate.Period.Value);
+        var periodStr = DescriptionBuilder.FormatPeriod(requestedDate.DailyPeriod.Value);
         var expected = $"Occurs every {requestedDate.WeeklyPeriod} week(s) on {string.Join(", ", requestedDate.DaysOfWeek!.Select(d => d.ToString()))} every {periodStr} " +
                        $"between {DescriptionBuilder.TimeSpanToString(requestedDate.DailyStartTime!.Value)} and {DescriptionBuilder.TimeSpanToString(requestedDate.DailyEndTime!.Value)} " +
                        $"starting on {DescriptionBuilder.ConvertStartDateToZone(requestedDate, tz).ToShortDateString()}";
@@ -62,14 +62,14 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
             Periodicity = EnumConfiguration.Recurrent,
             Recurrency = EnumRecurrency.Daily,
-            Period = TimeSpan.FromDays(2)
+            DailyPeriod = TimeSpan.FromDays(2)
 
         };
 
         var nextLocal = new DateTimeOffset(2025, 10, 5, 10, 15, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 10, 15, 0)));
 
-        var periodStr = DescriptionBuilder.FormatPeriod(requestedDate.Period.Value);
+        var periodStr = DescriptionBuilder.FormatPeriod(requestedDate.DailyPeriod.Value);
         var startDateStr = DescriptionBuilder.ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
         var expected = $"Occurs every {periodStr}. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
                        $"at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";

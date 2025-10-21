@@ -50,9 +50,8 @@ public class ValidationsTest(ITestOutputHelper output) {
     }
 
     [Theory]
-    [InlineData("2025-10-03", "2025-12-31", "2025-10-05", EnumConfiguration.Once, EnumRecurrency.Weekly, Messages.ErrorDaysOfWeekRequired, null, null, null)]
-    [InlineData("2025-10-03", "2025-12-31", "2025-10-05", EnumConfiguration.Once, EnumRecurrency.Weekly, Messages.ErrorWeeklyPeriodRequired, new object[] { DayOfWeek.Monday }, null, null)]
-    [InlineData("2025-10-03", "2025-12-31", "2025-10-05", EnumConfiguration.Once, EnumRecurrency.Daily, Messages.ErrorPositiveOffsetRequired, null, null, null)]
+    [InlineData("2025-10-03", "2025-12-31", "2025-10-05", EnumConfiguration.Once, EnumRecurrency.Weekly, Messages.ErrorOnceWeekly, null, null, null)]
+    [InlineData("2025-10-03", "2025-12-31", "2025-10-05", EnumConfiguration.Once, EnumRecurrency.Weekly, Messages.ErrorOnceWeekly, new object[] { DayOfWeek.Monday }, null, null)]
     public void ValidateCalculateDate_ShouldFail_WithMissingFields(string? currentDate, string? endDate, string? targetDate, EnumConfiguration periodicity, EnumRecurrency recurrency, string expectedError, object? daysOfWeek = null, int? weeklyPeriod = null, TimeSpan? period = null) {
         var schedulerInput = new SchedulerInput();
 
@@ -64,7 +63,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = recurrency;
         schedulerInput.DaysOfWeek = daysOfWeek is object[] arr ? arr.Cast<DayOfWeek>().ToList() : null;
         schedulerInput.WeeklyPeriod = weeklyPeriod;
-        schedulerInput.Period = period;
+        schedulerInput.DailyPeriod = period;
 
         var result = Service.CalculateDate(schedulerInput);
 
@@ -95,7 +94,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         requestedDate.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         requestedDate.Periodicity = EnumConfiguration.Once;
         requestedDate.Recurrency = EnumRecurrency.Daily;
-        requestedDate.Period = new TimeSpan(1, 0, 0, 0);
+        requestedDate.DailyPeriod = new TimeSpan(1, 0, 0, 0);
 
         var result = Service.CalculateDate(requestedDate);
 

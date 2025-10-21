@@ -61,7 +61,6 @@ public class RecurrenceCalculator
         var endDate = GetEffectiveEndDate(requestedDate);
         var slotStep = GetSlotStep(requestedDate);
 
-        // baseDto = la misma base que se usa para calcular NextDate (TargetDate o CurrentDate con hora de StartDate)
         var baseDto = GetBaseDateTimeOffset(requestedDate, tz);
 
         switch (requestedDate.Recurrency)
@@ -94,13 +93,29 @@ public class RecurrenceCalculator
 
     private static void AddSimpleDailySlots(DateTimeOffset startFrom, DateTimeOffset endDate, TimeSpan step, SchedulerInput requestedDate, List<DateTimeOffset> accumulator)
     {
-        var current = startFrom;
-        while (current <= endDate)
-        {
-            if (current >= requestedDate.StartDate && current <= endDate)
-                accumulator.Add(current);
+        var tz = RecurrenceCalculator.GetTimeZone();
 
-            current = current.Add(step);
+        if (requestedDate.TargetDate == null)
+        {
+            var startTime = requestedDate.CurrentDate.TimeOfDay;
+            startFrom = new DateTimeOffset(
+                startFrom.Year, startFrom.Month, startFrom.Day,
+                startTime.Hours, startTime.Minutes, startTime.Seconds,
+                startFrom.Offset
+            );
+        }
+
+        while (startFrom <= endDate)
+        {
+            if (startFrom.UtcDateTime.Ticks + step.Ticks > DateTime.MaxValue.Ticks)
+            {
+                throw new ArgumentOutOfRangeException(nameof(step), "The step value causes an overflow in DateTime.");
+            }
+
+            var adjustedDate = new DateTimeOffset(startFrom.DateTime, tz.GetUtcOffset(startFrom.DateTime));
+            accumulator.Add(adjustedDate);
+
+            startFrom = startFrom.Add(step);
         }
     }
 
@@ -150,18 +165,14 @@ public class RecurrenceCalculator
         }
     }
 
-    private static DateTimeOffset GetEffectiveEndDate(SchedulerInput requestedDate)
-    {
+    private static DateTimeOffset GetEffectiveEndDate(SchedulerInput requestedDate) {
         if (requestedDate.EndDate.HasValue)
             return requestedDate.EndDate.Value;
 
-        var period = requestedDate.Period ?? TimeSpan.FromDays(3);
+        var period = requestedDate.DailyPeriod ?? TimeSpan.FromDays(3);
+        var beginning = GetBaseLocal(requestedDate);
 
-        if (requestedDate.CurrentDate != default(DateTimeOffset))
-            return requestedDate.CurrentDate.Add(period);
-
-
-        return requestedDate.StartDate.Add(period);
+        return beginning.Add(period * 1000);
     }
 
     private static DateTime GetBaseLocal(SchedulerInput requestedDate)
@@ -175,7 +186,7 @@ public class RecurrenceCalculator
         return requestedDate.StartDate.DateTime;
     }
     private static TimeSpan GetSlotStep(SchedulerInput requestedDate) =>
-        requestedDate.DailyFrequency ?? requestedDate.Period ?? TimeSpan.FromDays(1);
+        requestedDate.DailyFrequency ?? requestedDate.DailyPeriod ?? TimeSpan.FromDays(1);
 
     private static DateTimeOffset CreateDateTimeOffset(DateTime localWallClock, TimeZoneInfo tz) =>
         new(localWallClock, tz.GetUtcOffset(localWallClock));
@@ -257,7 +268,7 @@ public class RecurrenceCalculator
 
     public static TimeZoneInfo GetTimeZone()
     {
-        return TimeZoneInfo.Local;
+        return TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
     }
     private static DateTimeOffset GetBaseDateTimeOffset(SchedulerInput requestedDate, TimeZoneInfo tz)
     {

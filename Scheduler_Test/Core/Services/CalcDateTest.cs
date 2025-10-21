@@ -15,7 +15,7 @@ public class CalcDateTest(ITestOutputHelper output) {
         schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.Period = new TimeSpan(1, 0, 0, 0);
+        schedulerInput.DailyPeriod = new TimeSpan(1, 0, 0, 0);
 
         var result = Service.CalculateDate(schedulerInput);
 

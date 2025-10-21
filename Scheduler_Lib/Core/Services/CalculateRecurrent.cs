@@ -4,19 +4,13 @@ using Scheduler_Lib.Infrastructure.Validations;
 namespace Scheduler_Lib.Core.Services;
 public class CalculateRecurrent {
     public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput requestedDate) {
-        if (requestedDate.Periodicity == EnumConfiguration.Once) {
-            var validationOnce = ValidationOnce.ValidateOnce(requestedDate);
-            if (!validationOnce.IsSuccess)
-                return ResultPattern<SchedulerOutput>.Failure(validationOnce.Error!);
-            return CalculateOneTime.CalculateDate(requestedDate);
-        }
-
         var validation = ValidationRecurrent.ValidateRecurrent(requestedDate);
+
         return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) :
-            ResultPattern<SchedulerOutput>.Success(BuildResultRecurrentDates(requestedDate));
+            ResultPattern<SchedulerOutput>.Success(BuildResult(requestedDate));
     }
 
-    private static SchedulerOutput BuildResultRecurrentDates(SchedulerInput requestedDate) {
+    private static SchedulerOutput BuildResult(SchedulerInput requestedDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         List<DateTimeOffset>? futureDates = null;
@@ -43,7 +37,7 @@ public class CalculateRecurrent {
 
             next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, days, tz);
 
-            if (futureDates != null && futureDates.Count > 0) {
+            if (futureDates is { Count: > 0 }) {
                 futureDates.RemoveAll(d => d == next);
             }
         }

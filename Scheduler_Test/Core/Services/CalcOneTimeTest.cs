@@ -10,7 +10,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     [InlineData("2025-01-01", "2025-12-30", "2024-12-31", Messages.ErrorTargetDateAfterEndDate)]
     [InlineData("2025-01-01", "2025-12-31", null, Messages.ErrorTargetDateNull)]
     public void ValidateOnce_ShouldFail_WithInvalidDates(string startDate, string endDate, string? targetDate, string expectedError) {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
+        var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
 
@@ -38,7 +38,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     [InlineData("2025-01-01", "2025-12-31", "2025-01-01")]
     [InlineData("2025-01-01", "2025-12-31", "2025-12-31")]
     public void ValidateOnce_ShouldSucceed_WithValidTargetDate(string startDate, string endDate, string targetDate) {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
+        var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
 
@@ -74,7 +74,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void CalculateOnce_ShouldFail_WhenRecurrencyIsNotWeeklyFutureDatesIsNull() {
         var requestedDate = new SchedulerInput();
 
-        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
+        var tz = RecurrenceCalculator.GetTimeZone();
 
         requestedDate!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 0, 0, 0, DateTimeKind.Unspecified)));
@@ -82,7 +82,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
             tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
         requestedDate.Recurrency = EnumRecurrency.Daily;
         requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.Period = new TimeSpan(2, 0, 0, 0);
+        requestedDate.DailyPeriod = new TimeSpan(2, 0, 0, 0);
 
         var result = CalculateOneTime.CalculateDate(requestedDate);
 
@@ -95,7 +95,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     public void ValidateOnce_ShouldFail_WhenTargetDateNullAndNotWeekly() {
         var requestedDate = new SchedulerInput();
 
-        var tz = TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
+        var tz = RecurrenceCalculator.GetTimeZone();
 
         requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, 
             tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));

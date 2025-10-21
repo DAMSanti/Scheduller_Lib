@@ -16,7 +16,7 @@ public class DescriptionBuilder {
             ? string.Join(", ", requestedDate.DaysOfWeek.Select(d => d.ToString()))
             : nextLocal.DayOfWeek.ToString(); 
         
-        var period = requestedDate.Period.HasValue ? FormatPeriod(requestedDate.Period.Value) : "1 week";
+        var period = requestedDate.DailyPeriod.HasValue ? FormatPeriod(requestedDate.DailyPeriod.Value) : "1 week";
         var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
         var weeklyPeriod = requestedDate.WeeklyPeriod ?? 1;
 
@@ -41,7 +41,7 @@ public class DescriptionBuilder {
         var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
 
         if (requestedDate.Periodicity == EnumConfiguration.Recurrent) {
-            var periodStr = requestedDate.Period.HasValue ? FormatPeriod(requestedDate.Period.Value) : "1 day";
+            var periodStr = requestedDate.DailyPeriod.HasValue ? FormatPeriod(requestedDate.DailyPeriod.Value) : "1 day";
             return $"Occurs every {periodStr}. Schedule will be used on {FormatDate(nextLocal)} " +
                    $"at {FormatTime(nextLocal)} starting on {startDateStr}";
         }

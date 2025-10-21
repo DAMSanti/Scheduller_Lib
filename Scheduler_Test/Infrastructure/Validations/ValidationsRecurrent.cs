@@ -15,10 +15,9 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.Period = periodDays.HasValue ? TimeSpan.FromDays(periodDays.Value) : null;
+        schedulerInput.DailyPeriod = periodDays.HasValue ? TimeSpan.FromDays(periodDays.Value) : null;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
@@ -29,24 +28,24 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     }
 
     [Theory]
-    [InlineData("2025-12-31", "2025-01-01", 14, 8, Messages.ErrorStartDatePostEndDate)]
-    [InlineData("2025-01-01", "2025-12-31", 8, 14, Messages.ErrorDailyStartAfterEnd)]
+    [InlineData("2025-12-31", "2025-01-01", 8, 14, Messages.ErrorStartDatePostEndDate)]
+    [InlineData("2025-01-01", "2025-12-31", 14, 8, Messages.ErrorDailyStartAfterEnd)]
     public void ValidateRecurrent_ShouldFail_WhenInvalidDateAndTimeRanges(string startDate, string? endDate, int startTime, int endTime, string expectedError) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = DateTimeOffset.Parse(startDate);
-        schedulerInput.EndDate = endDate != null ? DateTimeOffset.Parse(endDate) : null;
-        schedulerInput.Period = TimeSpan.FromDays(1);
+        schedulerInput.EndDate = DateTimeOffset.Parse(endDate!);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-        schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DailyStartTime = TimeSpan.FromHours(startTime);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(endTime);
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
+        output.WriteLine("EndDate : " + schedulerInput.EndDate);
+        output.WriteLine("startDate : " + schedulerInput.StartDate);
         output.WriteLine(result.Error ?? "Success");
 
         Assert.False(result.IsSuccess);
@@ -62,7 +61,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.Period = TimeSpan.FromDays(1);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.DaysOfWeek = daysOfWeek?.ToList();
@@ -90,7 +89,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
         schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
-        schedulerInput.Period = new TimeSpan(2, 0, 0);
+        schedulerInput.DailyPeriod = new TimeSpan(2, 0, 0);
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
 

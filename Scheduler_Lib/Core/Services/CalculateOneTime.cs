@@ -7,10 +7,10 @@ public class CalculateOneTime {
         var validation = ValidationOnce.ValidateOnce(requestedDate);
 
         return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : 
-            ResultPattern<SchedulerOutput>.Success(BuildResultForTargetDate(requestedDate));
+            ResultPattern<SchedulerOutput>.Success(BuildResult(requestedDate));
     }
 
-    private static SchedulerOutput BuildResultForTargetDate(SchedulerInput requestedDate) {
+    private static SchedulerOutput BuildResult(SchedulerInput requestedDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var next = new DateTimeOffset(requestedDate.TargetDate!.Value.DateTime, tz.GetUtcOffset(requestedDate.TargetDate!.Value.DateTime));
