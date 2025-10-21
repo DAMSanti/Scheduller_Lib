@@ -46,9 +46,9 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var periodStr = DescriptionBuilder.FormatPeriod(schedulerInput.DailyPeriod.Value);
         var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {string.Join(", ", schedulerInput.DaysOfWeek!.Select(d => d.ToString()))} every {periodStr} " +
-                       $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
+                       $"between 08:30 AM and 17:00 PM starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForTargetDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
 
@@ -91,7 +91,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {periodStr}. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
                        $"at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForTargetDate(requestedDate, tz, nextLocal);
+        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(requestedDate, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -113,7 +113,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var startDateStr = DescriptionBuilder.ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
         var expected = $"Occurs once: Schedule will be used on {nextLocal.Date.ToShortDateString()} at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForTargetDate(requestedDate, tz, nextLocal);
+        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(requestedDate, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -136,7 +136,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void TimeSpanToString_ShouldFormatAsHHmm() {
         var ts = new TimeSpan(5, 30, 0);
         var actual = DescriptionBuilder.TimeSpanToString(ts);
-        Assert.Equal("05:30", actual);
+        Assert.Equal("05:30 AM", actual);
     }
 
     [Fact]

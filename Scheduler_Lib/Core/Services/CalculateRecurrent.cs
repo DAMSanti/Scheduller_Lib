@@ -54,7 +54,7 @@ public class CalculateRecurrent {
 
         return new SchedulerOutput {
             NextDate = next,
-            Description = DescriptionBuilder.BuildDescriptionForTargetDate(requestedDate, tz, next),
+            Description = DescriptionBuilder.BuildDescriptionForCalculatedDate(requestedDate, tz, next),
             FutureDates = futureDates
         };
 

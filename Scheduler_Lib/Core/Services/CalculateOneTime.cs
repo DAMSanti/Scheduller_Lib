@@ -17,7 +17,7 @@ public class CalculateOneTime {
 
         return new SchedulerOutput {
             NextDate = next,
-            Description = DescriptionBuilder.BuildDescriptionForTargetDate(requestedDate, tz, next),
+            Description = DescriptionBuilder.BuildDescriptionForCalculatedDate(requestedDate, tz, next),
             FutureDates = null
         };
     }

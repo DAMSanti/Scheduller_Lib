@@ -10,7 +10,6 @@ public class SchedulerInput {
     public EnumRecurrency Recurrency { get; set; }
     public TimeSpan? DailyFrequency { get; set; }
     public TimeSpan? DailyStartTime { get; set; }
-    public TimeSpan? DailyFrecuency { get; set; }
     public TimeSpan? DailyEndTime { get; set; }
     public int? WeeklyPeriod { get; set; }
     public List<DayOfWeek>? DaysOfWeek { get; set; }
