@@ -24,8 +24,7 @@ public class CalculateRecurrent {
             DateTime baseLocal;
             if (requestedDate.TargetDate.HasValue) {
                 baseLocal = requestedDate.TargetDate.Value.DateTime;
-            }
-            else {
+            } else {
                 var cur = requestedDate.CurrentDate.DateTime;
                 var startTime = requestedDate.StartDate.TimeOfDay;
                 baseLocal = new DateTime(cur.Year, cur.Month, cur.Day,
@@ -33,25 +32,22 @@ public class CalculateRecurrent {
             }
 
             var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
-            var days = requestedDate.DaysOfWeek ?? [baseDtoForNext.DayOfWeek];
 
-            next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, days, tz);
+            next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, requestedDate.DaysOfWeek!, tz);
 
             if (futureDates is { Count: > 0 }) {
                 futureDates.RemoveAll(d => d == next);
             }
-        }
-        else {
+        } else {
             if (requestedDate.TargetDate.HasValue) {
                 var td = requestedDate.TargetDate.Value;
                 next = new DateTimeOffset(td.DateTime, tz.GetUtcOffset(td.DateTime));
-            }
-            else {
+            } else {
                 var cur = requestedDate.CurrentDate;
                 next = new DateTimeOffset(cur.DateTime, tz.GetUtcOffset(cur.DateTime));
             }
 
-            if (futureDates != null && futureDates.Count > 0) {
+            if (futureDates is { Count: > 0 }) {
                 futureDates.RemoveAll(d => d == next);
             }
         }

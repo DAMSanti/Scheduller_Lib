@@ -16,4 +16,5 @@ public static class Messages {
     public const string ErrorOnceWeekly = "ERROR: You can't use the scheduler with that configuration.";
     public const string ErrorDailyTimeWindowIncomplete = "ERROR: You lack some of the required dates.";
     public const string ErrorDailyStartAfterEnd = "ERROR: Your StartTime is after your EndTime.";
+    public const string ErrorDuplicateDaysOfWeek = "ERROR: There are duplicated days of the week";
 }
