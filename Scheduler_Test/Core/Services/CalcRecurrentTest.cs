@@ -8,7 +8,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [InlineData( null, "2025-10-03T10:00:00", "2025-10-03T10:00:00", null, null)]
     [InlineData("2025-10-05T08:30:00", "2025-10-03T10:00:00", "2025-10-05T08:30:00", null, null)]
     [InlineData("2025-10-05T08:30:00", "2025-10-03T10:00:00", "2025-10-05T08:30:00", "2025-10-03T10:00:00", "2025-10-10T10:00:00")]
-
     public void CalculateDailyRecurrent_ShouldSuccess_NextDateCorrectly(string? targetDate, string currentDate, string expectedNextDate, string? startDate, string? endDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 

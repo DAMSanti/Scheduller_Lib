@@ -1,9 +1,16 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Resources;
+using System.Text;
 
 namespace Scheduler_Lib.Core.Services;
 
 public class DescriptionBuilder {
     public static string BuildDescriptionForTargetDate(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+        var errors = new StringBuilder();
+
+        if (requestedDate is { Recurrency: EnumRecurrency.Weekly, Periodicity: EnumConfiguration.Once })
+            errors.AppendLine(Messages.ErrorOnceWeekly);
+
         return requestedDate.Recurrency switch {
             EnumRecurrency.Weekly => BuildWeeklyDescription(requestedDate, tz, nextLocal),
             EnumRecurrency.Daily => BuildDailyDescription(requestedDate, tz, nextLocal),
