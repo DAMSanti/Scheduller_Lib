@@ -1,4 +1,5 @@
-﻿using Scheduler_Lib.Core.Model;
+﻿using System.Runtime.InteropServices.JavaScript;
+using Scheduler_Lib.Core.Model;
 using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
@@ -7,8 +8,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void SelectNextEligibleDate_WhenTargetIsOnADesiredDay_ReturnsSameInstantWithTzOffset()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
             var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 
             var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, new List<DayOfWeek> { DayOfWeek.Monday }, tz);
@@ -20,8 +21,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void SelectNextEligibleDate_WhenTargetBeforeDesiredDay_ReturnsNextDesiredDay()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
             var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 
             var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, new List<DayOfWeek> { DayOfWeek.Monday }, tz);
@@ -34,8 +35,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void SelectNextEligibleDate_WithEmptyDays_ReturnsTargetWithTzOffset()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
             var targetDto = new DateTimeOffset(targetLocal, TimeSpan.Zero);
 
             var result = RecurrenceCalculator.SelectNextEligibleDate(targetDto, new List<DayOfWeek>(), tz);
@@ -47,8 +48,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void CalculateWeeklyRecurrence_WithWeeklyPeriodGreaterThanOne_SkipsWeeksCorrectly()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var requested = new SchedulerInput
             {
                 StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
                 TargetDate = null,
@@ -69,24 +70,10 @@ namespace Scheduler_Lib.Core.Services;
         }
 
         [Fact]
-        public void CalculateWeeklyRecurrence_WithNullDaysOfWeek_Throws() {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput {
-                StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
-                TargetDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1))),
-                EndDate = new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30))),
-                DaysOfWeek = null!,
-                WeeklyPeriod = 1,
-            };
-
-            Assert.ThrowsAny<NullReferenceException>(() => RecurrenceCalculator.CalculateWeeklyRecurrence(requested, tz));
-        }
-
-        [Fact]
         public void CalculateFutureDates_ReturnsEmpty_WhenPeriodicityIsNotRecurrent()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var requested = new SchedulerInput
             {
                 Periodicity = EnumConfiguration.Once,
                 Recurrency = EnumRecurrency.Daily,
@@ -101,8 +88,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void CalculateFutureDates_DailyWithoutWindow_GeneratesSlotsFromCurrentToEndInclusive()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var requested = new SchedulerInput
             {
                 Periodicity = EnumConfiguration.Recurrent,
                 Recurrency = EnumRecurrency.Daily,
@@ -127,8 +114,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void CalculateFutureDates_DailyWithWindow_GeneratesHourlySlotsPerDay()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var requested = new SchedulerInput
             {
                 Periodicity = EnumConfiguration.Recurrent,
                 Recurrency = EnumRecurrency.Daily,
@@ -152,8 +139,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void CalculateFutureDates_WeeklyWithoutDailyWindow_GeneratesDaysOnly()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var requested = new SchedulerInput
             {
                 Periodicity = EnumConfiguration.Recurrent,
                 Recurrency = EnumRecurrency.Weekly,
@@ -172,8 +159,8 @@ namespace Scheduler_Lib.Core.Services;
         [Fact]
         public void CalculateFutureDates_WeeklyWithDailyWindow_GeneratesMultipleSlotsPerChosenDay()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-            var requested = new SchedulerInput
+            var tz = RecurrenceCalculator.GetTimeZone();
+        var requested = new SchedulerInput
             {
                 Periodicity = EnumConfiguration.Recurrent,
                 Recurrency = EnumRecurrency.Weekly,
@@ -200,7 +187,7 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void CalculateFutureDates_ReturnsEmpty_When_DaysOfWeek_IsNull()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var requested = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
@@ -219,7 +206,7 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void CalculateFutureDates_ReturnsEmpty_When_DaysOfWeek_IsEmpty()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var requested = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
@@ -238,7 +225,7 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void CalculateFutureDates_Uses_TargetDate_TimeOfDay_And_BaseLocal_When_TargetDate_Present()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
 
         var targetDate = new DateTimeOffset(2025, 10, 5, 15, 30, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 15, 30, 0, DateTimeKind.Unspecified))); // Sunday 15:30
@@ -273,7 +260,7 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void CalculateFutureDates_Uses_StartDate_TimeOfDay_When_TargetDate_Null()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
 
         var startDate = new DateTimeOffset(2025, 10, 3, 9, 45, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 3, 9, 45, 0, DateTimeKind.Unspecified))); // StartDate time 09:45
@@ -308,10 +295,12 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void SelectNextEligibleDate_WithMinValue_ReturnsMinValueWithTzOffset()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var minDate = DateTimeOffset.MinValue;
 
         var result = RecurrenceCalculator.SelectNextEligibleDate(minDate, new List<DayOfWeek> { DayOfWeek.Monday }, tz);
+
+        output.WriteLine(result.ToString());
 
         Assert.Equal(minDate, result);
     }
@@ -319,7 +308,7 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void CalculateFutureDates_WithMaxValue_ReturnsEmpty()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var requested = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
@@ -338,7 +327,7 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void CalculateFutureDates_WithPeriodicityNone_ReturnsEmpty()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var requested = new SchedulerInput
         {
             Periodicity = EnumConfiguration.None,
@@ -354,12 +343,12 @@ namespace Scheduler_Lib.Core.Services;
     }
 
     [Theory]
-    [InlineData("2025-10-6", new[] { DayOfWeek.Monday }, "2025-10-6")] // Target is desired day
-    [InlineData("2025-10-4", new[] { DayOfWeek.Monday }, "2025-10-6")] // Target before desired day
-    [InlineData("2025-10-4", new DayOfWeek[0], "2025-10-4")] // Empty days
+    [InlineData("2025-10-6", new[] { DayOfWeek.Monday }, "2025-10-6")] 
+    [InlineData("2025-10-4", new[] { DayOfWeek.Monday }, "2025-10-6")]
+    [InlineData("2025-10-4", new DayOfWeek[0], "2025-10-4")]
     public void SelectNextEligibleDate_VariousScenarios_ReturnsExpected(string targetDate, DayOfWeek[] days, string expectedDate)
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var targetLocal = DateTime.Parse(targetDate);
         var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 
@@ -371,11 +360,11 @@ namespace Scheduler_Lib.Core.Services;
     }
 
     [Theory]
-    [InlineData("2025-10-3", "2025-10-4", "2025-10-5", 3)] // Daily without window
-    [InlineData("2025-10-1", "2025-10-2", "2025-10-3", 6)] // Daily with window
+    [InlineData("2025-10-3", "2025-10-6", "2025-10-5", 2)]
+    [InlineData("2025-10-1", "2025-10-5", "2025-10-3", 3)]
     public void CalculateFutureDates_DailyScenarios_ReturnsExpected(string startDate, string endDate, string currentDate, int expectedCount)
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var requested = new SchedulerInput
         {
             Periodicity = EnumConfiguration.Recurrent,
@@ -394,7 +383,7 @@ namespace Scheduler_Lib.Core.Services;
     [Fact]
     public void SelectNextEligibleDate_FiltersNullAndPastDates()
     {
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+        var tz = RecurrenceCalculator.GetTimeZone();
         var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
         var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 

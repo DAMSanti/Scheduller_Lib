@@ -17,9 +17,13 @@ public class DescriptionBuilder {
             _ => BuildOnceDescription(requestedDate, tz, nextLocal)
         };
     }
+    private static string BuildOnceDescription(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+        var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
+        return $"Occurs once: Schedule will be used on {FormatDate(nextLocal)} at {FormatTime(nextLocal)} starting on {startDateStr}";
+    }
 
     private static string BuildWeeklyDescription(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal)  {
-        var daysOfWeek = (requestedDate.DaysOfWeek != null && requestedDate.DaysOfWeek.Count > 0)
+        var daysOfWeek = requestedDate.DaysOfWeek is { Count: > 0 }
             ? string.Join(", ", requestedDate.DaysOfWeek.Select(d => d.ToString()))
             : nextLocal.DayOfWeek.ToString(); 
         
@@ -27,21 +31,10 @@ public class DescriptionBuilder {
         var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
         var weeklyPeriod = requestedDate.WeeklyPeriod ?? 1;
 
-        if (requestedDate.Periodicity == EnumConfiguration.Recurrent)  {
-            if (requestedDate.DailyStartTime.HasValue && requestedDate.DailyEndTime.HasValue) {
-                return $"Occurs every {requestedDate.WeeklyPeriod} week(s) on {daysOfWeek} every {period} " +
-                   $"between {TimeSpanToString(requestedDate.DailyStartTime!.Value)} and {TimeSpanToString(requestedDate.DailyEndTime!.Value)} " +
-                   $"starting on {startDateStr}";
-            }
-            return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {period} starting on {startDateStr}";
-        }
+        if (requestedDate.Periodicity == EnumConfiguration.Recurrent)
+                return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {period} starting on {startDateStr}";
+        
         return $"Occurs every {daysOfWeek}: Schedule will be used on {FormatDate(nextLocal)} at {FormatTime(nextLocal)} starting on {startDateStr}";
-    }
-
-
-    private static string BuildOnceDescription(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal) {
-        var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
-        return $"Occurs once: Schedule will be used on {FormatDate(nextLocal)} at {FormatTime(nextLocal)} starting on {startDateStr}";
     }
 
     private static string BuildDailyDescription(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal) {
@@ -49,9 +42,14 @@ public class DescriptionBuilder {
 
         if (requestedDate.Periodicity == EnumConfiguration.Recurrent) {
             var periodStr = requestedDate.DailyPeriod.HasValue ? FormatPeriod(requestedDate.DailyPeriod.Value) : "1 day";
+            if (requestedDate is { DailyStartTime: not null, DailyEndTime: not null }) {
+                return $"Occurs every {periodStr} between {TimeSpanToString(requestedDate.DailyStartTime!.Value)} and {TimeSpanToString(requestedDate.DailyEndTime!.Value)} " +
+                       $"at starting on {startDateStr}";
+            }
             return $"Occurs every {periodStr}. Schedule will be used on {FormatDate(nextLocal)} " +
                    $"at {FormatTime(nextLocal)} starting on {startDateStr}";
         }
+
 
         return BuildOnceDescription(requestedDate, tz, nextLocal);
     }

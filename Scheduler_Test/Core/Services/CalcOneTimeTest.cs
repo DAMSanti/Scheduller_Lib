@@ -9,7 +9,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     [InlineData("2025-12-31", "2025-01-01", "2025-01-01", Messages.ErrorTargetDateAfterEndDate)]
     [InlineData("2025-01-01", "2025-12-30", "2024-12-31", Messages.ErrorTargetDateAfterEndDate)]
     [InlineData("2025-01-01", "2025-12-31", null, Messages.ErrorTargetDateNull)]
-    public void ValidateOnce_ShouldFail_WithInvalidDates(string startDate, string endDate, string? targetDate, string expectedError) {
+    public void ValidateOnce_ShouldFail_WhenInvalidDates(string startDate, string endDate, string? targetDate, string expectedError) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -37,7 +37,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     [Theory]
     [InlineData("2025-01-01", "2025-12-31", "2025-01-01")]
     [InlineData("2025-01-01", "2025-12-31", "2025-12-31")]
-    public void ValidateOnce_ShouldSucceed_WithValidTargetDate(string startDate, string endDate, string targetDate) {
+    public void ValidateOnce_ShouldSucceed_WhenValidTargetDate(string startDate, string endDate, string targetDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
