@@ -83,13 +83,13 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateOnce_DirectMethod_ShouldFail_WhenTargetDateBeforeStartDate() {
-        var schedulerInput = new SchedulerInput {
-            StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
@@ -101,13 +101,13 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateOnce_DirectMethod_ShouldSucceed_WhenValidWeekly() {
-        var schedulerInput = new SchedulerInput {
-            StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = null,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Weekly
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = null;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
@@ -118,13 +118,13 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateOnce_DirectMethod_ShouldFailWithMultipleErrors_WhenMultipleInvalidConditions() {
-        var schedulerInput = new SchedulerInput {
-            StartDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = null,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = null;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 

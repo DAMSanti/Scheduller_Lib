@@ -107,12 +107,12 @@ public class ValidationsTest(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedPeriodicity() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = (EnumConfiguration)99,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = (EnumConfiguration)99;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
@@ -124,12 +124,13 @@ public class ValidationsTest(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedRecurrency() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = (EnumRecurrency)99
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = (EnumRecurrency)99;
+
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
@@ -141,12 +142,12 @@ public class ValidationsTest(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateCalculateDate_DirectMethod_ShouldSucceed_WhenAllValid() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
@@ -157,18 +158,18 @@ public class ValidationsTest(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateCalculateDate_ShouldSucceed_WhenOnceDaily() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Value.Description ?? "No description");
+        output.WriteLine(result.Value.Description);
 
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);

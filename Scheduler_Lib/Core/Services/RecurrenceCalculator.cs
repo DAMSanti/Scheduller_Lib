@@ -60,24 +60,26 @@ public class RecurrenceCalculator {
         var endDate = GetEffectiveEndDate(schedulerInput);
         var slotStep = schedulerInput.DailyPeriod ?? TimeSpan.FromDays(1);
 
-        var baseDto = GetBaseDateTimeOffset(schedulerInput, tz);
+        var baseDateTimeOffset = GetBaseDateTimeOffset(schedulerInput, tz);
 
         switch (schedulerInput.Recurrency) {
             case EnumRecurrency.Daily:
                 if (!schedulerInput.DailyStartTime.HasValue || !schedulerInput.DailyEndTime.HasValue) {
-                    AddSimpleDailySlots(baseDto, endDate, slotStep, schedulerInput, dates);
+                    AddSimpleDailySlots(baseDateTimeOffset, endDate, slotStep, schedulerInput, dates);
                     break;
                 }
 
-                FillDailyWindowSlots(schedulerInput, tz, endDate, slotStep, baseDto, dates);
+                FillDailyWindowSlots(schedulerInput, tz, endDate, slotStep, baseDateTimeOffset, dates);
                 break;
 
             case EnumRecurrency.Weekly:
                 if (schedulerInput.DaysOfWeek == null || schedulerInput.DaysOfWeek.Count == 0)
                     return dates;
 
-                FillWeeklySlots(schedulerInput, tz, endDate, slotStep, baseDto, dates);
+                FillWeeklySlots(schedulerInput, tz, endDate, slotStep, baseDateTimeOffset, dates);
                 dates.Sort();
+                break;
+            default:
                 break;
         }
         return dates;
@@ -104,20 +106,17 @@ public class RecurrenceCalculator {
         }
     }
 
-    private static void FillDailyWindowSlots(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset endDate, TimeSpan slotStep, DateTimeOffset earliestAllowed, List<DateTimeOffset> accumulator)
-    {
+    private static void FillDailyWindowSlots(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset endDate, TimeSpan slotStep, DateTimeOffset earliestAllowed, List<DateTimeOffset> accumulator) {
         var baseLocal = GetBaseLocal(schedulerInput);
         var dayCursor = schedulerInput.StartDate.Date > baseLocal.Date ? schedulerInput.StartDate.Date : baseLocal.Date;
         var lastDay = endDate.Date;
-        while (dayCursor <= lastDay)
-        {
+        while (dayCursor <= lastDay) {
             GenerateDailySlotsForDay(dayCursor, schedulerInput.DailyStartTime!.Value, schedulerInput.DailyEndTime!.Value, slotStep, tz, schedulerInput, endDate, earliestAllowed, accumulator);
             dayCursor = dayCursor.AddDays(1);
         }
     }
 
-    private static void FillWeeklySlots(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset endDate, TimeSpan slotStep, DateTimeOffset earliestAllowed, List<DateTimeOffset> accumulator)
-    {
+    private static void FillWeeklySlots(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset endDate, TimeSpan slotStep, DateTimeOffset earliestAllowed, List<DateTimeOffset> accumulator) {
         var weeklyPeriod = schedulerInput.WeeklyPeriod ?? 1;
         var baseLocal = GetBaseLocal(schedulerInput);
         var weekStart = baseLocal.Date;
@@ -165,13 +164,11 @@ public class RecurrenceCalculator {
     private static DateTimeOffset CreateDateTimeOffset(DateTime localWallClock, TimeZoneInfo tz) =>
         new(localWallClock, tz.GetUtcOffset(localWallClock));
 
-    private static DateTime? GetCandidateLocalForWeekAndDay(DateTime weekStart, DayOfWeek day, TimeSpan timeOfDay)
-    {
+    private static DateTime? GetCandidateLocalForWeekAndDay(DateTime weekStart, DayOfWeek day, TimeSpan timeOfDay) {
         var date = new DateTime(weekStart.Year, weekStart.Month, weekStart.Day,
             timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
 
-        for (var i = 0; i < 7; i++)
-        {
+        for (var i = 0; i < 7; i++) {
             if (date.DayOfWeek == day)
                 return date;
 
@@ -184,8 +181,7 @@ public class RecurrenceCalculator {
         return null;
     }
 
-    private static bool TryAddDaysSafely(DateTime dt, int days, out DateTime result)
-    {
+    private static bool TryAddDaysSafely(DateTime dt, int days, out DateTime result) {
         result = dt;
         if (days == 0) return true;
         if (dt > DateTime.MaxValue.AddDays(-days)) return false;
@@ -193,8 +189,7 @@ public class RecurrenceCalculator {
         return true;
     }
 
-    private static void GenerateDailySlotsForDay(DateTime day, TimeSpan start, TimeSpan end, TimeSpan step, TimeZoneInfo tz, SchedulerInput schedulerInput, DateTimeOffset endDate, DateTimeOffset earliestAllowed, List<DateTimeOffset> accumulator)
-    {
+    private static void GenerateDailySlotsForDay(DateTime day, TimeSpan start, TimeSpan end, TimeSpan step, TimeZoneInfo tz, SchedulerInput schedulerInput, DateTimeOffset endDate, DateTimeOffset earliestAllowed, List<DateTimeOffset> accumulator) {
         var startLocal = new DateTime(day.Year, day.Month, day.Day,
             start.Hours, start.Minutes, start.Seconds, DateTimeKind.Unspecified);
 
@@ -202,8 +197,7 @@ public class RecurrenceCalculator {
             end.Hours, end.Minutes, end.Seconds, DateTimeKind.Unspecified);
 
         var slotLocal = startLocal;
-        while (slotLocal <= endLocal)
-        {
+        while (slotLocal <= endLocal) {
             var slotDto = CreateDateTimeOffset(slotLocal, tz);
             if (slotDto >= schedulerInput.StartDate && slotDto <= endDate && slotDto > earliestAllowed && !accumulator.Contains(slotDto))
                 accumulator.Add(slotDto);
@@ -212,10 +206,9 @@ public class RecurrenceCalculator {
         }
     }
 
-    private static void GenerateWeeklySlotsForWeek(DateTime weekStart, SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextEligible, List<DateTimeOffset> accumulator)
-    {
-        foreach (var day in schedulerInput.DaysOfWeek!)
-        {
+    private static void GenerateWeeklySlotsForWeek(DateTime weekStart, SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextEligible, List<DateTimeOffset> accumulator) {
+        for (var index = 0; index < schedulerInput.DaysOfWeek!.Count; index++) {
+            var day = schedulerInput.DaysOfWeek![index];
             var timeOfDay = schedulerInput.TargetDate?.TimeOfDay ?? schedulerInput.StartDate.TimeOfDay;
             var candidateLocal = GetCandidateLocalForWeekAndDay(weekStart, day, timeOfDay);
             if (candidateLocal == null) continue;
@@ -229,8 +222,7 @@ public class RecurrenceCalculator {
         }
     }
 
-    private static DateTimeOffset? NextWeekday(DateTimeOffset startLocal, DayOfWeek day, TimeZoneInfo tz)
-    {
+    private static DateTimeOffset? NextWeekday(DateTimeOffset startLocal, DayOfWeek day, TimeZoneInfo tz) {
         var date = startLocal.Date;
         while (date.DayOfWeek != day)
             date = date.AddDays(1);
@@ -243,6 +235,7 @@ public class RecurrenceCalculator {
     public static TimeZoneInfo GetTimeZone()  {
         return TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
     }
+
     private static DateTimeOffset GetBaseDateTimeOffset(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         if (schedulerInput.TargetDate.HasValue) {
             var td = schedulerInput.TargetDate.Value.DateTime;
@@ -262,6 +255,7 @@ public class RecurrenceCalculator {
         var sd = schedulerInput.StartDate.DateTime;
         return new DateTimeOffset(sd, tz.GetUtcOffset(sd));
     }
+
     public static DateTime GetBaseLocalTime(SchedulerInput schedulerInput) {
         DateTime baseLocal;
         if (schedulerInput.TargetDate.HasValue) {

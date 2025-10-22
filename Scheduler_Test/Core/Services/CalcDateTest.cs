@@ -117,23 +117,4 @@ public class CalcDateTest(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error);
     }
-
-    /*
-    [Fact]
-    public void CalculateDate_ShouldFail_WhenRecurrencyNull() {
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = 0;
-
-        var result = SchedulerService.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-
-        Assert.False(result.IsSuccess);
-        Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error);
-    }*/
 }

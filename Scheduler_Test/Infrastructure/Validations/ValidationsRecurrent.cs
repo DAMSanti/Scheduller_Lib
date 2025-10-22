@@ -111,14 +111,14 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateRecurrent_DirectMethod_ShouldFail_WhenCurrentDateOutOfRange() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            DailyPeriod = TimeSpan.FromDays(1),
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
@@ -130,16 +130,16 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateRecurrent_DirectMethod_ShouldFail_WhenWeeklyPeriodNegative() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            DailyPeriod = TimeSpan.FromDays(1),
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            DaysOfWeek = [DayOfWeek.Monday],
-            WeeklyPeriod = -1
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
+        schedulerInput.WeeklyPeriod = -1;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
@@ -151,14 +151,14 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateRecurrent_DirectMethod_ShouldFailWithMultipleErrors_WhenMultipleInvalidConditions() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            DailyPeriod = TimeSpan.FromDays(-1),
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(-1);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
@@ -172,14 +172,14 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateRecurrent_ShouldSucceed_WhenDailyRecurrent() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            DailyPeriod = TimeSpan.FromDays(1),
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -192,16 +192,16 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
     [Fact]
     public void ValidateRecurrent_DirectMethod_ShouldSucceed_WhenValidDailyWithTimeWindow() {
-        var schedulerInput = new SchedulerInput {
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            DailyPeriod = TimeSpan.FromHours(2),
-            DailyStartTime = TimeSpan.FromHours(8),
-            DailyEndTime = TimeSpan.FromHours(17),
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
+        schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
+        schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 

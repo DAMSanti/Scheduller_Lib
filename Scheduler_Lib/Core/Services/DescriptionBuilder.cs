@@ -43,17 +43,16 @@ public class DescriptionBuilder {
     private static string BuildDailyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
         var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
 
-        if (schedulerInput.Periodicity == EnumConfiguration.Recurrent) {
-            var periodStr = schedulerInput.DailyPeriod.HasValue ? FormatPeriod(schedulerInput.DailyPeriod.Value) : "1 day";
-            if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null }) {
-                return $"Occurs every {periodStr} between {TimeSpanToString(schedulerInput.DailyStartTime!.Value)} and {TimeSpanToString(schedulerInput.DailyEndTime!.Value)} " +
-                       $"at starting on {startDateStr}";
-            }
-            return $"Occurs every {periodStr}. Schedule will be used on {FormatDate(nextLocal)} " +
-                   $"at {FormatTime(nextLocal)} starting on {startDateStr}";
+        if (schedulerInput.Periodicity != EnumConfiguration.Recurrent)
+            return BuildOnceDescription(schedulerInput, tz, nextLocal);
+        var periodStr = schedulerInput.DailyPeriod.HasValue ? FormatPeriod(schedulerInput.DailyPeriod.Value) : "1 day";
+        if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null }) {
+            return $"Occurs every {periodStr} between {TimeSpanToString(schedulerInput.DailyStartTime!.Value)} and {TimeSpanToString(schedulerInput.DailyEndTime!.Value)} " +
+                   $"at starting on {startDateStr}";
         }
+        return $"Occurs every {periodStr}. Schedule will be used on {FormatDate(nextLocal)} " +
+               $"at {FormatTime(nextLocal)} starting on {startDateStr}";
 
-        return BuildOnceDescription(schedulerInput, tz, nextLocal);
     }
 
     public static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo tz) {
@@ -74,10 +73,7 @@ public class DescriptionBuilder {
         if (period.TotalHours >= 1) {
             return FormatUnit(period.TotalHours, "hour", "hours");
         }
-        if (period.TotalMinutes >= 1) {
-            return FormatUnit(period.TotalMinutes, "minute", "minutes");
-        }
-        return FormatUnit(period.TotalSeconds, "second", "seconds");
+        return period.TotalMinutes >= 1 ? FormatUnit(period.TotalMinutes, "minute", "minutes") : FormatUnit(period.TotalSeconds, "second", "seconds");
     }
     private static string FormatDate(DateTimeOffset dto) => dto.Date.ToShortDateString();
     private static string FormatTime(DateTimeOffset dto) => dto.DateTime.ToShortTimeString();

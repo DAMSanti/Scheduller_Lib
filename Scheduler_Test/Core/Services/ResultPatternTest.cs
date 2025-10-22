@@ -18,11 +18,10 @@ public class ResultPatternTest(ITestOutputHelper output) {
 
     [Fact]
     public void ResultPattern_Success_WithObject_ShouldStoreObject() {
-        var schedulerOutput = new SchedulerOutput {
-            NextDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero),
-            Description = "Test description",
-            FutureDates = new List<DateTimeOffset>()
-        };
+        var schedulerOutput = new SchedulerOutput();
+        schedulerOutput.NextDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerOutput.Description = "Test description";
+        schedulerOutput.FutureDates = [];
 
         var result = ResultPattern<SchedulerOutput>.Success(schedulerOutput);
 
@@ -45,7 +44,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     
     [Fact]
     public void ResultPattern_Failure_WithErrorMessage_ShouldStoreError() {
-        var errorMessage = "An error occurred";
+        const string errorMessage = "An error occurred";
         var result = ResultPattern<int>.Failure(errorMessage);
         
         output.WriteLine($"Result: {result.IsSuccess}, Error: {result.Error}");
@@ -102,12 +101,11 @@ public class ResultPatternTest(ITestOutputHelper output) {
     public void ResultPattern_Success_WithComplexObject_ShouldStoreAllProperties() {
         var futureDate1 = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
         var futureDate2 = new DateTimeOffset(2025, 10, 2, 10, 0, 0, TimeSpan.Zero);
-        
-        var schedulerOutput = new SchedulerOutput {
-            NextDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero),
-            Description = "Complex test description",
-            FutureDates = [futureDate1, futureDate2]
-        };
+
+        var schedulerOutput = new SchedulerOutput();
+        schedulerOutput.NextDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerOutput.Description = "Complex test description";
+        schedulerOutput.FutureDates = [futureDate1, futureDate2];
 
         var result = ResultPattern<SchedulerOutput>.Success(schedulerOutput);
 
