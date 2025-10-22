@@ -36,7 +36,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.WeeklyPeriod = 2;
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
         schedulerInput.DailyPeriod = TimeSpan.FromDays(7);
         schedulerInput.DailyStartTime = new TimeSpan(8, 30, 0);
         schedulerInput.DailyEndTime = new TimeSpan(17, 0, 0);

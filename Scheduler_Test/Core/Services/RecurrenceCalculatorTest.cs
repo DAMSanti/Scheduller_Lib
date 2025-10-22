@@ -75,7 +75,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
             new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.EndDate =
             new DateTimeOffset(2023, 9, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 30)));
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
         schedulerInput.WeeklyPeriod = 1;
 
         var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
@@ -105,7 +105,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
             new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.EndDate =
             new DateTimeOffset(2023, 10, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 10, 30)));
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.WeeklyPeriod = 2;
 
         var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
@@ -147,19 +147,19 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     public void TryAddDaysSafely_ShouldReturnFalseForDateTimeMaxValue() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
-        var schedulerInput = new SchedulerInput {
-            StartDate = new DateTimeOffset(DateTime.MaxValue.AddDays(-10), TimeSpan.Zero),
-            EndDate = new DateTimeOffset(DateTime.MaxValue, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday]
-        };
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(DateTime.MaxValue.AddDays(-10), TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(DateTime.MaxValue, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday];
 
         var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
 
         output.WriteLine($"FutureDates (count = {result?.Count ?? 0}):");
-        foreach (var dto in result ?? new List<DateTimeOffset>()) {
+        foreach (var dto in result ?? []) {
             output.WriteLine(dto.ToString());
         }
 

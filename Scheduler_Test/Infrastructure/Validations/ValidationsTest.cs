@@ -131,7 +131,6 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = (EnumRecurrency)99;
 
-
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");

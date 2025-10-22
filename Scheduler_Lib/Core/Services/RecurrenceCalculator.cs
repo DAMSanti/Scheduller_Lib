@@ -198,9 +198,9 @@ public class RecurrenceCalculator {
 
         var slotLocal = startLocal;
         while (slotLocal <= endLocal) {
-            var slotDto = CreateDateTimeOffset(slotLocal, tz);
-            if (slotDto >= schedulerInput.StartDate && slotDto <= endDate && slotDto > earliestAllowed && !accumulator.Contains(slotDto))
-                accumulator.Add(slotDto);
+            var slotDateTimeOffset = CreateDateTimeOffset(slotLocal, tz);
+            if (slotDateTimeOffset >= schedulerInput.StartDate && slotDateTimeOffset <= endDate && slotDateTimeOffset > earliestAllowed && !accumulator.Contains(slotDateTimeOffset))
+                accumulator.Add(slotDateTimeOffset);
 
             slotLocal = slotLocal.Add(step);
         }
