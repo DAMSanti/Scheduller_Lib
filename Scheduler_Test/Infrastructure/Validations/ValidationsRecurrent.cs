@@ -1,7 +1,6 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
-using System;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
 
@@ -11,6 +10,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     [Theory]
     [InlineData(null, Messages.ErrorPositiveOffsetRequired)]
     [InlineData(-1.0, Messages.ErrorPositiveOffsetRequired)]
+    [InlineData(0.0, Messages.ErrorPositiveOffsetRequired)]
     public void ValidateRecurrent_ShouldFail_WhenInvalidPeriod(double? periodDays, string expectedError) {
         var schedulerInput = new SchedulerInput();
 
@@ -105,6 +105,107 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
                 output.WriteLine(dto.ToString());
             }
         }
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void ValidateRecurrent_DirectMethod_ShouldFail_WhenCurrentDateOutOfRange() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            DailyPeriod = TimeSpan.FromDays(1),
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Daily
+        };
+
+        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorDateOutOfRange, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateRecurrent_DirectMethod_ShouldFail_WhenWeeklyPeriodNegative() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            DailyPeriod = TimeSpan.FromDays(1),
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Weekly,
+            DaysOfWeek = [DayOfWeek.Monday],
+            WeeklyPeriod = -1
+        };
+
+        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorWeeklyPeriodRequired, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateRecurrent_DirectMethod_ShouldFailWithMultipleErrors_WhenMultipleInvalidConditions() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            DailyPeriod = TimeSpan.FromDays(-1),
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Daily
+        };
+
+        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
+        Assert.Contains(Messages.ErrorDateOutOfRange, result.Error ?? string.Empty);
+        Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateRecurrent_ShouldSucceed_WhenDailyRecurrent() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            DailyPeriod = TimeSpan.FromDays(1),
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Daily
+        };
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.Value.Description ?? "No description");
+
+        Assert.True(result.IsSuccess);
+        Assert.NotEqual("", result.Value.Description);
+    }
+
+    [Fact]
+    public void ValidateRecurrent_DirectMethod_ShouldSucceed_WhenValidDailyWithTimeWindow() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            DailyPeriod = TimeSpan.FromHours(2),
+            DailyStartTime = TimeSpan.FromHours(8),
+            DailyEndTime = TimeSpan.FromHours(17),
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Daily
+        };
+
+        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
 
         Assert.True(result.IsSuccess);
     }

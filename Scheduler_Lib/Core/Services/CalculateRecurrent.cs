@@ -21,7 +21,7 @@ public class CalculateRecurrent {
 
         if (schedulerInput.Recurrency == EnumRecurrency.Weekly) {
 
-            DateTime baseLocal = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
+            var baseLocal = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
 
             var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
 

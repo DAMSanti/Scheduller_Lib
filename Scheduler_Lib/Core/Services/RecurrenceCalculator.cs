@@ -39,7 +39,11 @@ public class RecurrenceCalculator {
             if (dates.Count >= maxIterations)
                 return dates;
 
-            weekStart = weekStart.AddDays(7 * schedulerInput.WeeklyPeriod!.Value);
+            var stepDays = 7 * schedulerInput.WeeklyPeriod!.Value;
+            if (!TryAddDaysSafely(weekStart, stepDays, out var nextWeekStart))
+                break;
+
+            weekStart = nextWeekStart;
             iteration++;
         }
 

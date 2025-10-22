@@ -104,4 +104,73 @@ public class ValidationsTest(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDateMissing, result.Error);
     }
+
+    [Fact]
+    public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedPeriodicity() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            Periodicity = (EnumConfiguration)99,
+            Recurrency = EnumRecurrency.Daily
+        };
+
+        var result = Validations.ValidateCalculateDate(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorUnsupportedPeriodicity, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedRecurrency() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            Periodicity = EnumConfiguration.Once,
+            Recurrency = (EnumRecurrency)99
+        };
+
+        var result = Validations.ValidateCalculateDate(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateCalculateDate_DirectMethod_ShouldSucceed_WhenAllValid() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            Periodicity = EnumConfiguration.Once,
+            Recurrency = EnumRecurrency.Daily
+        };
+
+        var result = Validations.ValidateCalculateDate(schedulerInput);
+
+        output.WriteLine(result.Error ?? "Success");
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void ValidateCalculateDate_ShouldSucceed_WhenOnceDaily() {
+        var schedulerInput = new SchedulerInput {
+            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero),
+            Periodicity = EnumConfiguration.Once,
+            Recurrency = EnumRecurrency.Daily
+        };
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.Value.Description ?? "No description");
+
+        Assert.True(result.IsSuccess);
+        Assert.NotEqual("", result.Value.Description);
+    }
 }
