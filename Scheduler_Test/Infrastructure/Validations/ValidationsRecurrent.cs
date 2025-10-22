@@ -21,7 +21,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -44,7 +44,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(startTime);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(endTime);
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -68,7 +68,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = daysOfWeek?.ToList();
         schedulerInput.WeeklyPeriod = 1;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -94,7 +94,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
         output.WriteLine(result.Value.Description);

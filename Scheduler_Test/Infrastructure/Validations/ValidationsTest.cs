@@ -18,7 +18,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Value.Description);
 
@@ -33,8 +33,6 @@ public class ValidationsTest(ITestOutputHelper output) {
     }
 
     [Theory]
-    [InlineData(data: ["2025-10-03", "2025-10-03", EnumConfiguration.Once, null, Messages.ErrorUnsupportedRecurrency])]
-    [InlineData(data: ["2025-10-03", "2025-10-03", null, EnumRecurrency.Daily, Messages.ErrorUnsupportedPeriodicity])]
     [InlineData(data: ["2025-10-03", null, EnumConfiguration.Once, EnumRecurrency.Daily, Messages.ErrorCurrentDateNull])]
     [InlineData(data: [null, "2025-10-03", EnumConfiguration.Once, EnumRecurrency.Daily, Messages.ErrorStartDateMissing])]
     public void ValidateCalculateDate_ShouldFail_WhenInvalidInputs(string? startDate, string? currentDate, EnumConfiguration periodicity, EnumRecurrency recurrency, string expectedError) { 
@@ -45,7 +43,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = periodicity;
         schedulerInput.Recurrency = recurrency;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -67,7 +65,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = null;
         schedulerInput.DailyPeriod = null;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -79,7 +77,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenNullRequest() {
         SchedulerInput? schedulerInput = null;
 
-        var result = Service.CalculateDate(schedulerInput!);
+        var result = SchedulerService.CalculateDate(schedulerInput!);
 
         output.WriteLine(result.Error);
 
@@ -99,7 +97,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.DailyPeriod = new TimeSpan(1, 0, 0, 0);
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error);
 

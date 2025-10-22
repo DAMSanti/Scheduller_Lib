@@ -18,7 +18,7 @@ public class CalcDateTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.DailyPeriod = new TimeSpan(1, 0, 0, 0);
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess.ToString());
 

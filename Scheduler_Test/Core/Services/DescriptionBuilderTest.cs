@@ -66,7 +66,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "No error");
 

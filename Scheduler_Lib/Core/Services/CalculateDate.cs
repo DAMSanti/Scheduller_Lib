@@ -2,7 +2,8 @@
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services;
-public class Service {
+
+public class SchedulerService {
     public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput schedulerInput) {
         var validation = Validations.ValidateCalculateDate(schedulerInput);
 

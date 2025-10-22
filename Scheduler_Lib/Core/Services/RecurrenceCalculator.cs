@@ -176,7 +176,7 @@ public class RecurrenceCalculator {
         var date = new DateTime(weekStart.Year, weekStart.Month, weekStart.Day,
             timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
 
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             if (date.DayOfWeek == day)
                 return date;

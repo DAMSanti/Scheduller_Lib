@@ -24,7 +24,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
 
@@ -48,7 +48,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
         output.WriteLine(result.Value.Description);
@@ -73,7 +73,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.Periodicity = EnumConfiguration.Once;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error);
 
