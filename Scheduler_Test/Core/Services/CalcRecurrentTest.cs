@@ -37,8 +37,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -68,8 +67,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -93,7 +91,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error);
@@ -130,8 +128,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -159,7 +156,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDaysOfWeekRequired, result.Error);
@@ -180,7 +177,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorWeeklyPeriodRequired, result.Error);
@@ -199,8 +196,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -227,8 +223,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -268,8 +263,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         value.FutureDates = futureDatesArr.Select(DateTimeOffset.Parse).ToList();
         value.FutureDates.RemoveAll(d => d == value.NextDate);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {value.FutureDates.Count}):");

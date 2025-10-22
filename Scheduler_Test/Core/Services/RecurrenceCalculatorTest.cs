@@ -178,7 +178,12 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
-        Assert.Empty(result);
+        output.WriteLine($"FutureDates (count = {result?.Count ?? 0}):");
+        foreach (var dto in result ?? []) {
+            output.WriteLine(dto.ToString());
+        }
+
+        Assert.Empty(result!);
 
         schedulerInput.StartDate =
             new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
@@ -417,8 +422,9 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var targetDate = new DateTimeOffset(2025, 10, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 15)));
         List<DayOfWeek> daysOfWeek = [DayOfWeek.Friday, DayOfWeek.Monday, DayOfWeek.Wednesday];
 
-
         var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
+
+        output.WriteLine(result.ToString());
 
         Assert.Equal(DayOfWeek.Wednesday, result.DayOfWeek);
         Assert.Equal(targetDate.Day, result.Day);

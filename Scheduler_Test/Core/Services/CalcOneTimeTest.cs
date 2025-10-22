@@ -30,7 +30,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
@@ -62,8 +62,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -98,7 +97,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.Null(result.Value!.FutureDates);
     }
@@ -117,8 +116,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.TargetDate = null;
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);

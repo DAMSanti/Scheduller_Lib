@@ -150,6 +150,8 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
+        output.WriteLine(actual);
+
         Assert.Equal(expected, actual);
     }
 
@@ -183,6 +185,9 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void DescriptionBuilder_ShouldSucceed_WhenPmTimeFormat() {
         var ts = new TimeSpan(14, 30, 0);
         var actual = DescriptionBuilder.TimeSpanToString(ts);
+
+        output.WriteLine(actual);
+
         Assert.Equal("14:30 PM", actual);
     }
 
@@ -193,6 +198,9 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void DescriptionBuilder_ShouldSucceed_WhenFractionalDays(double days, string expected) {
         var period = TimeSpan.FromDays(days);
         var actual = DescriptionBuilder.FormatPeriod(period);
+
+        output.WriteLine(actual);
+
         Assert.Equal(expected, actual);
     }
 
@@ -296,6 +304,9 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void DescriptionBuilder_ShouldSucceed_WhenFormatUnitOne() {
         var period = TimeSpan.FromSeconds(1.0);
         var actual = DescriptionBuilder.FormatPeriod(period);
+
+        output.WriteLine(actual);
+
         Assert.Equal("1 second", actual);
     }
 
@@ -322,6 +333,9 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void DescriptionBuilder_ShouldSucceed_WhenNoonTime() {
         var ts = new TimeSpan(12, 0, 0);
         var actual = DescriptionBuilder.TimeSpanToString(ts);
+
+        output.WriteLine(actual);
+
         Assert.Equal("12:00 PM", actual);
     }
 
@@ -329,6 +343,9 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void DescriptionBuilder_ShouldSucceed_WhenMidnightTime() {
         var ts = new TimeSpan(0, 0, 0);
         var actual = DescriptionBuilder.TimeSpanToString(ts);
+
+        output.WriteLine(actual);
+
         Assert.Equal("00:00 AM", actual);
     }
 

@@ -21,7 +21,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess.ToString());
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
     }
@@ -39,7 +39,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess.ToString());
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
     }
@@ -58,7 +58,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess.ToString());
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
     }
@@ -75,7 +75,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);
@@ -93,7 +93,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedPeriodicity, result.Error);
@@ -112,7 +112,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error);

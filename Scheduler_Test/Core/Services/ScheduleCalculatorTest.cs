@@ -19,8 +19,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
 
         var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -48,8 +47,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
 
         var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
@@ -70,7 +68,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
 
         var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.Equal(Messages.ErrorUnsupportedPeriodicity, result.Error);
     }
