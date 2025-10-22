@@ -45,7 +45,7 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
@@ -67,7 +67,7 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceWeekly, result.Error);
@@ -116,7 +116,7 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedPeriodicity, result.Error ?? string.Empty);
@@ -133,7 +133,7 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
@@ -150,7 +150,7 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.True(result.IsSuccess);
     }

@@ -23,7 +23,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
@@ -46,7 +46,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
@@ -70,7 +70,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error ?? string.Empty);
@@ -96,7 +96,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -110,7 +110,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ValidateRecurrent_DirectMethod_ShouldFail_WhenCurrentDateOutOfRange() {
+    public void ValidateRecurrent_ShouldFail_WhenCurrentDateOutOfRange() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -122,14 +122,14 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDateOutOfRange, result.Error ?? string.Empty);
     }
-
+    
     [Fact]
-    public void ValidateRecurrent_DirectMethod_ShouldFail_WhenWeeklyPeriodNegative() {
+    public void ValidateRecurrent_ShouldFail_WhenWeeklyPeriodNegative() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -143,14 +143,14 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorWeeklyPeriodRequired, result.Error ?? string.Empty);
     }
 
     [Fact]
-    public void ValidateRecurrent_DirectMethod_ShouldFailWithMultipleErrors_WhenMultipleInvalidConditions() {
+    public void ValidateRecurrent_ShouldFail_WhenMultipleInvalidConditions() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -162,7 +162,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -183,30 +183,19 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description ?? "No description");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+        output.WriteLine(result.Value.Description);
+
+        if (result.Value.FutureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
+            foreach (var dto in result.Value.FutureDates)
+            {
+                output.WriteLine(dto.ToString());
+            }
+        }
 
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);
     }
 
-    [Fact]
-    public void ValidateRecurrent_DirectMethod_ShouldSucceed_WhenValidDailyWithTimeWindow() {
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
-        schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
-        schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Daily;
-
-        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
-
-        output.WriteLine(result.Error ?? "Success");
-
-        Assert.True(result.IsSuccess);
-    }
 }

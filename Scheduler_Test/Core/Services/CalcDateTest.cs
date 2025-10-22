@@ -75,7 +75,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);
@@ -93,7 +93,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedPeriodicity, result.Error);
@@ -112,7 +112,7 @@ public class CalcDateTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error);

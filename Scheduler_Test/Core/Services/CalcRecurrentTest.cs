@@ -37,7 +37,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -68,7 +68,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -93,7 +93,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error);
@@ -130,7 +130,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -159,7 +159,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDaysOfWeekRequired, result.Error);
@@ -180,7 +180,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorWeeklyPeriodRequired, result.Error);
@@ -199,7 +199,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -227,7 +227,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -268,7 +268,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         value.FutureDates = futureDatesArr.Select(DateTimeOffset.Parse).ToList();
         value.FutureDates.RemoveAll(d => d == value.NextDate);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(value.Description);
 
         if (value.FutureDates is { Count: > 0 }) {

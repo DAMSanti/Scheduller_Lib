@@ -102,7 +102,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ConvertStartDateToZone_And_TimeSpanFormatting() {
+    public void DescriptionBuilder_ShouldSucceed_WhenConvertStartDateToZoneAndTimeSpanFormatting() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -119,7 +119,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_FormatPeriod_FractionalAndUnits() {
+    public void DescriptionBuilder_ShouldSucceed_WhenFormatPeriodWithFractionalAndUnits() {
         Assert.Equal("1.5 hours", DescriptionBuilder.FormatPeriod(TimeSpan.FromHours(1.5)));
         Assert.Equal("1 hour", DescriptionBuilder.FormatPeriod(TimeSpan.FromHours(1)));
         Assert.Equal("1.25 days", DescriptionBuilder.FormatPeriod(TimeSpan.FromDays(1.25)));
@@ -130,7 +130,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_Weekly_NoDaysOrEmpty_UsesNextLocalDayOfWeek() {
+    public void DescriptionBuilder_ShouldSucceed_WhenNoDaysOrEmptyUsesNextLocalDayOfWeek() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -150,31 +150,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        Assert.Equal(expected, actual);
-    }
-
-    [Fact]
-    public void DescriptionBuilder_UnsupportedRecurrency_DefaultsToOnce() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.StartDate = new DateTimeOffset(2025, 3, 2, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 3, 2)));
-        schedulerInput.Periodicity = EnumConfiguration.Once;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.WeeklyPeriod = 2;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(7);
-
-        var nextLocal = new DateTimeOffset(2025, 10, 6, 8, 30, 0,
-            tz.GetUtcOffset(new DateTime(2025, 10, 6, 8, 30, 0)));
-
-        var periodStr = DescriptionBuilder.FormatPeriod(schedulerInput.DailyPeriod.Value);
-        var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {string.Join(", ", schedulerInput.DaysOfWeek!.Select(d => d.ToString()))} every {periodStr} " +
-                       $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
-
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
-
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 

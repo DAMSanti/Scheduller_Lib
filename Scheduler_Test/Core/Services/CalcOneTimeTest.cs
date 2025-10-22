@@ -30,7 +30,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "Success");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
@@ -62,7 +62,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -98,13 +98,13 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.Null(result.Value!.FutureDates);
     }
 
     [Fact]
-    public void ValidateOnce_ShouldFail_WhenTargetDateNullAndNotWeekly() {
+    public void ValidateOnce_ShouldFail_WhenTargetDateNull() {
         var schedulerInput = new SchedulerInput();
 
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -118,7 +118,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);

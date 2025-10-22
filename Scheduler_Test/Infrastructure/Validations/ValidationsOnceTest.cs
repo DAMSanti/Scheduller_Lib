@@ -26,7 +26,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
@@ -50,7 +50,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
         if (result.Value.FutureDates is { Count: > 0 }) {
@@ -82,7 +82,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ValidateOnce_DirectMethod_ShouldFail_WhenTargetDateBeforeStartDate() {
+    public void ValidateOnce_ShouldFail_WhenTargetDateBeforeStartDate() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
@@ -93,31 +93,14 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
     }
 
     [Fact]
-    public void ValidateOnce_DirectMethod_ShouldSucceed_WhenValidWeekly() {
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.TargetDate = null;
-        schedulerInput.Periodicity = EnumConfiguration.Once;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-
-        Assert.DoesNotContain(Messages.ErrorTargetDateNull, result.Error ?? string.Empty);
-    }
-
-    [Fact]
-    public void ValidateOnce_DirectMethod_ShouldFailWithMultipleErrors_WhenMultipleInvalidConditions() {
+    public void ValidateOnce_ShouldFailWithMultipleErrors_WhenMultipleInvalidConditions() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
@@ -128,7 +111,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
