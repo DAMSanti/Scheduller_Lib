@@ -1,16 +1,36 @@
-﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Infrastructure.Validations;
+﻿using Scheduler_Lib.Core.Interfaces;
+using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Factory;
 
 namespace Scheduler_Lib.Core.Services;
 
-public class SchedulerService {
-    public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput schedulerInput) {
-        var validation = Validations.ValidateCalculateDate(schedulerInput);
+public static class Service {
+    public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput? schedulerInput) {
+        var validator = new SchedulerValidator();
+        var factory = new ScheduleCalculatorFactory();
+        var service = new SchedulerService(validator, factory);
+        return service.Calculate(schedulerInput);
+    }
+}
 
-        if (!validation.IsSuccess) return ResultPattern<SchedulerOutput>.Failure(validation.Error!);
+public class SchedulerService(ISchedulerValidator validator, ICalculatorFactory calculatorFactory) {
+    public ResultPattern<SchedulerOutput> Calculate(SchedulerInput? schedulerInput) {
+        var validation = validator.Validate(schedulerInput);
+        if (!validation.IsSuccess)
+            return ResultPattern<SchedulerOutput>.Failure(validation.Error!);
 
-        var calculateDate = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
+        var calculator = calculatorFactory.GetCalculator(schedulerInput!);
+        return calculator.Calculate(schedulerInput!);
+    }
 
-        return calculateDate;
+    public static ResultPattern<SchedulerOutput> CalculateDateStatic(SchedulerInput? schedulerInput) {
+        var validator = new SchedulerValidator();
+        var factory = new ScheduleCalculatorFactory();
+        var service = new SchedulerService(validator, factory);
+        return service.Calculate(schedulerInput);
+    }
+
+    public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput? schedulerInput) {
+        return CalculateDateStatic(schedulerInput);
     }
 }
