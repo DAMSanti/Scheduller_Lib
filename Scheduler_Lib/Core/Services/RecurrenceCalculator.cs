@@ -10,10 +10,10 @@ public class RecurrenceCalculator {
 
         var targetLocal = targetDate.DateTime;
         var candidates = daysOfWeek
-            .Select(d => NextWeekday(targetLocal, d, tz))
-            .Where(dto => dto != null && dto.Value.DateTime >= targetLocal)
-            .OrderBy(dto => dto!.Value.DateTime)
-            .Select(dto => dto!.Value)
+            .Select(day => NextWeekday(targetLocal, day, tz))
+            .Where(dateTimeOffset => dateTimeOffset != null && dateTimeOffset.Value.DateTime >= targetLocal)
+            .OrderBy(dateTimeOffset => dateTimeOffset!.Value.DateTime)
+            .Select(dateTimeOffset => dateTimeOffset!.Value)
             .ToList();
 
         return candidates.Count > 0
@@ -31,7 +31,7 @@ public class RecurrenceCalculator {
         var weekStart = baseLocal.Date;
         var endLocal = schedulerInput.EndDate;
 
-        var maxIterations = Config.MaxIterations;
+        const int maxIterations = Config.MaxIterations;
 
         while (weekStart <= endLocal && iteration < maxIterations) {
             GenerateWeeklySlotsForWeek(weekStart, schedulerInput, tz, nextEligible, dates);
@@ -57,11 +57,8 @@ public class RecurrenceCalculator {
         if (schedulerInput.StartDate == DateTimeOffset.MaxValue || schedulerInput.EndDate == DateTimeOffset.MaxValue)
             return dates;
 
-        if (schedulerInput.Periodicity != EnumConfiguration.Recurrent)
-            return dates;
-
         var endDate = GetEffectiveEndDate(schedulerInput);
-        var slotStep = GetSlotStep(schedulerInput);
+        var slotStep = schedulerInput.DailyPeriod ?? TimeSpan.FromDays(1);
 
         var baseDto = GetBaseDateTimeOffset(schedulerInput, tz);
 
@@ -88,7 +85,7 @@ public class RecurrenceCalculator {
 
 
     private static void AddSimpleDailySlots(DateTimeOffset startFrom, DateTimeOffset endDate, TimeSpan step, SchedulerInput schedulerInput, List<DateTimeOffset> accumulator) {
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = GetTimeZone();
 
         if (schedulerInput.TargetDate == null) {
             var startTime = schedulerInput.CurrentDate.TimeOfDay;
@@ -130,11 +127,9 @@ public class RecurrenceCalculator {
             foreach (var day in schedulerInput.DaysOfWeek!) {
                 var timeOfDay = schedulerInput.TargetDate?.TimeOfDay ?? schedulerInput.StartDate.TimeOfDay;
                 var candidateLocal = GetCandidateLocalForWeekAndDay(weekStart, day, timeOfDay);
-                if (candidateLocal == null) continue;
 
-                var candidateDayDto = CreateDateTimeOffset(candidateLocal.Value, tz);
+                var candidateDayDto = CreateDateTimeOffset(candidateLocal!.Value, tz);
                 if (candidateDayDto > endDate) continue;
-                if (candidateDayDto < schedulerInput.StartDate) continue;
 
                 if (candidateDayDto <= earliestAllowed) continue;
 
@@ -162,15 +157,10 @@ public class RecurrenceCalculator {
 
     private static DateTime GetBaseLocal(SchedulerInput schedulerInput) {
         if (schedulerInput.TargetDate.HasValue)
-            return schedulerInput.TargetDate.Value.DateTime;
+            return schedulerInput.TargetDate!.Value.DateTime;
 
-        if (schedulerInput.CurrentDate != default)
-            return schedulerInput.CurrentDate.DateTime;
-
-        return schedulerInput.StartDate.DateTime;
+        return schedulerInput.CurrentDate != default ? schedulerInput.CurrentDate.DateTime : schedulerInput.StartDate.DateTime;
     }
-    private static TimeSpan GetSlotStep(SchedulerInput schedulerInput) =>
-        schedulerInput.DailyFrequency ?? schedulerInput.DailyPeriod ?? TimeSpan.FromDays(1);
 
     private static DateTimeOffset CreateDateTimeOffset(DateTime localWallClock, TimeZoneInfo tz) =>
         new(localWallClock, tz.GetUtcOffset(localWallClock));
@@ -253,16 +243,13 @@ public class RecurrenceCalculator {
     public static TimeZoneInfo GetTimeZone()  {
         return TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
     }
-    private static DateTimeOffset GetBaseDateTimeOffset(SchedulerInput schedulerInput, TimeZoneInfo tz)
-    {
-        if (schedulerInput.TargetDate.HasValue)
-        {
+    private static DateTimeOffset GetBaseDateTimeOffset(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        if (schedulerInput.TargetDate.HasValue) {
             var td = schedulerInput.TargetDate.Value.DateTime;
             return new DateTimeOffset(td, tz.GetUtcOffset(td));
         }
 
-        if (schedulerInput.CurrentDate != default)
-        {
+        if (schedulerInput.CurrentDate != default) {
             var cur = schedulerInput.CurrentDate.DateTime;
             var startTime = schedulerInput.StartDate.TimeOfDay;
             var baseLocal = new DateTime(cur.Year, cur.Month, cur.Day,

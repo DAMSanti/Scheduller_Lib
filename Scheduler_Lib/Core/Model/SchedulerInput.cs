@@ -8,9 +8,8 @@ public class SchedulerInput {
     public EnumConfiguration Periodicity { get; set; }
     public TimeSpan? DailyPeriod { get; set; }
     public EnumRecurrency Recurrency { get; set; }
-    public TimeSpan? DailyFrequency { get; set; }
     public TimeSpan? DailyStartTime { get; set; }
     public TimeSpan? DailyEndTime { get; set; }
     public int? WeeklyPeriod { get; set; }
     public List<DayOfWeek>? DaysOfWeek { get; set; }
-}    
+}

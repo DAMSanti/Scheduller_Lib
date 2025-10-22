@@ -27,7 +27,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenWeeklyRecurrent() {
+    public void DescriptionBuilder_ShouldSucceed_WhenWeeklyRecurrentWithTimeWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -36,7 +36,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.WeeklyPeriod = 2;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
+        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
         schedulerInput.DailyPeriod = TimeSpan.FromDays(7);
         schedulerInput.DailyStartTime = new TimeSpan(8, 30, 0);
         schedulerInput.DailyEndTime = new TimeSpan(17, 0, 0);
@@ -57,31 +57,13 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenWeeklyOnce() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-        var schedulerInput = new SchedulerInput();
-        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 2, 2, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.Periodicity = EnumConfiguration.Once;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
-
-        var result = SchedulerService.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "No error");
-
-        Assert.False(result.IsSuccess);
-    }
-
-    [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenExpectedString() {
+    public void DescriptionBuilder_ShouldSucceed_WhenDailyRecurrentExpectedString() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
             Periodicity = EnumConfiguration.Recurrent,
             Recurrency = EnumRecurrency.Daily,
             DailyPeriod = TimeSpan.FromDays(2)
-
         };
 
         var nextLocal = new DateTimeOffset(2025, 10, 5, 10, 15, 0,
@@ -99,7 +81,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenNoDailyPeriod() {
+    public void DescriptionBuilder_ShouldSucceed_WhenNoDailyPeriodOnce() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 3, 2, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 3, 2))),
@@ -121,7 +103,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenConvertToGivenTimeZoneDate() {
+    public void DescriptionBuilder_ConvertStartDateToZone_And_TimeSpanFormatting() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 10, 5, 23, 0, 0, TimeSpan.Zero)
@@ -131,35 +113,53 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, tz).Date;
 
         Assert.Equal(expected, converted);
-    }
 
-    [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenFormatAsHHmm() {
         var ts = new TimeSpan(5, 30, 0);
-        var actual = DescriptionBuilder.TimeSpanToString(ts);
-        Assert.Equal("05:30 AM", actual);
+        Assert.Equal("05:30 AM", DescriptionBuilder.TimeSpanToString(ts));
+        Assert.Equal("14:30 PM", DescriptionBuilder.TimeSpanToString(new TimeSpan(14, 30, 0)));
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenFractionalHours()  {
-        var period = TimeSpan.FromHours(1.5);
-        var actual = DescriptionBuilder.FormatPeriod(period);
-        Assert.Equal("1.5 hours", actual);
+    public void DescriptionBuilder_FormatPeriod_FractionalAndUnits() {
+        Assert.Equal("1.5 hours", DescriptionBuilder.FormatPeriod(TimeSpan.FromHours(1.5)));
+        Assert.Equal("1 hour", DescriptionBuilder.FormatPeriod(TimeSpan.FromHours(1)));
+        Assert.Equal("1.25 days", DescriptionBuilder.FormatPeriod(TimeSpan.FromDays(1.25)));
+        Assert.Equal("12 hours", DescriptionBuilder.FormatPeriod(TimeSpan.FromDays(0.5)));
+        Assert.Equal("18 hours", DescriptionBuilder.FormatPeriod(TimeSpan.FromDays(0.75)));
+        Assert.Equal("2.5 minutes", DescriptionBuilder.FormatPeriod(TimeSpan.FromMinutes(2.5)));
+        Assert.Equal("3.75 seconds", DescriptionBuilder.FormatPeriod(TimeSpan.FromSeconds(3.75)));
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenOneHour() {
-        var period = TimeSpan.FromHours(1);
-        var actual = DescriptionBuilder.FormatPeriod(period);
-        Assert.Equal("1 hour", actual);
-    }
-
-    [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenWeeklyRecurrentWithoutTimeWindow() {
+    public void DescriptionBuilder_Weekly_NoDaysOrEmpty_UsesNextLocalDayOfWeek() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
             Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Weekly,
+            WeeklyPeriod = 2,
+            DaysOfWeek = null,
+            DailyPeriod = TimeSpan.FromDays(7)
+        };
+
+        var nextLocal = new DateTimeOffset(2025, 10, 6, 8, 30, 0,
+            tz.GetUtcOffset(new DateTime(2025, 10, 6, 8, 30, 0)));
+
+        var periodStr = DescriptionBuilder.FormatPeriod(schedulerInput.DailyPeriod.Value);
+        var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {nextLocal.DayOfWeek} every {periodStr} " +
+                       $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
+
+        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_UnsupportedRecurrency_DefaultsToOnce() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput {
+            StartDate = new DateTimeOffset(2025, 3, 2, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 3, 2))),
+            Periodicity = EnumConfiguration.Once,
             Recurrency = EnumRecurrency.Weekly,
             WeeklyPeriod = 2,
             DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday },
