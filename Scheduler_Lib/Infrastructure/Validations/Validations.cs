@@ -4,19 +4,19 @@ using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 public static class Validations {
-    public static ResultPattern<bool> ValidateCalculateDate(SchedulerInput? requestedDate) {
-        if (requestedDate == null)
+    public static ResultPattern<bool> ValidateCalculateDate(SchedulerInput? schedulerInput) {
+        if (schedulerInput == null)
             return ResultPattern<bool>.Failure(Messages.ErrorRequestNull);
 
-        if (requestedDate.Periodicity != EnumConfiguration.Once && requestedDate.Periodicity != EnumConfiguration.Recurrent)
+        if (schedulerInput.Periodicity != EnumConfiguration.Once && schedulerInput.Periodicity != EnumConfiguration.Recurrent)
             return ResultPattern<bool>.Failure(Messages.ErrorUnsupportedPeriodicity);
 
-        if (requestedDate.Recurrency != EnumRecurrency.Weekly && requestedDate.Recurrency != EnumRecurrency.Daily)
+        if (schedulerInput.Recurrency != EnumRecurrency.Weekly && schedulerInput.Recurrency != EnumRecurrency.Daily)
             return ResultPattern<bool>.Failure(Messages.ErrorUnsupportedRecurrency);
 
-        if (requestedDate.CurrentDate == default)
+        if (schedulerInput.CurrentDate == default)
             return ResultPattern<bool>.Failure(Messages.ErrorCurrentDateNull);
 
-        return requestedDate.StartDate == default ? ResultPattern<bool>.Failure(Messages.ErrorStartDateMissing) : ResultPattern<bool>.Success(true);
+        return schedulerInput.StartDate == default ? ResultPattern<bool>.Failure(Messages.ErrorStartDateMissing) : ResultPattern<bool>.Success(true);
     }
 }

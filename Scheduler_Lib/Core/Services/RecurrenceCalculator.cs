@@ -122,10 +122,8 @@ public class RecurrenceCalculator {
         var weekStart = baseLocal.Date;
 
         var lastWeekDay = endDate.Date;
-        while (weekStart <= lastWeekDay)
-        {
-            foreach (var day in requestedDate.DaysOfWeek!)
-            {
+        while (weekStart <= lastWeekDay) {
+            foreach (var day in requestedDate.DaysOfWeek!) {
                 var timeOfDay = requestedDate.TargetDate?.TimeOfDay ?? requestedDate.StartDate.TimeOfDay;
                 var candidateLocal = GetCandidateLocalForWeekAndDay(weekStart, day, timeOfDay);
                 if (candidateLocal == null) continue;
@@ -136,8 +134,7 @@ public class RecurrenceCalculator {
 
                 if (candidateDayDto <= earliestAllowed) continue;
 
-                if (!requestedDate.DailyStartTime.HasValue || !requestedDate.DailyEndTime.HasValue)
-                {
+                if (!requestedDate.DailyStartTime.HasValue || !requestedDate.DailyEndTime.HasValue) {
                     if (!accumulator.Contains(candidateDayDto)) accumulator.Add(candidateDayDto);
                     continue;
                 }

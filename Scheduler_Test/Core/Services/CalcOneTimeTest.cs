@@ -1,6 +1,7 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
+// ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Scheduler_Lib.Core.Services;
 
@@ -14,6 +15,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(
             DateTime.Parse(startDate),
             tz.GetUtcOffset(DateTime.Parse(startDate))
@@ -26,7 +28,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = CalculateOneTime.CalculateDate(schedulerInput);
+        var result = Service.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -42,6 +44,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(
             DateTime.Parse(startDate),
             tz.GetUtcOffset(DateTime.Parse(startDate))
@@ -57,9 +60,17 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = CalculateOneTime.CalculateDate(schedulerInput);
+        var result = Service.CalculateDate(schedulerInput);
 
+        output.WriteLine(result.Error ?? "NO ERROR");
         output.WriteLine(result.Value.Description);
+
+        if (result.Value.FutureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
+            foreach (var dto in result.Value.FutureDates) {
+                output.WriteLine(dto.ToString());
+            }
+        }
 
         var expectedNewDate = schedulerInput.TargetDate;
         Assert.Equal(expectedNewDate, result.Value!.NextDate);
@@ -72,40 +83,42 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
     [Fact]
     public void CalculateOnce_ShouldFail_WhenRecurrencyIsNotWeeklyFutureDatesIsNull() {
-        var requestedDate = new SchedulerInput();
+        var schedulerInput = new SchedulerInput();
 
         var tz = RecurrenceCalculator.GetTimeZone();
 
-        requestedDate!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0,
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0,
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0,
             tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.Recurrency = EnumRecurrency.Daily;
-        requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.DailyPeriod = new TimeSpan(2, 0, 0, 0);
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.DailyPeriod = new TimeSpan(2, 0, 0, 0);
 
-        var result = CalculateOneTime.CalculateDate(requestedDate);
+        var result = Service.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.Error ?? "NO ERROR");
 
         Assert.Null(result.Value!.FutureDates);
     }
 
     [Fact]
     public void ValidateOnce_ShouldFail_WhenTargetDateNullAndNotWeekly() {
-        var requestedDate = new SchedulerInput();
+        var schedulerInput = new SchedulerInput();
 
         var tz = RecurrenceCalculator.GetTimeZone();
 
-        requestedDate.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, 
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, 
             tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-        requestedDate.Periodicity = EnumConfiguration.Once;
-        requestedDate.Recurrency = EnumRecurrency.Daily;
-        requestedDate.TargetDate = null;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.TargetDate = null;
 
-        var result = CalculateOneTime.CalculateDate(requestedDate);
+        var result = Service.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess.ToString());
+        output.WriteLine(result.Error ?? "NO ERROR");
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);

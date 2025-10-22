@@ -9,9 +9,6 @@ public class ValidationRecurrent {
     public static ResultPattern<bool> ValidateRecurrent(SchedulerInput schedulerInput) {
         var errors = new StringBuilder();
 
-        if (schedulerInput.Periodicity == EnumConfiguration.Once)
-            errors.AppendLine(Messages.ErrorUnsupportedPeriodicity);
-
         if (schedulerInput.EndDate.HasValue && schedulerInput.StartDate > schedulerInput.EndDate)
             errors.AppendLine(Messages.ErrorStartDatePostEndDate);
 

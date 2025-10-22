@@ -1,5 +1,7 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
+using System;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
 
@@ -19,7 +21,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+        var result = Service.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -42,10 +44,8 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(startTime);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(endTime);
 
-        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+        var result = Service.CalculateDate(schedulerInput);
 
-        output.WriteLine("EndDate : " + schedulerInput.EndDate);
-        output.WriteLine("startDate : " + schedulerInput.StartDate);
         output.WriteLine(result.Error ?? "Success");
 
         Assert.False(result.IsSuccess);
@@ -55,7 +55,8 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     [Theory]
     [InlineData(null, Messages.ErrorDaysOfWeekRequired)]
     [InlineData(new DayOfWeek[0], Messages.ErrorDaysOfWeekRequired)]
-    public void ValidateRecurrent_ShouldFail_InvalidDaysOfWeek(DayOfWeek[]? daysOfWeek, string expectedError) {
+    [InlineData(new[] { DayOfWeek.Monday , DayOfWeek.Monday}, Messages.ErrorDuplicateDaysOfWeek)]
+    public void ValidateRecurrent_ShouldFail_WhenInvalidDaysOfWeek(DayOfWeek[]? daysOfWeek, string expectedError) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -67,7 +68,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = daysOfWeek?.ToList();
         schedulerInput.WeeklyPeriod = 1;
 
-        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+        var result = Service.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -79,7 +80,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     [InlineData("2025-1-1", "2025-1-1", "2025-12-31")]
     [InlineData("2025-1-1", "2025-1-1", "2025-1-1")]
     [InlineData("2025-1-1", "2025-1-1", null)]
-    public void ValidateRecurrent_ShouldSuccess_AllDataCorrect(string currentDate, string startDate, string endDate) {
+    public void ValidateRecurrent_ShouldSuccess_WhenAllDataCorrect(string currentDate, string startDate, string? endDate) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = DateTimeOffset.Parse(currentDate);
@@ -93,11 +94,18 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
 
-        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+        var result = Service.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess.ToString());
+        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.Value.Description);
+
+        if (result.Value.FutureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
+            foreach (var dto in result.Value.FutureDates) {
+                output.WriteLine(dto.ToString());
+            }
+        }
 
         Assert.True(result.IsSuccess);
     }
-
 }
