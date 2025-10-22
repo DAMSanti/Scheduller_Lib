@@ -21,8 +21,8 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
             tz.GetUtcOffset(DateTime.Parse(startDate))
         );
         schedulerInput.EndDate = new DateTimeOffset(
-            DateTime.Parse(startDate),
-            tz.GetUtcOffset(DateTime.Parse(startDate))
+            DateTime.Parse(endDate),
+            tz.GetUtcOffset(DateTime.Parse(endDate))
         );
         schedulerInput.TargetDate = targetDate != null ? DateTimeOffset.Parse(targetDate) : null;
         schedulerInput.Periodicity = EnumConfiguration.Once;

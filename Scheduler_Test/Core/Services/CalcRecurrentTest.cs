@@ -146,8 +146,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
     [Fact]
     public void CalculateWeeklyRecurrent_ShouldFail_WhenDaysOfWeekNull() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
         var current = new DateTimeOffset(2025, 10, 3, 7, 0, 0, TimeSpan.Zero);
         var schedulerInput = new SchedulerInput();
 
@@ -169,8 +167,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
     [Fact]
     public void CalculateWeeklyRecurrent_ShouldFail_WhenWeeklyPeriodNull() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
         var current = new DateTimeOffset(2025, 10, 3, 7, 0, 0, TimeSpan.Zero);
         var schedulerInput = new SchedulerInput();
 

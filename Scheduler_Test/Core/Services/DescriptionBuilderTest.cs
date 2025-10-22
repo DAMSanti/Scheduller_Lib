@@ -1,5 +1,6 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Xunit.Abstractions;
+// ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Scheduler_Lib.Core.Services;
 
@@ -63,7 +64,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 2, 2, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
 
         var result = Service.CalculateDate(schedulerInput);
 

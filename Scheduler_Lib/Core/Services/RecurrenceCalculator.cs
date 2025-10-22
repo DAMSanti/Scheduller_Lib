@@ -156,12 +156,11 @@ public class RecurrenceCalculator {
         return beginning.Add(period * 1000);
     }
 
-    private static DateTime GetBaseLocal(SchedulerInput schedulerInput)
-    {
+    private static DateTime GetBaseLocal(SchedulerInput schedulerInput) {
         if (schedulerInput.TargetDate.HasValue)
             return schedulerInput.TargetDate.Value.DateTime;
 
-        if (schedulerInput.CurrentDate != default(DateTimeOffset))
+        if (schedulerInput.CurrentDate != default)
             return schedulerInput.CurrentDate.DateTime;
 
         return schedulerInput.StartDate.DateTime;
@@ -258,7 +257,7 @@ public class RecurrenceCalculator {
             return new DateTimeOffset(td, tz.GetUtcOffset(td));
         }
 
-        if (schedulerInput.CurrentDate != default(DateTimeOffset))
+        if (schedulerInput.CurrentDate != default)
         {
             var cur = schedulerInput.CurrentDate.DateTime;
             var startTime = schedulerInput.StartDate.TimeOfDay;
