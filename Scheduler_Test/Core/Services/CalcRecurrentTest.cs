@@ -55,7 +55,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [Theory]
     [InlineData("2025-10-02", "2025-10-01", "2025-11-25", EnumRecurrency.Weekly, "2025-10-06")]
     [InlineData("2025-10-03", "2025-10-01", "2025-11-25", EnumRecurrency.Daily, "2025-10-03")]
-    public void CalculateNextDate_ShouldSucceed_WhenExpectedNextDate(string currentDate, string startDate, string endDate, EnumRecurrency recurrency, string expectedNextDate) {
+    public void CalculateNextDate_ShouldSuccess_WhenExpectedNextDate(string currentDate, string startDate, string endDate, EnumRecurrency recurrency, string expectedNextDate) {
         var schedulerInput = new SchedulerInput();
         schedulerInput.CurrentDate = DateTimeOffset.Parse(currentDate);
         schedulerInput.StartDate = DateTimeOffset.Parse(startDate);
@@ -218,7 +218,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GenerateDescription_ShouldSucceed_WhenExpectedDescription() {
+    public void GenerateDescription_ShouldSuccess_WhenExpectedDescription() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -250,7 +250,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [InlineData(new[] { "2025-10-05T08:30:00", "2025-10-05T08:30:00" }, "2025-10-05T08:30:00", 0)]
     [InlineData(new[] { "2025-10-06T08:30:00" }, "2025-10-05T08:30:00", 1)]
     [InlineData(new string[0], "2025-10-05T08:30:00", 0)]
-    public void RemoveNextFromFutureDates_ShouldSucceed_WhenRemovingNextDateFromFutureDates(string[] futureDatesArr, string nextDateStr, int expectedCount) {
+    public void CalculateRecurrent_ShouldSuccess_WhenRemovingNextDateFromFutureDates(string[] futureDatesArr, string nextDateStr, int expectedCount) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();

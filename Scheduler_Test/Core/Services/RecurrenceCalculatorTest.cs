@@ -1,682 +1,456 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Scheduler_Lib.Core.Services;
-public class RecurrenceCalculatorTest(ITestOutputHelper output) {
-        
-    [Fact] 
-    public void RecurrenceCalculator_ShouldSucceed_WhenTargetIsOnADesiredDay() {
+
+public class RecurrenceCalculatorTests(ITestOutputHelper output) {
+
+    [Fact]
+    public void SelectNextEligibleDate_ShouldSuccess_WhenTargetDateIsMinValue() {
+        var targetDate = DateTimeOffset.MinValue;
+        var daysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
         var tz = RecurrenceCalculator.GetTimeZone();
 
-        var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
-        var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
+        var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
 
-        var schedulerInput = new SchedulerInput();
+        output.WriteLine(result.DateTime.ToLongDateString());
 
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 14, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 14)));
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-        schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.DailyStartTime = new TimeSpan(9, 0, 0);
-        schedulerInput.DailyEndTime = new TimeSpan(11, 0, 0);
-        schedulerInput.DailyFrequency = TimeSpan.FromHours(1);
-        schedulerInput.TargetDate = targetDto;
-        schedulerInput.CurrentDate = targetDto;
+        Assert.Equal(DateTimeOffset.MinValue, result);
+    }
 
-        var result = RecurrenceCalculator.SelectNextEligibleDate(
-            schedulerInput.TargetDate ?? default,
-            schedulerInput.DaysOfWeek,
-            tz
-        );
+    [Theory]
+    [InlineData("2025-10-11", DayOfWeek.Monday, "2025-10-13")]
+    [InlineData("2025-10-11", DayOfWeek.Tuesday, "2025-10-14")]
+    [InlineData("2025-10-11", DayOfWeek.Sunday, "2025-10-12")]
+    public void SelectNextEligibleDate_ShouldSuccess_WhenSingleDayOfWeek(string targetDateStr, DayOfWeek dayOfWeek, string expectedDateStr) {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var targetDate = DateTimeOffset.Parse(targetDateStr).ToOffset(tz.GetUtcOffset(DateTime.Parse(targetDateStr)));
+        var expectedDate = DateTimeOffset.Parse(expectedDateStr).ToOffset(tz.GetUtcOffset(DateTime.Parse(expectedDateStr)));
+        var daysOfWeek = new List<DayOfWeek> { dayOfWeek };
 
-        output.WriteLine(result.ToString());
+        var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
 
-        var expected = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
-        Assert.Equal(expected.DateTime, result.DateTime);
+        output.WriteLine(result.DateTime.ToLongDateString());
+
+        Assert.Equal(expectedDate.Date, result.Date);
+        Assert.Equal(targetDate.TimeOfDay, result.TimeOfDay);
     }
 
     [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenTargetBeforeDesiredDay() {
+    public void SelectNextEligibleDate_ShouldSuccess_WhenMultipleDaysOfWeek() {
         var tz = RecurrenceCalculator.GetTimeZone();
+        var targetDate = new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11))); // Monday
+        var daysOfWeek = new List<DayOfWeek> { DayOfWeek.Wednesday, DayOfWeek.Friday };
+        var expected = new DateTimeOffset(2023, 9, 13, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 13))); // Wednesday
 
-        var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
-        var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
+        var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
 
-        var schedulerInput = new SchedulerInput();
+        output.WriteLine(result.DateTime.ToLongDateString());
 
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.StartDate = targetDto;
-        schedulerInput.EndDate = targetDto.AddDays(14);
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-        schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.TargetDate = targetDto;
-        schedulerInput.CurrentDate = targetDto;
-
-        var result = RecurrenceCalculator.SelectNextEligibleDate(
-            schedulerInput.TargetDate ?? default,
-            schedulerInput.DaysOfWeek,
-            tz
-        );
-
-        output.WriteLine(result.ToString());
-
-        var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
-        var expected = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
-        Assert.Equal(expected.DateTime, result.DateTime);
+        Assert.Equal(expected.Date, result.Date);
+        Assert.Equal(targetDate.TimeOfDay, result.TimeOfDay);
     }
 
     [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenEmptyDays() {
+    public void SelectNextEligibleDate_ShouldSuccess_WhenNoCandidatesFound() {
         var tz = RecurrenceCalculator.GetTimeZone();
+        var targetDate = new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        var daysOfWeek = new List<DayOfWeek>();
 
-        var targetLocal = new DateTime(2025, 10, 4, 9, 0, 0, DateTimeKind.Unspecified);
-        var targetDto = new DateTimeOffset(targetLocal, TimeSpan.Zero);
+        var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
 
+        output.WriteLine(result.DateTime.ToLongDateString());
+
+        Assert.Equal(targetDate, result);
+    }
+
+    [Fact]
+    public void CalculateWeeklyRecurrence_ShouldSuccess_WhenValidInput() {
+        var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.StartDate = targetDto;
-        schedulerInput.EndDate = targetDto.AddDays(14);
-        schedulerInput.DaysOfWeek = [];
+        schedulerInput.StartDate =
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate =
+                new DateTimeOffset(2023, 9, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 30)));
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
         schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.TargetDate = targetDto;
-        schedulerInput.CurrentDate = targetDto;
 
-        var result = RecurrenceCalculator.SelectNextEligibleDate(
-            schedulerInput.TargetDate ?? default,
-            schedulerInput.DaysOfWeek,
-            tz
-        );
+        var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
 
-        output.WriteLine(result.ToString());
-
-        var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
-        var expected = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
-        Assert.Equal(expected.DateTime, result.DateTime);
-        /*
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
         }
 
-        Assert.True(result.IsSuccess);
-        var expected = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
-        Assert.Equal(expected, result.Value.NextDate);*/
+        Assert.NotNull(result);
+        Assert.True(result.Count > 0);
+        foreach (var date in result) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+            Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek);
+        }
     }
 
     [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenWeeklyPeriodGreaterThanOne() {
+    public void CalculateWeeklyRecurrence_ShouldSuccess_WhenWeeklyPeriodSet() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.StartDate =
-                new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.EndDate =
-                new DateTimeOffset(2025, 11, 30, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 11, 30)));
+                new DateTimeOffset(2023, 10, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 10, 30)));
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.WeeklyPeriod = 2;
-        schedulerInput.CurrentDate =
-                new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+            Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek);
         }
 
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value.FutureDates);
+        Assert.NotNull(result);
+        Assert.True(result.Count > 1);
 
-        for (var i = 1; i < result.Value.FutureDates!.Count; i++) {
-            var diff = (result.Value.FutureDates[i].Date - result.Value.FutureDates[i - 1].Date).TotalDays;
-            Assert.True((int)diff % (7 * schedulerInput.WeeklyPeriod!.Value) == 0);
+        for (var i = 1; i < result.Count; i++) {
+            var daysDifference = (result[i].Date - result[i - 1].Date).TotalDays;
+            Assert.Equal(14, daysDifference);
         }
     }
 
     [Fact]
-    public void RecurrenceCalculator_ShouldReturnsEmpty_WhenPeriodicityIsNotRecurrent() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Once;
-        schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.CurrentDate =
-            new DateTimeOffset(2025, 10, 1, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
-        Assert.Null(result.Value.FutureDates);
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenGeneratesSlotsFromCurrentToEndInclusive() {
+    public void CalculateWeeklyRecurrence_ShouldSuccess_WhenLongRange() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 1, 8, 0, 0,
-                tz.GetUtcOffset(new DateTime(2025, 10, 1, 8, 0, 0, DateTimeKind.Unspecified)));
-        schedulerInput.StartDate = new DateTimeOffset(2025, 9, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 3, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 3)));
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value.FutureDates);
-
-        var expected1 = schedulerInput.CurrentDate;
-        var expected2 = schedulerInput.CurrentDate.AddDays(1);
-        var expected3 = schedulerInput.CurrentDate.AddDays(2);
-
-        Assert.Equal(3, result.Value.FutureDates.Count);
-        Assert.Contains(expected1, result.Value.FutureDates);
-        Assert.Contains(expected2, result.Value.FutureDates);
-        Assert.Contains(expected3, result.Value.FutureDates);
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenGeneratesHourlySlotsPerDay() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.CurrentDate =
-            new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.EndDate =
-            new DateTimeOffset(2025, 10, 2, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 2)));
-        schedulerInput.DailyStartTime = new TimeSpan(8, 0, 0);
-        schedulerInput.DailyEndTime = new TimeSpan(10, 0, 0);
-        schedulerInput.DailyFrequency = TimeSpan.FromHours(1);
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
-
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value.FutureDates);
-        Assert.Equal(6, result.Value.FutureDates.Count);
-
-        var firstDay = schedulerInput.StartDate.Date;
-        var slot1 = new DateTime(firstDay.Year, firstDay.Month, firstDay.Day, 8, 0, 0, DateTimeKind.Unspecified);
-        var dto1 = new DateTimeOffset(slot1, tz.GetUtcOffset(slot1));
-        Assert.Contains(dto1, result.Value.FutureDates);
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenGeneratesDaysOnly() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 21, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 21)));
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday };
-        schedulerInput.WeeklyPeriod = 1;
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value.FutureDates);
-        Assert.True(result.Value.FutureDates.Count > 0);
-
-        Assert.All(result.Value.FutureDates, dto => Assert.Equal(DayOfWeek.Monday, dto.Date.DayOfWeek));
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenGeneratesMultipleSlotsPerChosenDay() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.CurrentDate =
-            new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.EndDate =
-            new DateTimeOffset(2025, 10, 14, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 14)));
-        schedulerInput.DaysOfWeek = [DayOfWeek.Wednesday];
-        schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.DailyStartTime = new TimeSpan(9, 0, 0);
-        schedulerInput.DailyEndTime = new TimeSpan(11, 0, 0);
-        schedulerInput.DailyFrequency = TimeSpan.FromHours(1);
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value.FutureDates);
-        Assert.Equal(3, result.Value.FutureDates.Count);
-
-        Assert.All(result.Value.FutureDates, dto => {
-            Assert.Equal(DayOfWeek.Wednesday, dto.Date.DayOfWeek);
-            var hour = dto.DateTime.Hour;
-            Assert.InRange(hour, 9, 11);
-        });
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldReturnsEmpty_WhenDaysOfWeekIsNull() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.CurrentDate =
-            new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.EndDate =
-            new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31)));
-        schedulerInput.DaysOfWeek = null;
-        schedulerInput.WeeklyPeriod = 1;
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.False(result.IsSuccess);
-        Assert.NotNull(result.Error);
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldReturnsEmpty_WhenDaysOfWeekIsEmpty() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.StartDate =
-                new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.CurrentDate =
-                new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
-        schedulerInput.EndDate =
-                new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31)));
-        schedulerInput.DaysOfWeek = [];
-        schedulerInput.WeeklyPeriod = 1;
+            new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate = new DateTimeOffset(2024, 9, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2024, 9, 30)));
+            schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
+            schedulerInput.WeeklyPeriod = 1;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+            Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek);
         }
 
-        Assert.False(result.IsSuccess);
-        Assert.NotNull(result.Error);
+        Assert.NotNull(result);
+        Assert.True(result.Count <= Config.MaxIterations);
     }
 
     [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenTargetDatePresent() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var targetDate = new DateTimeOffset(2025, 10, 5, 15, 30, 0,
-            tz.GetUtcOffset(new DateTime(2025, 10, 5, 15, 30, 0, DateTimeKind.Unspecified)));
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.TargetDate = targetDate;
-        schedulerInput.CurrentDate = targetDate;
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 9, 0, 0,
-                tz.GetUtcOffset(new DateTime(2025, 10, 1, 9, 0, 0, DateTimeKind.Unspecified)));
-        schedulerInput.EndDate =
-                new DateTimeOffset(2025, 10, 14, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 14)));
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-        schedulerInput.WeeklyPeriod = 1;
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
-
-        var expectedLocal = new DateTime(2025, 10, 6, 15, 30, 0, DateTimeKind.Unspecified);
-        var expectedDto = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
-        Assert.Equal(expectedDto, result.Value.NextDate);
-
-        Assert.NotNull(result.Value.FutureDates);
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenTargetDateNull() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var startDate = new DateTimeOffset(2025, 10, 3, 9, 45, 0,
-            tz.GetUtcOffset(new DateTime(2025, 10, 3, 9, 45, 0, DateTimeKind.Unspecified)));
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.TargetDate = null;
-        schedulerInput.CurrentDate = startDate;
-        schedulerInput.StartDate = startDate;
-        schedulerInput.EndDate =
-                new DateTimeOffset(2025, 10, 14, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 14)));
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-        schedulerInput.WeeklyPeriod = 1;
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
-
-        var expectedLocal = new DateTime(2025, 10, 6, 9, 45, 0, DateTimeKind.Unspecified);
-        var expectedDto = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
-        Assert.Equal(expectedDto, result.Value.NextDate);
-
-        Assert.NotNull(result.Value.FutureDates);
-
-        Assert.Contains(expectedDto, result.Value.FutureDates);
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenReturnsMinValueWithTzOffset() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var minDate = DateTimeOffset.MinValue;
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.TargetDate = minDate;
-        schedulerInput.CurrentDate = minDate;
-        schedulerInput.StartDate = minDate;
-        schedulerInput.EndDate = minDate.AddDays(1);
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-        schedulerInput.WeeklyPeriod = 1;
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.Equal(minDate, result.Value.NextDate);
-    }
-
-    [Fact]
-    public void RecurrenceCalculator_ShouldReturnsEmpty_WhenMaxValue() {
+    public void CalculateFutureDates_ShouldSuccess_WhenStartOrEndDateIsMaxValue() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.CurrentDate = DateTimeOffset.MaxValue;
         schedulerInput.StartDate = DateTimeOffset.MaxValue;
-        schedulerInput.EndDate = DateTimeOffset.MaxValue;
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        schedulerInput.EndDate = new DateTimeOffset(2023, 9, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 30)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+            Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek!);
         }
 
-        Assert.Null(result.Value.FutureDates);
+        Assert.Empty(result);
+
+        schedulerInput.StartDate = new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate = DateTimeOffset.MaxValue;
+        result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+            Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek!);
+        }
+
+        Assert.Empty(result);
     }
 
     [Fact]
-    public void CalculateFutureDates_ShouldReturnsEmpty_WhenPeriodicityNone() {
+    public void CalculateFutureDates_ShouldSuccess_WhenPeriodicityNotRecurrent() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.None;
-        schedulerInput.Recurrency = EnumRecurrency.None;
-        schedulerInput.CurrentDate =
-                new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
         schedulerInput.StartDate =
-                new DateTimeOffset(2025, 10, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.EndDate =
-                new DateTimeOffset(2025, 10, 31, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 31)));
+                new DateTimeOffset(2023, 9, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 30)));
+        schedulerInput.Periodicity = EnumConfiguration.Once;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+            Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek!);
         }
 
-        Assert.Null(result.Value.FutureDates);
+        Assert.Empty(result);
     }
 
-    [Theory]
-    [InlineData("2025-10-6", new[] { DayOfWeek.Monday }, "2025-10-6")]
-    [InlineData("2025-10-4", new[] { DayOfWeek.Monday }, "2025-10-6")]
-    public void SelectNextEligibleDate_VariousScenarios_ReturnsExpected(string targetDate, DayOfWeek[] days, string expectedDate) {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var targetLocal = DateTime.Parse(targetDate);
-        var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.TargetDate = targetDto;
-        schedulerInput.CurrentDate = targetDto;
-        schedulerInput.StartDate = targetDto;
-        schedulerInput.EndDate = targetDto.AddDays(14);
-        schedulerInput.DaysOfWeek = days.Length > 0 ? days.ToList() : null;
-        schedulerInput.WeeklyPeriod = 1;
-
-        var result = Service.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        var expectedLocal = DateTime.Parse(expectedDate);
-        var expectedDto = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
-        Assert.Equal(expectedDto, result.Value.NextDate);
-    }
-
-    [Theory]
-    [InlineData("2025-10-3", "2025-10-6", "2025-10-5", 2)]
-    [InlineData("2025-10-1", "2025-10-5", "2025-10-3", 3)]
-    public void RecurrenceCalculator_ShouldSucceed_WhenDailyScenarios(string startDate, string endDate, string currentDate, int expectedCount) {
+    [Fact]
+    public void CalculateFutureDates_ShouldSuccess_WhenAddsSimpleDailySlotsInDailyWithoutWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.StartDate =
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate =
+                new DateTimeOffset(2023, 9, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 15)));
+        schedulerInput.CurrentDate =
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.StartDate =
-            new DateTimeOffset(DateTime.Parse(startDate), tz.GetUtcOffset(DateTime.Parse(startDate)));
-        schedulerInput.EndDate = new DateTimeOffset(DateTime.Parse(endDate), tz.GetUtcOffset(DateTime.Parse(endDate)));
-        schedulerInput.CurrentDate =
-            new DateTimeOffset(DateTime.Parse(currentDate), tz.GetUtcOffset(DateTime.Parse(currentDate)));
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
         }
 
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value.FutureDates);
-        Assert.Equal(expectedCount, result.Value.FutureDates.Count);
+        Assert.Equal(5, result.Count);
+        for (var i = 0; i < result.Count; i++) {
+            Assert.Equal(schedulerInput.StartDate.AddDays(i).Date, result[i].Date);
+            Assert.Equal(schedulerInput.StartDate.TimeOfDay, result[i].TimeOfDay);
+        }
     }
 
     [Fact]
-    public void RecurrenceCalculator_ShouldSucceed_WhenFiltersNullAndPastDates() {
+    public void CalculateFutureDates_ShouldSuccess_WhenUsesTargetTimeOfDayInTargetDateProvided() {
         var tz = RecurrenceCalculator.GetTimeZone();
-
-        var targetLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
-        var targetDto = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.StartDate =
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate =
+                new DateTimeOffset(2023, 9, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 15)));
+        schedulerInput.CurrentDate =
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.TargetDate =
+                new DateTimeOffset(2023, 9, 11, 14, 30, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.TargetDate = targetDto;
-        schedulerInput.CurrentDate = targetDto;
-        schedulerInput.StartDate = targetDto;
-        schedulerInput.EndDate = targetDto.AddDays(14);
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Sunday };
-        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
-
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
         }
 
-        Assert.True(result.IsSuccess);
-        var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
-        var expected = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
-        Assert.Equal(expected, result.Value.NextDate);
+        foreach (var date in result) {
+            Assert.Equal(new TimeSpan(14, 30, 0), date.TimeOfDay);
+        }
+    }
+
+    [Fact]
+    public void CalculateFutureDates_ShouldSuccess_WhenDailyWindowSpecified() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate =
+                new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate =
+                new DateTimeOffset(2023, 9, 12, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 12)));
+        schedulerInput.CurrentDate =
+                new DateTimeOffset(2023, 9, 11, 9, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        schedulerInput.DailyStartTime = new TimeSpan(9, 0, 0);
+        schedulerInput.DailyEndTime = new TimeSpan(17, 0, 0);
+        schedulerInput.DailyFrequency = TimeSpan.FromHours(2);
+
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+        }
+
+        Assert.Equal(5, result.Count);
+
+        Assert.Equal(new TimeSpan(11, 0, 0), result[0].TimeOfDay);
+        Assert.Equal(new TimeSpan(13, 0, 0), result[1].TimeOfDay);
+        Assert.Equal(new TimeSpan(15, 0, 0), result[2].TimeOfDay);
+        Assert.Equal(new TimeSpan(17, 0, 0), result[3].TimeOfDay);
+        Assert.Equal(new TimeSpan(9, 0, 0), result[4].TimeOfDay);
+    }
+
+    [Fact]
+    public void CalculateFutureDates_ShouldSuccess_WhenWeeklyWithoutDaysOfWeek() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+
+        schedulerInput.StartDate =
+            new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate = new DateTimeOffset(2023, 9, 30, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 30)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.WeeklyPeriod = 1;
+
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+        }
+
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void CalculateFutureDates_ShouldSuccess_WhenDaysOfWeekProvided() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate =
+            new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.EndDate =
+                new DateTimeOffset(2025, 10, 26, 11, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 24)));
+        schedulerInput.CurrentDate =
+                new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
+
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+        }
+
+        Assert.Equal(6, result.Count);
+
+        Assert.Equal(DayOfWeek.Monday, result[0].DayOfWeek);
+        Assert.Equal(DayOfWeek.Wednesday, result[1].DayOfWeek);
+        Assert.Equal(DayOfWeek.Friday, result[2].DayOfWeek);
+
+        Assert.Equal(DayOfWeek.Monday, result[3].DayOfWeek);
+        Assert.Equal(DayOfWeek.Wednesday, result[4].DayOfWeek);
+        Assert.Equal(DayOfWeek.Friday, result[5].DayOfWeek);
+    }
+
+    [Fact]
+    public void CalculateFutureDates_ShouldSuccess_WhenWeeklyWithDailyWindow() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate =
+            new DateTimeOffset(2025, 10, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 14, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 14)));
+        schedulerInput.CurrentDate =
+            new DateTimeOffset(2025, 10, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Wednesday];
+        schedulerInput.DailyStartTime = new TimeSpan(9, 0, 0);
+        schedulerInput.DailyEndTime = new TimeSpan(13, 0, 0);
+        schedulerInput.DailyFrequency = TimeSpan.FromHours(2);
+
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+        }
+
+        Assert.Equal(3, result.Count);
+
+        foreach (var date in result) {
+            Assert.Equal(DayOfWeek.Wednesday, date.DayOfWeek);
+        }
+
+        Assert.Equal(new TimeSpan(9, 0, 0), result[0].TimeOfDay);
+        Assert.Equal(new TimeSpan(11, 0, 0), result[1].TimeOfDay);
+        Assert.Equal(new TimeSpan(13, 0, 0), result[2].TimeOfDay);
+    }
+
+    [Fact]
+    public void GetBaseLocalTime_ShouldSuccess_WhenTargetDateProvided() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var targetDate = new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.TargetDate = targetDate;
+        schedulerInput.CurrentDate =
+                new DateTimeOffset(2023, 9, 1, 8, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 1)));
+        schedulerInput.StartDate =
+                new DateTimeOffset(2023, 9, 5, 9, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 5)));
+
+        var result = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
+
+        output.WriteLine(result.ToLongDateString());
+
+        Assert.Equal(targetDate.DateTime, result);
+    }
+
+    [Fact]
+    public void GetBaseLocalTime_ShouldSuccess_WhenTargetNotProvided() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var currentDate = new DateTimeOffset(2023, 9, 11, 8, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
+        var startDate = new DateTimeOffset(2023, 9, 5, 14, 30, 0, tz.GetUtcOffset(new DateTime(2023, 9, 5)));
+        
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.TargetDate = null;
+        schedulerInput.CurrentDate = currentDate;
+        schedulerInput.StartDate = startDate;
+
+        var result = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
+
+        output.WriteLine(result.ToLongDateString());
+
+        Assert.Equal(currentDate.Date, result.Date);
+        Assert.Equal(startDate.TimeOfDay, result.TimeOfDay);
+    }
+
+    [Fact]
+    public void GetTimeZone_ShouldSuccess_WhenCalled() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        Assert.Equal(Config.TimeZoneId, tz.Id);
     }
 }
+
 

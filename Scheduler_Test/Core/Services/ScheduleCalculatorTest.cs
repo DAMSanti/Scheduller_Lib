@@ -7,7 +7,7 @@ namespace Scheduler_Lib.Core.Services;
 
 public class ScheduleCalculatorTest(ITestOutputHelper output) {
     [Fact]
-    public void GetScheduleCalculator_ShouldSucceed_WhenPeriodicityOnce() {
+    public void GetScheduleCalculator_ShouldSuccess_WhenPeriodicityOnce() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -34,7 +34,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GetScheduleCalculator_ShouldSucceed_WhenPeriodicityRecurrent() {
+    public void GetScheduleCalculator_ShouldSuccess_WhenPeriodicityRecurrent() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput!.Periodicity = EnumConfiguration.Recurrent;

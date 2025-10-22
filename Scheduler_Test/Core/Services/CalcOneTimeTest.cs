@@ -39,7 +39,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     [Theory]
     [InlineData("2025-01-01", "2025-12-31", "2025-01-01")]
     [InlineData("2025-01-01", "2025-12-31", "2025-12-31")]
-    public void ValidateOnce_ShouldSucceed_WhenValidTargetDate(string startDate, string endDate, string targetDate) {
+    public void ValidateOnce_ShouldSuccess_WhenValidTargetDate(string startDate, string endDate, string targetDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
