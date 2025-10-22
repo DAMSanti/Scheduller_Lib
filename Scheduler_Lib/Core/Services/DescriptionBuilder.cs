@@ -5,59 +5,59 @@ using System.Text;
 namespace Scheduler_Lib.Core.Services;
 
 public class DescriptionBuilder {
-    public static string BuildDescriptionForCalculatedDate(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+    public static string BuildDescriptionForCalculatedDate(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
         var errors = new StringBuilder();
 
-        if (requestedDate is { Recurrency: EnumRecurrency.Weekly, Periodicity: EnumConfiguration.Once })
+        if (schedulerInput is { Recurrency: EnumRecurrency.Weekly, Periodicity: EnumConfiguration.Once })
             errors.AppendLine(Messages.ErrorOnceWeekly);
 
-        return requestedDate.Recurrency switch {
-            EnumRecurrency.Weekly => BuildWeeklyDescription(requestedDate, tz, nextLocal),
-            EnumRecurrency.Daily => BuildDailyDescription(requestedDate, tz, nextLocal),
-            _ => BuildOnceDescription(requestedDate, tz, nextLocal)
+        return schedulerInput.Recurrency switch {
+            EnumRecurrency.Weekly => BuildWeeklyDescription(schedulerInput, tz, nextLocal),
+            EnumRecurrency.Daily => BuildDailyDescription(schedulerInput, tz, nextLocal),
+            _ => BuildOnceDescription(schedulerInput, tz, nextLocal)
         };
     }
 
-    private static string BuildOnceDescription(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal) {
-        var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
+    private static string BuildOnceDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+        var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
         return $"Occurs once: Schedule will be used on {FormatDate(nextLocal)} at {FormatTime(nextLocal)} starting on {startDateStr}";
     }
 
-    private static string BuildWeeklyDescription(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal)  {
-        var daysOfWeek = requestedDate.DaysOfWeek is { Count: > 0 }
-            ? string.Join(", ", requestedDate.DaysOfWeek.Select(d => d.ToString()))
+    private static string BuildWeeklyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal)  {
+        var daysOfWeek = schedulerInput.DaysOfWeek is { Count: > 0 }
+            ? string.Join(", ", schedulerInput.DaysOfWeek.Select(d => d.ToString()))
             : nextLocal.DayOfWeek.ToString(); 
         
-        var period = requestedDate.DailyPeriod.HasValue ? FormatPeriod(requestedDate.DailyPeriod.Value) : "1 week";
-        var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
-        var weeklyPeriod = requestedDate.WeeklyPeriod ?? 1;
+        var period = schedulerInput.DailyPeriod.HasValue ? FormatPeriod(schedulerInput.DailyPeriod.Value) : "1 week";
+        var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var weeklyPeriod = schedulerInput.WeeklyPeriod ?? 1;
 
-        if (requestedDate.Periodicity == EnumConfiguration.Recurrent)
-            if (requestedDate.DailyEndTime.HasValue || requestedDate.DailyStartTime.HasValue)
-                return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {period} between {TimeSpanToString(requestedDate.DailyStartTime!.Value)} and {TimeSpanToString(requestedDate.DailyEndTime!.Value)} " +
+        if (schedulerInput.Periodicity == EnumConfiguration.Recurrent)
+            if (schedulerInput.DailyEndTime.HasValue || schedulerInput.DailyStartTime.HasValue)
+                return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {period} between {TimeSpanToString(schedulerInput.DailyStartTime!.Value)} and {TimeSpanToString(schedulerInput.DailyEndTime!.Value)} " +
                        $"starting on {startDateStr}";
 
         return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {period} starting on {startDateStr}";
     }
 
-    private static string BuildDailyDescription(SchedulerInput requestedDate, TimeZoneInfo tz, DateTimeOffset nextLocal) {
-        var startDateStr = ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
+    private static string BuildDailyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+        var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
 
-        if (requestedDate.Periodicity == EnumConfiguration.Recurrent) {
-            var periodStr = requestedDate.DailyPeriod.HasValue ? FormatPeriod(requestedDate.DailyPeriod.Value) : "1 day";
-            if (requestedDate is { DailyStartTime: not null, DailyEndTime: not null }) {
-                return $"Occurs every {periodStr} between {TimeSpanToString(requestedDate.DailyStartTime!.Value)} and {TimeSpanToString(requestedDate.DailyEndTime!.Value)} " +
+        if (schedulerInput.Periodicity == EnumConfiguration.Recurrent) {
+            var periodStr = schedulerInput.DailyPeriod.HasValue ? FormatPeriod(schedulerInput.DailyPeriod.Value) : "1 day";
+            if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null }) {
+                return $"Occurs every {periodStr} between {TimeSpanToString(schedulerInput.DailyStartTime!.Value)} and {TimeSpanToString(schedulerInput.DailyEndTime!.Value)} " +
                        $"at starting on {startDateStr}";
             }
             return $"Occurs every {periodStr}. Schedule will be used on {FormatDate(nextLocal)} " +
                    $"at {FormatTime(nextLocal)} starting on {startDateStr}";
         }
 
-        return BuildOnceDescription(requestedDate, tz, nextLocal);
+        return BuildOnceDescription(schedulerInput, tz, nextLocal);
     }
 
-    public static DateTime ConvertStartDateToZone(SchedulerInput requestedDate, TimeZoneInfo tz) {
-        var startInZone = TimeZoneInfo.ConvertTime(requestedDate.StartDate, tz);
+    public static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        var startInZone = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, tz);
         return startInZone.Date;
     }
 

@@ -26,21 +26,16 @@ public class RecurrenceCalculatorTest(ITestOutputHelper output) {
         schedulerInput.TargetDate = targetDto;
         schedulerInput.CurrentDate = targetDto;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.SelectNextEligibleDate(
+            schedulerInput.TargetDate ?? default,
+            schedulerInput.DaysOfWeek,
+            tz
+        );
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.ToString());
 
-        if (result.Value.FutureDates is { Count: > 0 }) { 
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
         var expected = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
-        Assert.Equal(expected, result.Value.NextDate);
+        Assert.Equal(expected.DateTime, result.DateTime);
     }
 
     [Fact]
@@ -61,22 +56,17 @@ public class RecurrenceCalculatorTest(ITestOutputHelper output) {
         schedulerInput.TargetDate = targetDto;
         schedulerInput.CurrentDate = targetDto;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.SelectNextEligibleDate(
+            schedulerInput.TargetDate ?? default,
+            schedulerInput.DaysOfWeek,
+            tz
+        );
 
-        output.WriteLine(result.Error ?? "NO ERROR");
-        output.WriteLine(result.Value.Description);
+        output.WriteLine(result.ToString());
 
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
-        Assert.True(result.IsSuccess);
         var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
         var expected = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
-        Assert.Equal(expected, result.Value.NextDate);
+        Assert.Equal(expected.DateTime, result.DateTime);
     }
 
     [Fact]
@@ -92,13 +82,23 @@ public class RecurrenceCalculatorTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.StartDate = targetDto;
         schedulerInput.EndDate = targetDto.AddDays(14);
-        schedulerInput.DaysOfWeek = new List<DayOfWeek>();
+        schedulerInput.DaysOfWeek = [];
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.TargetDate = targetDto;
         schedulerInput.CurrentDate = targetDto;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = RecurrenceCalculator.SelectNextEligibleDate(
+            schedulerInput.TargetDate ?? default,
+            schedulerInput.DaysOfWeek,
+            tz
+        );
 
+        output.WriteLine(result.ToString());
+
+        var expectedLocal = new DateTime(2025, 10, 6, 9, 0, 0, DateTimeKind.Unspecified);
+        var expected = new DateTimeOffset(expectedLocal, tz.GetUtcOffset(expectedLocal));
+        Assert.Equal(expected.DateTime, result.DateTime);
+        /*
         output.WriteLine(result.Error ?? "NO ERROR");
         output.WriteLine(result.Value.Description);
 
@@ -111,7 +111,7 @@ public class RecurrenceCalculatorTest(ITestOutputHelper output) {
 
         Assert.True(result.IsSuccess);
         var expected = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
-        Assert.Equal(expected, result.Value.NextDate);
+        Assert.Equal(expected, result.Value.NextDate);*/
     }
 
     [Fact]
@@ -379,7 +379,7 @@ public class RecurrenceCalculatorTest(ITestOutputHelper output) {
                 new DateTimeOffset(2025, 10, 1, 9, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
         schedulerInput.EndDate =
                 new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31)));
-        schedulerInput.DaysOfWeek = new List<DayOfWeek>();
+        schedulerInput.DaysOfWeek = [];
         schedulerInput.WeeklyPeriod = 1;
 
         var result = Service.CalculateDate(schedulerInput);

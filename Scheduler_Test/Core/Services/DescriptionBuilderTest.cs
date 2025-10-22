@@ -75,7 +75,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [Fact]
     public void DescriptionBuilder_ShouldSucceed_WhenExpectedString() {
         var tz = RecurrenceCalculator.GetTimeZone();
-        var requestedDate = new SchedulerInput {
+        var schedulerInput = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
             Periodicity = EnumConfiguration.Recurrent,
             Recurrency = EnumRecurrency.Daily,
@@ -86,12 +86,12 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var nextLocal = new DateTimeOffset(2025, 10, 5, 10, 15, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 10, 15, 0)));
 
-        var periodStr = DescriptionBuilder.FormatPeriod(requestedDate.DailyPeriod.Value);
-        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
+        var periodStr = DescriptionBuilder.FormatPeriod(schedulerInput.DailyPeriod.Value);
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
         var expected = $"Occurs every {periodStr}. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
                        $"at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(requestedDate, tz, nextLocal);
+        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -100,7 +100,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [Fact]
     public void DescriptionBuilder_ShouldSucceed_WhenNoDailyPeriod() {
         var tz = RecurrenceCalculator.GetTimeZone();
-        var requestedDate = new SchedulerInput {
+        var schedulerInput = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 3, 2, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 3, 2))),
             Periodicity = EnumConfiguration.Once,
             Recurrency = EnumRecurrency.Daily
@@ -110,10 +110,10 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var nextLocal = new DateTimeOffset(2025, 10, 5, 14, 45, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 14, 45, 0)));
 
-        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(requestedDate, tz).ToShortDateString();
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
         var expected = $"Occurs once: Schedule will be used on {nextLocal.Date.ToShortDateString()} at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(requestedDate, tz, nextLocal);
+        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -122,12 +122,12 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [Fact]
     public void DescriptionBuilder_ShouldSucceed_WhenConvertToGivenTimeZoneDate() {
         var tz = RecurrenceCalculator.GetTimeZone();
-        var requestedDate = new SchedulerInput {
+        var schedulerInput = new SchedulerInput {
             StartDate = new DateTimeOffset(2025, 10, 5, 23, 0, 0, TimeSpan.Zero) // UTC 2025-10-05 23:00
         };
 
-        var converted = DescriptionBuilder.ConvertStartDateToZone(requestedDate, tz);
-        var expected = TimeZoneInfo.ConvertTime(requestedDate.StartDate, tz).Date;
+        var converted = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz);
+        var expected = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, tz).Date;
 
         Assert.Equal(expected, converted);
     }

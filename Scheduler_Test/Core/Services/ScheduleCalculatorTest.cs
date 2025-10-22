@@ -17,7 +17,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
         schedulerInput.EndDate = DateTimeOffset.Now.AddDays(180);
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
         output.WriteLine(result.Value.Description);
@@ -46,7 +46,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday]; ;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
         output.WriteLine(result.Value.Description);
@@ -68,7 +68,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
 
         schedulerInput!.Periodicity = (EnumConfiguration) 5;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
 

@@ -28,7 +28,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = CalculateOneTime.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "Success");
 
@@ -60,7 +60,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = CalculateOneTime.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
         output.WriteLine(result.Value.Description);
@@ -96,7 +96,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.DailyPeriod = new TimeSpan(2, 0, 0, 0);
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = CalculateOneTime.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
 
@@ -116,7 +116,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.TargetDate = null;
 
-        var result = Service.CalculateDate(schedulerInput);
+        var result = CalculateOneTime.CalculateDate(schedulerInput);
 
         output.WriteLine(result.Error ?? "NO ERROR");
 
