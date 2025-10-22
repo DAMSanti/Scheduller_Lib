@@ -306,7 +306,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday };
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
 
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
@@ -342,7 +342,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Wednesday };
+        schedulerInput.DaysOfWeek = [DayOfWeek.Wednesday];
         schedulerInput.DailyStartTime = new TimeSpan(9, 0, 0);
         schedulerInput.DailyEndTime = new TimeSpan(13, 0, 0);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);

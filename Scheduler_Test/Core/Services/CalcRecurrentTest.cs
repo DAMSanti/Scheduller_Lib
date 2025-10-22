@@ -260,7 +260,10 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
         var value = result.Value!;
-        value.FutureDates = futureDatesArr.Select(DateTimeOffset.Parse).ToList();
+
+        //value.FutureDates = futureDatesArr.Select(DateTimeOffset.Parse).ToList();
+        value.FutureDates = [.. futureDatesArr.Select(DateTimeOffset.Parse)];
+
         value.FutureDates.RemoveAll(d => d == value.NextDate);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
