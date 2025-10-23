@@ -11,7 +11,6 @@ public class RecurrenceCalculator {
         var targetLocal = targetDate.DateTime;
         var candidates = daysOfWeek
             .Select(day => NextWeekday(targetLocal, day, tz))
-            .Where(dateTimeOffset => dateTimeOffset != null && dateTimeOffset.Value.DateTime >= targetLocal)
             .OrderBy(dateTimeOffset => dateTimeOffset!.Value.DateTime)
             .Select(dateTimeOffset => dateTimeOffset!.Value)
             .ToList();
@@ -78,8 +77,6 @@ public class RecurrenceCalculator {
 
                 FillWeeklySlots(schedulerInput, tz, endDate, slotStep, baseDateTimeOffset, dates);
                 dates.Sort();
-                break;
-            default:
                 break;
         }
         return dates;
@@ -216,7 +213,6 @@ public class RecurrenceCalculator {
             var offset = tz.GetUtcOffset(candidateLocal.Value);
             var candidate = new DateTimeOffset(candidateLocal.Value, offset);
 
-            if (candidate > (schedulerInput.EndDate ?? DateTimeOffset.MaxValue)) continue;
             if (candidate <= nextEligible) continue;
             if (!accumulator.Contains(candidate)) accumulator.Add(candidate);
         }

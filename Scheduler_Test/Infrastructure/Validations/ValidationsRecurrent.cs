@@ -197,5 +197,4 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);
     }
-
 }
