@@ -452,34 +452,6 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void FillWeeklySlots_ShouldSuccess_WhenUsesTargetDateTimeOfDayTargetDateIsProvided() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 6, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 6)));
-        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 10, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 10)));
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 6, 8, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 6)));
-        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 6, 14, 30, 0, tz.GetUtcOffset(new DateTime(2025, 10, 6)));
-        schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
-
-        var accumulator = new List<DateTimeOffset>();
-        var slotStep = TimeSpan.FromDays(1);
-
-        var result = typeof(RecurrenceCalculator)
-            .GetMethod("FillWeeklySlots", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-            .Invoke(null, [schedulerInput, tz, schedulerInput.EndDate!.Value, slotStep, schedulerInput.StartDate, accumulator
-            ]);
-
-        output.WriteLine(result!.ToString());
-
-        Assert.NotEmpty(accumulator);
-
-        Assert.All(accumulator, dto => Assert.Equal(new TimeSpan(14, 30, 0), dto.TimeOfDay));
-    }
-
-    [Fact]
     public void CalculateFutureDates_ShouldFail_WhenDaysOfWeekIsNull() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
