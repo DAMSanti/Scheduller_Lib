@@ -277,4 +277,54 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         Assert.Equal(expectedCount, value.FutureDates.Count);
     }
+
+    [Fact]
+    public void CalculateRecurrent_ShouldUse_OccursOnceAt_ForNextDate() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var baseLocal = new DateTime(2025, 10, 05, 8, 30, 0);
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03)));
+        schedulerInput.OccursOnce = true;
+        schedulerInput.OccursEvery = false;
+        schedulerInput.OccursOnceAt = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+
+        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        Assert.True(result.IsSuccess);
+        var expected = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+        Assert.Equal(expected, result.Value!.NextDate);
+    }
+
+    [Fact]
+    public void CalculateRecurrent_ShouldUse_TargetDate_WhenPresent() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var targetLocal = new DateTime(2025, 10, 05, 9, 15, 0);
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03)));
+        schedulerInput.OccursOnce = false;
+        schedulerInput.OccursEvery = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        schedulerInput.TargetDate = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
+
+        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        Assert.True(result.IsSuccess);
+        var expected = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
+        Assert.Equal(expected, result.Value!.NextDate);
+    }
 }

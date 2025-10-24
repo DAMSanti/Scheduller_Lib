@@ -31,12 +31,17 @@ public class CalculateRecurrent {
                 futureDates.RemoveAll(d => d == next);
             }
         } else {
-            if (schedulerInput.TargetDate.HasValue) {
-                var td = schedulerInput.TargetDate.Value;
-                next = new DateTimeOffset(td.DateTime, tz.GetUtcOffset(td.DateTime));
+            if (schedulerInput.OccursOnce) {
+                var once = schedulerInput.OccursOnceAt!.Value;
+                next = new DateTimeOffset(once.DateTime, tz.GetUtcOffset(once.DateTime));
             } else {
-                var cur = schedulerInput.CurrentDate;
-                next = new DateTimeOffset(cur.DateTime, tz.GetUtcOffset(cur.DateTime));
+                if (schedulerInput.TargetDate.HasValue) {
+                    var td = schedulerInput.TargetDate.Value;
+                    next = new DateTimeOffset(td.DateTime, tz.GetUtcOffset(td.DateTime));
+                } else {
+                    var cur = schedulerInput.CurrentDate;
+                    next = new DateTimeOffset(cur.DateTime, tz.GetUtcOffset(cur.DateTime));
+                }
             }
 
             if (futureDates is { Count: > 0 }) {

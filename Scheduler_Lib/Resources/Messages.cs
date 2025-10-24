@@ -17,4 +17,7 @@ public static class Messages {
     public const string ErrorDailyStartAfterEnd = "ERROR: Your StartTime is after your EndTime.";
     public const string ErrorDuplicateDaysOfWeek = "ERROR: There are duplicated days of the week";
     public const string ErrorApplicationDisabled = "ERROR: The application is disabled.";
+    public const string ErrorDailyModeRequired = "ERROR: Select either 'OccursOnce' or 'OccursEvery'.";
+    public const string ErrorDailyModeConflict = "ERROR: 'OccursOnce' and 'OccursEvery' are mutually exclusive.";
+    public const string ErrorOccursOnceAtNull = "ERROR: The 'Occurs once' date/time must have a value.";
 }

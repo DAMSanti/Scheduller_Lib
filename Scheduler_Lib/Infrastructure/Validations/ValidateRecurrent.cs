@@ -33,11 +33,33 @@ public class ValidationRecurrent {
     }
 
     private static ResultPattern<bool> ValidateDaily(SchedulerInput schedulerInput, StringBuilder errors) {
-        if (!schedulerInput.DailyPeriod.HasValue || schedulerInput.DailyPeriod <= TimeSpan.Zero)
-            errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
-        
-        if (schedulerInput.DailyStartTime > schedulerInput.DailyEndTime)
-            errors.AppendLine(Messages.ErrorDailyStartAfterEnd);
+        switch (schedulerInput.OccursOnce) {
+            case true when schedulerInput.OccursEvery:
+                errors.AppendLine(Messages.ErrorDailyModeConflict);
+                break;
+            case false when !schedulerInput.OccursEvery:
+                errors.AppendLine(Messages.ErrorDailyModeRequired);
+                break;
+        }
+
+        if (schedulerInput.OccursEvery) {
+            if (!schedulerInput.DailyPeriod.HasValue || schedulerInput.DailyPeriod <= TimeSpan.Zero)
+                errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
+
+            if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null } && schedulerInput.DailyStartTime > schedulerInput.DailyEndTime)
+                errors.AppendLine(Messages.ErrorDailyStartAfterEnd);
+        }
+
+        if (!schedulerInput.OccursOnce)
+            return errors.Length > 0
+                ? ResultPattern<bool>.Failure(errors.ToString())
+                : ResultPattern<bool>.Success(true);
+        if (!schedulerInput.OccursOnceAt.HasValue)
+            errors.AppendLine(Messages.ErrorOccursOnceAtNull);
+        else {
+            if (schedulerInput.OccursOnceAt < schedulerInput.StartDate || (schedulerInput.EndDate.HasValue && schedulerInput.OccursOnceAt > schedulerInput.EndDate))
+                errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
+        }
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
