@@ -11,6 +11,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldSucceed_WhenWeeklyConfigurationIsValid() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
@@ -38,6 +39,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenInvalidInputs(string? startDate, string? currentDate, EnumConfiguration periodicity, EnumRecurrency recurrency, string expectedError) { 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = currentDate != null ? DateTimeOffset.Parse(currentDate) : default;
         schedulerInput.StartDate = startDate != null ? DateTimeOffset.Parse(startDate) : default;
         schedulerInput.Periodicity = periodicity;
@@ -55,6 +57,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenMissingFields() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = DateTimeOffset.Parse("2025-10-03");
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = DateTimeOffset.Parse("2025-12-31");
@@ -90,6 +93,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenNoStartDate() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
@@ -109,6 +113,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedPeriodicity() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = (EnumConfiguration)99;
@@ -126,6 +131,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedRecurrency() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Once;
@@ -143,6 +149,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_DirectMethod_ShouldSucceed_WhenAllValid() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Once;
@@ -159,6 +166,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldSucceed_WhenOnceDaily() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);

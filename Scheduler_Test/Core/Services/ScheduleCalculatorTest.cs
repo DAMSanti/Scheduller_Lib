@@ -36,6 +36,9 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
     public void GetScheduleCalculator_ShouldSuccess_WhenPeriodicityRecurrent() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
+        schedulerInput.OccursOnce = false;
+        schedulerInput.OccursEvery = true;
         schedulerInput!.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.CurrentDate = DateTimeOffset.Now.AddDays(15);
         schedulerInput.StartDate = DateTimeOffset.Now;

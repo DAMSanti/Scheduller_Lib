@@ -17,6 +17,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
     public void ValidateOnce_ShouldFail_WhenInvalidDates(string? startDate, string? endDate, string? targetDate, string expectedError) {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = startDate != null ? DateTimeOffset.Parse(startDate) : default;
         schedulerInput.EndDate = endDate != null ? DateTimeOffset.Parse(endDate) : null;
@@ -41,6 +42,7 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
     public void ValidateOnce_ShouldSucceed_WhenValidDates(string? startDate, string? endDate, string targetDate) {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = startDate != null ? DateTimeOffset.Parse(startDate) : new DateTimeOffset();
         schedulerInput.EndDate = endDate != null ? DateTimeOffset.Parse(endDate) : null;
@@ -67,6 +69,8 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
     [Fact]
     public void ValidateOnce_ShouldFail_WhenPeriodicityOnceRecurrencyWeekly() {
         var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Enabled = true;
         schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero);

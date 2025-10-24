@@ -13,6 +13,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
@@ -42,6 +43,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.Enabled = true;
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
