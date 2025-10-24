@@ -8,6 +8,9 @@ public static class Validations {
         if (schedulerInput == null)
             return ResultPattern<bool>.Failure(Messages.ErrorRequestNull);
 
+        if (!schedulerInput.Enabled)
+            return ResultPattern<bool>.Failure(Messages.ErrorApplicationDisabled);
+
         if (schedulerInput.Periodicity != EnumConfiguration.Once && schedulerInput.Periodicity != EnumConfiguration.Recurrent)
             return ResultPattern<bool>.Failure(Messages.ErrorUnsupportedPeriodicity);
 

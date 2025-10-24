@@ -173,4 +173,45 @@ public class ValidationsTest(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);
     }
+
+    [Fact]
+    public void ValidateCalculateDate_ShouldFail_WhenEnabledIsFalse() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var baseLocal = new DateTime(2025, 01, 01);
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Enabled = false;
+        schedulerInput.CurrentDate = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+        schedulerInput.StartDate = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = Validations.ValidateCalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.ToString() : result.Error);
+        Assert.False(result.IsSuccess);
+        Assert.Equal(Messages.ErrorApplicationDisabled, result.Error);
+    }
+
+    [Fact]
+    public void SchedulerService_CalculateDate_ShouldFail_WhenEnabledIsFalse() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var baseLocal = new DateTime(2025, 02, 01);
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Enabled = false;
+        schedulerInput.CurrentDate = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+        schedulerInput.StartDate = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(1);
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+        Assert.False(result.IsSuccess);
+        Assert.Equal(Messages.ErrorApplicationDisabled, result.Error);
+    }
 }
