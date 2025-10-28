@@ -96,7 +96,7 @@ public class RecurrenceCalculator {
         }
 
         while (startFrom <= endDate) {
-            var adjustedDate = new DateTimeOffset(startFrom.DateTime, tz.GetUtcOffset(startFrom.DateTime));
+            var adjustedDate = CreateDateTimeOffset(startFrom.DateTime, tz);
             accumulator.Add(adjustedDate);
 
             startFrom = startFrom.Add(step);
@@ -148,7 +148,8 @@ public class RecurrenceCalculator {
         var period = schedulerInput.DailyPeriod ?? TimeSpan.FromDays(3);
         var beginning = GetBaseLocal(schedulerInput);
 
-        return beginning.Add(period * 1000);
+        const int defaultPeriodMultiplier = 1000;
+        return beginning.Add(period * defaultPeriodMultiplier);
     }
 
     private static DateTime GetBaseLocal(SchedulerInput schedulerInput) {
@@ -210,8 +211,7 @@ public class RecurrenceCalculator {
             var candidateLocal = GetCandidateLocalForWeekAndDay(weekStart, day, timeOfDay);
             if (candidateLocal == null) continue;
 
-            var offset = tz.GetUtcOffset(candidateLocal.Value);
-            var candidate = new DateTimeOffset(candidateLocal.Value, offset);
+            var candidate = CreateDateTimeOffset(candidateLocal.Value, tz);
 
             if (candidate <= nextEligible) continue;
             if (!accumulator.Contains(candidate)) accumulator.Add(candidate);
@@ -235,7 +235,7 @@ public class RecurrenceCalculator {
     private static DateTimeOffset GetBaseDateTimeOffset(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         if (schedulerInput.TargetDate.HasValue) {
             var td = schedulerInput.TargetDate.Value.DateTime;
-            return new DateTimeOffset(td, tz.GetUtcOffset(td));
+            return CreateDateTimeOffset(td, tz);
         }
 
         if (schedulerInput.CurrentDate != default) {

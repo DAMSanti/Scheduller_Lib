@@ -62,8 +62,11 @@ public class DescriptionBuilder {
 
     public static string TimeSpanToString(TimeSpan timeSpan) {
         var dateTime = DateTime.Today.Add(timeSpan);
+        var hour12 = dateTime.Hour % 12;
+        if (hour12 == 0) hour12 = 12;
+
         var period = dateTime.Hour < 12 ? "AM" : "PM";
-        return $"{dateTime.Hour:D2}:{dateTime.Minute:D2} {period}";
+        return $"{hour12:D2}:{dateTime.Minute:D2} {period}";
     }
 
     public static string FormatPeriod(TimeSpan period) {

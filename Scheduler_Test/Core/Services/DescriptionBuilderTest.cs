@@ -47,7 +47,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var periodStr = DescriptionBuilder.FormatPeriod(schedulerInput.DailyPeriod.Value);
         var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {string.Join(", ", schedulerInput.DaysOfWeek!.Select(d => d.ToString()))} every {periodStr} " +
-                       $"between 08:30 AM and 17:00 PM starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
+                       $"between 08:30 AM and 05:00 PM starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
         var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
@@ -115,7 +115,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var ts = new TimeSpan(5, 30, 0);
         Assert.Equal("05:30 AM", DescriptionBuilder.TimeSpanToString(ts));
-        Assert.Equal("14:30 PM", DescriptionBuilder.TimeSpanToString(new TimeSpan(14, 30, 0)));
+        Assert.Equal("02:30 PM", DescriptionBuilder.TimeSpanToString(new TimeSpan(14, 30, 0)));
     }
 
     [Fact]
@@ -172,7 +172,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var periodStr = DescriptionBuilder.FormatPeriod(schedulerInput.DailyPeriod.Value);
         var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
-        var expected = $"Occurs every {periodStr} between 08:00 AM and 17:00 PM " +
+        var expected = $"Occurs every {periodStr} between 08:00 AM and 05:00 PM " +
                        $"at starting on {startDateStr}";
 
         var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
@@ -188,7 +188,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         output.WriteLine(actual);
 
-        Assert.Equal("14:30 PM", actual);
+        Assert.Equal("02:30 PM", actual);
     }
 
     [Theory]
@@ -346,7 +346,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         output.WriteLine(actual);
 
-        Assert.Equal("00:00 AM", actual);
+        Assert.Equal("12:00 AM", actual);
     }
 
     [Fact]

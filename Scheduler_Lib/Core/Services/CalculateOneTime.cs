@@ -6,14 +6,15 @@ public class CalculateOneTime {
     public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput schedulerInput) {
         var validation = ValidationOnce.ValidateOnce(schedulerInput);
 
-        return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) : 
-            ResultPattern<SchedulerOutput>.Success(BuildResult(schedulerInput));
+        return !validation.IsSuccess
+            ? ResultPattern<SchedulerOutput>.Failure(validation.Error ?? "Unknown validation error")
+            : ResultPattern<SchedulerOutput>.Success(BuildResult(schedulerInput));
     }
 
     private static SchedulerOutput BuildResult(SchedulerInput schedulerInput) {
         var tz = RecurrenceCalculator.GetTimeZone();
-
-        var next = new DateTimeOffset(schedulerInput.TargetDate!.Value.DateTime, tz.GetUtcOffset(schedulerInput.TargetDate!.Value.DateTime));
+        var targetDate = schedulerInput.TargetDate!.Value;
+        var next = new DateTimeOffset(targetDate.DateTime, tz.GetUtcOffset(targetDate.DateTime));
 
         return new SchedulerOutput {
             NextDate = next,
