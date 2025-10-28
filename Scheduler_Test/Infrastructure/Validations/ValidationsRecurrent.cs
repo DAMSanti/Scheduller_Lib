@@ -14,9 +14,9 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateRecurrent_ShouldFail_WhenInvalidPeriod(double? periodDays, string expectedError) {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -38,9 +38,9 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateRecurrent_ShouldFail_WhenInvalidDateAndTimeRanges(string startDate, string? endDate, int startTime, int endTime, string expectedError) {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = DateTimeOffset.Parse(startDate);
         schedulerInput.EndDate = DateTimeOffset.Parse(endDate!);
@@ -65,7 +65,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateRecurrent_ShouldFail_WhenInvalidDaysOfWeek(DayOfWeek[]? daysOfWeek, string expectedError) {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -90,7 +90,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateRecurrent_ShouldSuccess_WhenAllDataCorrect(string currentDate, string startDate, string? endDate) {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = DateTimeOffset.Parse(currentDate);
         schedulerInput.StartDate = DateTimeOffset.Parse(startDate); 
         schedulerInput.EndDate = endDate != null ? DateTimeOffset.Parse(endDate) : null;
@@ -161,9 +161,9 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateRecurrent_ShouldFail_WhenMultipleInvalidConditions() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2024, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -185,9 +185,9 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateRecurrent_ShouldSucceed_WhenDailyRecurrent() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);

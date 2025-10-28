@@ -11,7 +11,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldSucceed_WhenWeeklyConfigurationIsValid() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
@@ -39,7 +39,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenInvalidInputs(string? startDate, string? currentDate, EnumConfiguration periodicity, EnumRecurrency recurrency, string expectedError) { 
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = currentDate != null ? DateTimeOffset.Parse(currentDate) : default;
         schedulerInput.StartDate = startDate != null ? DateTimeOffset.Parse(startDate) : default;
         schedulerInput.Periodicity = periodicity;
@@ -57,7 +57,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenMissingFields() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = DateTimeOffset.Parse("2025-10-03");
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = DateTimeOffset.Parse("2025-12-31");
@@ -93,7 +93,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenNoStartDate() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
@@ -113,7 +113,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedPeriodicity() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = (EnumConfiguration)99;
@@ -131,7 +131,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_DirectMethod_ShouldFail_WhenUnsupportedRecurrency() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Once;
@@ -149,7 +149,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_DirectMethod_ShouldSucceed_WhenAllValid() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Once;
@@ -166,7 +166,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldSucceed_WhenOnceDaily() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -189,7 +189,7 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = false;
+        schedulerInput.EnabledChk = false;
         schedulerInput.CurrentDate = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
         schedulerInput.StartDate = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
         schedulerInput.Periodicity = EnumConfiguration.Once;
@@ -210,8 +210,8 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.OccursOnce = true;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursEveryChk = true;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
@@ -228,8 +228,8 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = false;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = false;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
@@ -246,8 +246,8 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = null;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
@@ -265,8 +265,8 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromHours(1);
         schedulerInput.DailyStartTime = new TimeSpan(18, 0, 0);
         schedulerInput.DailyEndTime = new TimeSpan(8, 0, 0);
@@ -286,8 +286,8 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.OccursOnce = true;
-        schedulerInput.OccursEvery = false;
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursEveryChk = false;
         schedulerInput.OccursOnceAt = null;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);

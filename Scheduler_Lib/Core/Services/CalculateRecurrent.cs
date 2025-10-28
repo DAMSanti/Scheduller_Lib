@@ -31,7 +31,7 @@ public class CalculateRecurrent {
                 futureDates.RemoveAll(d => d == next);
             }
         } else {
-            if (schedulerInput.OccursOnce) {
+            if (schedulerInput.OccursOnceChk) {
                 var once = schedulerInput.OccursOnceAt!.Value;
                 next = new DateTimeOffset(once.DateTime, tz.GetUtcOffset(once.DateTime));
             } else {

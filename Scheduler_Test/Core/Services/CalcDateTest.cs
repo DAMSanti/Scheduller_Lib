@@ -11,9 +11,9 @@ public class CalcDateTest(ITestOutputHelper output) {
     public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationOnceDaily() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = true;
-        schedulerInput.OccursEvery = false;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursEveryChk = false;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -33,9 +33,9 @@ public class CalcDateTest(ITestOutputHelper output) {
     public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationRecurrentDaily() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -54,9 +54,9 @@ public class CalcDateTest(ITestOutputHelper output) {
     public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationRecurrentWeekly() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -94,7 +94,7 @@ public class CalcDateTest(ITestOutputHelper output) {
     public void CalculateDate_ShouldFail_WhenUnsupportedPeriodicity() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -113,7 +113,7 @@ public class CalcDateTest(ITestOutputHelper output) {
     public void CalculateDate_ShouldFail_WhenEndDateBeforeStartDate() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
+        schedulerInput.EnabledChk = true;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);

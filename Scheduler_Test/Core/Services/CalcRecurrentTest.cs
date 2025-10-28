@@ -14,9 +14,9 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
         schedulerInput.StartDate = startDate != null ? new DateTimeOffset(
@@ -60,9 +60,9 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     public void CalculateNextDate_ShouldSuccess_WhenExpectedNextDate(string currentDate, string startDate, string endDate, EnumRecurrency recurrency, string expectedNextDate) {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.CurrentDate = DateTimeOffset.Parse(currentDate);
         schedulerInput.StartDate = DateTimeOffset.Parse(startDate);
         schedulerInput.EndDate = DateTimeOffset.Parse(endDate);
@@ -90,9 +90,9 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     public void CalculateDailyRecurrent_ShouldFail_WhenPeriodIsNullOrNonPositive() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -197,9 +197,9 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     public void CalculateDailyRecurrent_ShouldSuccess_WhenFutureDates() {
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
@@ -259,9 +259,9 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
-        schedulerInput.Enabled = true;
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.EnabledChk = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
@@ -305,8 +305,8 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03)));
-        schedulerInput.OccursOnce = true;
-        schedulerInput.OccursEvery = false;
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursEveryChk = false;
         schedulerInput.OccursOnceAt = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
@@ -330,8 +330,8 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03)));
-        schedulerInput.OccursOnce = false;
-        schedulerInput.OccursEvery = true;
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
         schedulerInput.TargetDate = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 

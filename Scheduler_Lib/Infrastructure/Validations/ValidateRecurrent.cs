@@ -33,16 +33,16 @@ public class ValidationRecurrent {
     }
 
     private static ResultPattern<bool> ValidateDaily(SchedulerInput schedulerInput, StringBuilder errors) {
-        switch (schedulerInput.OccursOnce) {
-            case true when schedulerInput.OccursEvery:
+        switch (schedulerInput.OccursOnceChk) {
+            case true when schedulerInput.OccursEveryChk:
                 errors.AppendLine(Messages.ErrorDailyModeConflict);
                 break;
-            case false when !schedulerInput.OccursEvery:
+            case false when !schedulerInput.OccursEveryChk:
                 errors.AppendLine(Messages.ErrorDailyModeRequired);
                 break;
         }
 
-        if (schedulerInput.OccursEvery) {
+        if (schedulerInput.OccursEveryChk) {
             if (!schedulerInput.DailyPeriod.HasValue || schedulerInput.DailyPeriod <= TimeSpan.Zero)
                 errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
 
@@ -50,7 +50,7 @@ public class ValidationRecurrent {
                 errors.AppendLine(Messages.ErrorDailyStartAfterEnd);
         }
 
-        if (!schedulerInput.OccursOnce)
+        if (!schedulerInput.OccursOnceChk)
             return errors.Length > 0
                 ? ResultPattern<bool>.Failure(errors.ToString())
                 : ResultPattern<bool>.Success(true);
