@@ -56,11 +56,9 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         output.WriteLine(result.Value.Description);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
@@ -123,5 +121,262 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
         Assert.Contains(Messages.ErrorTargetDateNull, result.Error ?? string.Empty);
+    }
+
+    [Theory]
+    [InlineData("2025-10-01", null, "2025-10-02")]
+    [InlineData("2025-10-01", null, "2025-11-01")]
+    [InlineData("2025-01-01", null, "2025-12-31")]
+    public void ValidateOnce_ShouldSucceed_WhenEndDateIsNullWithValidTargetDate(string startDate, string? endDate, string targetDate) {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = DateTimeOffset.Parse(startDate);
+        schedulerInput.EndDate = endDate != null ? DateTimeOffset.Parse(endDate) : null;
+        schedulerInput.TargetDate = DateTimeOffset.Parse(targetDate);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine($"StartDate: {startDate}, EndDate: null, TargetDate: {targetDate}");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenEndDateNotNullAndStartDateLessThanEndDate() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenTargetDateValidWithEndDateNull() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = null;
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenEndDateNotNullAndStartDateEqualsEndDate() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenTargetDateNotNullAndBetweenStartAndEnd() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenTargetDateNotNullEqualsStartDateWithEndDatePresent() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenTargetDateNotNullEqualsEndDate() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenPeriodicityIsNotOnce() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenRecurrencyIsNotWeeklyWithOnce() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenPeriodicityRecurrentAndRecurrencyDaily() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenPeriodicityRecurrentAndRecurrencyMonthly() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 11, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value);
+    }
+
+    [Theory]
+    [InlineData("2025-10-01", "2025-10-31", "2025-10-01")]
+    [InlineData("2025-10-01", "2025-10-31", "2025-10-31")]
+    [InlineData("2025-10-01", "2025-10-31", "2025-10-15")]
+    public void ValidateOnce_ShouldSucceed_WhenTargetDateInValidRangeVariations(string startDate, string endDate, string targetDate) {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = DateTimeOffset.Parse(startDate);
+        schedulerInput.EndDate = DateTimeOffset.Parse(endDate);
+        schedulerInput.TargetDate = DateTimeOffset.Parse(targetDate);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine($"StartDate: {startDate}, EndDate: {endDate}, TargetDate: {targetDate}");
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldSucceed_WhenEndDateNullAndTargetDateGreaterThanStartDate() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = null;
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 12, 25, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void ValidateOnce_ShouldFail_WhenEndDateNullAndTargetDateLessThanStartDate() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = null;
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+
+        var result = ValidationOnce.ValidateOnce(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
     }
 }

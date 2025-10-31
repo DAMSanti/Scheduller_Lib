@@ -4,11 +4,17 @@ using Scheduler_Lib.Resources;
 namespace Scheduler_Lib.Core.Services;
 
 public class RecurrenceCalculator {
-    public static DateTimeOffset SelectNextEligibleDate(DateTimeOffset targetDate, List<DayOfWeek> daysOfWeek, TimeZoneInfo tz) {
+    public static DateTimeOffset SelectNextEligibleDate(DateTimeOffset targetDate, List<DayOfWeek> daysOfWeek, TimeZoneInfo tz, EnumMonthlyFrequency? monthlyFrequency = null, EnumMonthlyDateType? monthlyDateType = null, DateTime? currentMonth = null) {
         if (targetDate == DateTimeOffset.MinValue)
             return DateTimeOffset.MinValue;
 
         var targetLocal = targetDate.DateTime;
+
+        if (monthlyFrequency.HasValue && monthlyDateType.HasValue && currentMonth.HasValue) {
+            var eligibleDate = GetMonthlyEligibleDate(currentMonth.Value, monthlyFrequency.Value, monthlyDateType.Value, targetLocal.TimeOfDay, tz);
+            return eligibleDate ?? new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
+        }
+
         var candidates = daysOfWeek
             .Select(day => NextWeekday(targetLocal, day, tz))
             .OrderBy(dateTimeOffset => dateTimeOffset!.Value.DateTime)
@@ -50,6 +56,98 @@ public class RecurrenceCalculator {
         return dates;
     }
 
+    public static List<DateTimeOffset> CalculateMonthlyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        var dates = new List<DateTimeOffset>();
+        var baseLocal = GetBaseLocal(schedulerInput);
+        var endLocal = schedulerInput.EndDate ?? GetEffectiveEndDate(schedulerInput);
+
+        var currentMonth = new DateTime(baseLocal.Year, baseLocal.Month, 1);
+        var endMonth = new DateTime(endLocal.DateTime.Year, endLocal.DateTime.Month, 1);
+
+        var iteration = 0;
+        const int maxIterations = Config.MaxIterations;
+
+        var timeOfDay = schedulerInput.TargetDate?.TimeOfDay ?? schedulerInput.StartDate.TimeOfDay;
+
+        while (currentMonth <= endMonth && iteration < maxIterations) {
+            var targetDate = new DateTimeOffset(
+                new DateTime(currentMonth.Year, currentMonth.Month, 1, timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds),
+                tz.GetUtcOffset(currentMonth));
+
+            var nextEligible = SelectNextEligibleDate(targetDate, null!, tz, schedulerInput.MonthlyFrequency, schedulerInput.MonthlyDateType, currentMonth);
+
+            if (nextEligible >= new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal)) && nextEligible <= endLocal && !dates.Contains(nextEligible))
+                dates.Add(nextEligible);
+
+            if (dates.Count >= maxIterations)
+                break;
+
+            var monthlyPeriod = schedulerInput.MonthlyThePeriod ?? 1;
+            currentMonth = currentMonth.AddMonths(monthlyPeriod);
+            iteration++;
+        }
+
+        dates.Sort();
+        return dates;
+    }
+    private static DateTimeOffset? GetMonthlyEligibleDate(DateTime month, EnumMonthlyFrequency frequency, EnumMonthlyDateType dateType, TimeSpan timeOfDay, TimeZoneInfo tz) {
+        var firstDayOfMonth = new DateTime(month.Year, month.Month, 1);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+        List<DateTime> eligibleDays = dateType switch {
+            EnumMonthlyDateType.Day => Enumerable.Range(1, lastDayOfMonth.Day)
+                .Select(d => new DateTime(month.Year, month.Month, d))
+                .ToList(),
+
+            EnumMonthlyDateType.Weekday => GetWeekdaysInMonth(firstDayOfMonth, lastDayOfMonth),
+
+            EnumMonthlyDateType.WeekendDay => GetWeekendDaysInMonth(firstDayOfMonth, lastDayOfMonth),
+
+            _ => GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, (DayOfWeek)(int)dateType)
+        };
+
+        if (eligibleDays.Count == 0)
+            return null;
+
+        var selectedDay = frequency switch  {
+            EnumMonthlyFrequency.First => eligibleDays.First(),
+            EnumMonthlyFrequency.Second => eligibleDays.Count > 1 ? eligibleDays[1] : eligibleDays.Last(),
+            EnumMonthlyFrequency.Third => eligibleDays.Count > 2 ? eligibleDays[2] : eligibleDays.Last(),
+            EnumMonthlyFrequency.Fourth => eligibleDays.Count > 3 ? eligibleDays[3] : eligibleDays.Last(),
+            EnumMonthlyFrequency.Last => eligibleDays.Last(),
+            _ => eligibleDays.First()
+        };
+
+        var resultLocal = new DateTime(selectedDay.Year, selectedDay.Month, selectedDay.Day,
+            timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
+
+        return CreateDateTimeOffset(resultLocal, tz);
+    }
+
+    private static List<DateTime> GetWeekdaysInMonth(DateTime firstDay, DateTime lastDay) {
+        var days = new List<DateTime>();
+        for (var day = firstDay; day <= lastDay; day = day.AddDays(1)) {
+            if (day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday)
+                days.Add(day);
+        }
+        return days;
+    }
+    private static List<DateTime> GetWeekendDaysInMonth(DateTime firstDay, DateTime lastDay) {
+        var days = new List<DateTime>();
+        for (var day = firstDay; day <= lastDay; day = day.AddDays(1)) {
+            if (day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+                days.Add(day);
+        }
+        return days;
+    }
+    private static List<DateTime> GetSpecificDayOfWeekInMonth(DateTime firstDay, DateTime lastDay, DayOfWeek targetDayOfWeek) {
+        var days = new List<DateTime>();
+        for (var day = firstDay; day <= lastDay; day = day.AddDays(1)) {
+            if (day.DayOfWeek == targetDayOfWeek)
+                days.Add(day);
+        }
+        return days;
+    }
     public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
 
@@ -77,6 +175,14 @@ public class RecurrenceCalculator {
 
                 FillWeeklySlots(schedulerInput, tz, endDate, slotStep, baseDateTimeOffset, dates);
                 dates.Sort();
+                break;
+            case EnumRecurrency.Monthly:
+                if (!schedulerInput.MonthlyFrequency.HasValue || !schedulerInput.MonthlyDateType.HasValue)
+                    return dates;
+
+                dates = CalculateMonthlyRecurrence(schedulerInput, tz);
+                break;
+            default:
                 break;
         }
         return dates;

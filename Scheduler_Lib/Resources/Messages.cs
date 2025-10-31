@@ -20,4 +20,11 @@ public static class Messages {
     public const string ErrorDailyModeRequired = "ERROR: Select either 'OccursOnceChk' or 'OccursEveryChk'.";
     public const string ErrorDailyModeConflict = "ERROR: 'OccursOnceChk' and 'OccursEveryChk' are mutually exclusive.";
     public const string ErrorOccursOnceAtNull = "ERROR: The 'Occurs once' date/time must have a value.";
+    public const string ErrorMonthlyModeConflict = "ERROR: 'MonthlyDayChk' and 'MonthlyTheChk' are mutually exclusive.";
+    public const string ErrorMonthlyModeRequired = "ERROR: Select either 'MonthlyDayChk' or 'MonthlyTheChk'.";
+    public const string ErrorMonthlyDayInvalid = "ERROR: Monthly day must be between 1 and 31.";
+    public const string ErrorMonthlyDayPeriodRequired = "ERROR: Monthly day period is required and must be greater than 0.";
+    public const string ErrorMonthlyFrequencyRequired = "ERROR: Monthly frequency is required (First, Second, Third, Fourth, Last).";
+    public const string ErrorMonthlyDateTypeRequired = "ERROR: Monthly date type is required (Monday, Tuesday, Day, Weekday, etc.).";
+    public const string ErrorMonthlyThePeriodRequired = "ERROR: Monthly 'The' period is required and must be greater than 0.";
 }

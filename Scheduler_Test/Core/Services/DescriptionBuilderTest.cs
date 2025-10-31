@@ -436,5 +436,263 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         output.WriteLine(actual);
         Assert.Equal("3.75 seconds", actual);
     }
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyTheChkWithFrequencyAndDateType() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.First;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var nextLocal = new DateTimeOffset(2025, 2, 3, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 3, 10, 0, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs the first Monday of every 1 month(s) starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyTheChkWithLastWeekday() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Last;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Weekday;
+        schedulerInput.MonthlyThePeriod = 2;
+
+        var nextLocal = new DateTimeOffset(2025, 2, 28, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 28, 10, 0, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs the last weekday of every 2 month(s) starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyTheChkWithTimeWindow() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Second;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Friday;
+        schedulerInput.MonthlyThePeriod = 1;
+        schedulerInput.DailyStartTime = new TimeSpan(9, 0, 0);
+        schedulerInput.DailyEndTime = new TimeSpan(17, 0, 0);
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
+
+        var nextLocal = new DateTimeOffset(2025, 2, 14, 9, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 14, 9, 0, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs the second Friday of every 1 month(s) every 2 hours between 09:00 AM and 05:00 PM starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyDayChk() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 15;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var nextLocal = new DateTimeOffset(2025, 2, 15, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 15, 10, 0, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs day 15 of every 1 month(s) starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyDayChkWithTimeWindow() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 20;
+        schedulerInput.MonthlyDayPeriod = 3;
+        schedulerInput.DailyStartTime = new TimeSpan(8, 30, 0);
+        schedulerInput.DailyEndTime = new TimeSpan(18, 0, 0);
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(3);
+
+        var nextLocal = new DateTimeOffset(2025, 4, 20, 8, 30, 0,
+            tz.GetUtcOffset(new DateTime(2025, 4, 20, 8, 30, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs day 20 of every 3 month(s) every 3 hours between 08:30 AM and 06:00 PM starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithWeekendDay() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Third;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.WeekendDay;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var nextLocal = new DateTimeOffset(2025, 2, 15, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 15, 10, 0, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs the third weekend day of every 1 month(s) starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithDay() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Fourth;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Day;
+        schedulerInput.MonthlyThePeriod = 2;
+
+        var nextLocal = new DateTimeOffset(2025, 2, 4, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 4, 10, 0, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs the fourth day of every 2 month(s) starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithAllDaysOfWeek() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var daysToTest = new[] {
+            (EnumMonthlyDateType.Monday, "Monday"),
+            (EnumMonthlyDateType.Tuesday, "Tuesday"),
+            (EnumMonthlyDateType.Wednesday, "Wednesday"),
+            (EnumMonthlyDateType.Thursday, "Thursday"),
+            (EnumMonthlyDateType.Friday, "Friday"),
+            (EnumMonthlyDateType.Saturday, "Saturday"),
+            (EnumMonthlyDateType.Sunday, "Sunday")
+        };
+
+        foreach (var (dateType, expectedDay) in daysToTest) {
+            var schedulerInput = new SchedulerInput();
+            schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+            schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+            schedulerInput.Recurrency = EnumRecurrency.Monthly;
+            schedulerInput.MonthlyTheChk = true;
+            schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.First;
+            schedulerInput.MonthlyDateType = dateType;
+            schedulerInput.MonthlyThePeriod = 1;
+
+            var nextLocal = new DateTimeOffset(2025, 2, 1, 10, 0, 0,
+                tz.GetUtcOffset(new DateTime(2025, 2, 1, 10, 0, 0)));
+
+            var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+            output.WriteLine($"{dateType}: {actual}");
+            Assert.Contains(expectedDay, actual);
+            Assert.Contains("first", actual);
+        }
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithNullPeriods() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.First;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
+        schedulerInput.MonthlyThePeriod = null;
+
+        var nextLocal = new DateTimeOffset(2025, 2, 3, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 3, 10, 0, 0)));
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Contains("1 month(s)", actual);
+    }
+
+    [Fact]
+    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyNeitherDayNorTheChk() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.MonthlyTheChk = false;
+        schedulerInput.MonthlyDayChk = false;
+
+        var nextLocal = new DateTimeOffset(2025, 2, 1, 10, 0, 0,
+            tz.GetUtcOffset(new DateTime(2025, 2, 1, 10, 0, 0)));
+
+        var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+        var expected = $"Occurs day {startDateStr} of every X month(s) starting on {startDateStr}";
+
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+
+        output.WriteLine(actual);
+        Assert.Equal(expected, actual);
+    }
 }
 

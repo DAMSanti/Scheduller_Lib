@@ -15,7 +15,12 @@ public class ValidationRecurrent {
         if (schedulerInput.CurrentDate < schedulerInput.StartDate || schedulerInput.CurrentDate > schedulerInput.EndDate)
             errors.AppendLine(Messages.ErrorDateOutOfRange);
 
-        var validation = schedulerInput.Recurrency == EnumRecurrency.Weekly ? ValidateWeekly(schedulerInput, errors) : ValidateDaily(schedulerInput, errors);
+        var validation = schedulerInput.Recurrency switch {
+            EnumRecurrency.Weekly => ValidateWeekly(schedulerInput, errors),
+            EnumRecurrency.Daily => ValidateDaily(schedulerInput, errors),
+            EnumRecurrency.Monthly => ValidateMonthly(schedulerInput, errors),
+            _ => ResultPattern<bool>.Failure(Messages.ErrorUnsupportedRecurrency)
+        };
 
         return !validation.IsSuccess ? ResultPattern<bool>.Failure(validation.Error!) : ResultPattern<bool>.Success(true);
     }
@@ -62,6 +67,39 @@ public class ValidationRecurrent {
         }
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
+    }
+    private static ResultPattern<bool> ValidateMonthly(SchedulerInput schedulerInput, StringBuilder errors) {
+        switch (schedulerInput.MonthlyDayChk) {
+            case true when schedulerInput.MonthlyTheChk:
+                errors.AppendLine(Messages.ErrorMonthlyModeConflict);
+                break;
+            case false when !schedulerInput.MonthlyTheChk:
+                errors.AppendLine(Messages.ErrorMonthlyModeRequired);
+                break;
+        }
+
+        if (schedulerInput.MonthlyDayChk) {
+            if (schedulerInput.MonthlyDay is null or < 1 or > 31)
+                errors.AppendLine(Messages.ErrorMonthlyDayInvalid);
+
+            if (schedulerInput.MonthlyDayPeriod is null or <= 0)
+                errors.AppendLine(Messages.ErrorMonthlyDayPeriodRequired);
+        }
+
+        if (schedulerInput.MonthlyTheChk) {
+            if (schedulerInput.MonthlyFrequency == null)
+                errors.AppendLine(Messages.ErrorMonthlyFrequencyRequired);
+
+            if (schedulerInput.MonthlyDateType == null)
+                errors.AppendLine(Messages.ErrorMonthlyDateTypeRequired);
+
+            if (schedulerInput.MonthlyThePeriod is null or <= 0)
+                errors.AppendLine(Messages.ErrorMonthlyThePeriodRequired);
+        }
+
+        return errors.Length > 0
+            ? ResultPattern<bool>.Failure(errors.ToString())
+            : ResultPattern<bool>.Success(true);
     }
 }
 

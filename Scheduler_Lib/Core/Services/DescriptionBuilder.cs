@@ -15,6 +15,7 @@ public class DescriptionBuilder {
         return schedulerInput.Recurrency switch {
             EnumRecurrency.Weekly => BuildWeeklyDescription(schedulerInput, tz, nextLocal),
             EnumRecurrency.Daily => BuildDailyDescription(schedulerInput, tz, nextLocal),
+            EnumRecurrency.Monthly => BuildMonthlyDescription(schedulerInput, tz, nextLocal),
             _ => BuildOnceDescription(schedulerInput, tz, nextLocal)
         };
     }
@@ -53,6 +54,75 @@ public class DescriptionBuilder {
         return $"Occurs every {periodStr}. Schedule will be used on {FormatDate(nextLocal)} " +
                $"at {FormatTime(nextLocal)} starting on {startDateStr}";
     }
+
+    private static string BuildMonthlyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+        var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
+
+        if (schedulerInput.MonthlyTheChk) {
+            var frequency = FormatMonthlyFrequency(schedulerInput.MonthlyFrequency!.Value);
+            var dateType = FormatMonthlyDateType(schedulerInput.MonthlyDateType!.Value);
+            var period = schedulerInput.MonthlyThePeriod ?? 1;
+
+            if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null, DailyPeriod: not null }) {
+                var periodStr = FormatPeriod(schedulerInput.DailyPeriod.Value);
+                return $"Occurs the {frequency} {dateType} of every {period} month(s) every {periodStr} between {TimeSpanToString12HourFormat(schedulerInput.DailyStartTime.Value)} and {TimeSpanToString12HourFormat(schedulerInput.DailyEndTime.Value)} starting on {startDateStr}";
+            }
+
+            return $"Occurs the {frequency} {dateType} of every {period} month(s) starting on {startDateStr}";
+        }
+
+        if (schedulerInput.MonthlyDayChk) {
+            var day = schedulerInput.MonthlyDay!.Value;
+            var period = schedulerInput.MonthlyDayPeriod ?? 1;
+
+            if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null, DailyPeriod: not null }) {
+                var periodStr = FormatPeriod(schedulerInput.DailyPeriod.Value);
+                return $"Occurs day {day} of every {period} month(s) every {periodStr} between {TimeSpanToString12HourFormat(schedulerInput.DailyStartTime.Value)} and {TimeSpanToString12HourFormat(schedulerInput.DailyEndTime.Value)} starting on {startDateStr}";
+            }
+
+            return $"Occurs day {day} of every {period} month(s) starting on {startDateStr}";
+        }
+        return $"Occurs day {startDateStr} of every X month(s) starting on {startDateStr}";
+    }
+
+    private static string FormatMonthlyFrequency(EnumMonthlyFrequency frequency)
+    {
+        return frequency switch
+        {
+            EnumMonthlyFrequency.First => "first",
+            EnumMonthlyFrequency.Second => "second",
+            EnumMonthlyFrequency.Third => "third",
+            EnumMonthlyFrequency.Fourth => "fourth",
+            EnumMonthlyFrequency.Last => "last",
+            _ => frequency.ToString().ToLower()
+        };
+    }
+
+    private static string FormatMonthlyDateType(EnumMonthlyDateType dateType)
+    {
+        return dateType switch
+        {
+            EnumMonthlyDateType.Day => "day",
+            EnumMonthlyDateType.Weekday => "weekday",
+            EnumMonthlyDateType.WeekendDay => "weekend day",
+            _ => dateType.ToString()
+        };
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var startInZone = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, tz);

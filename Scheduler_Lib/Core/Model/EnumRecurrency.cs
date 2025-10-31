@@ -2,5 +2,6 @@
 
 public enum EnumRecurrency {
     Weekly, 
-    Daily
+    Daily,
+    Monthly
 }
