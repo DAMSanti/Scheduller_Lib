@@ -90,6 +90,7 @@ public class RecurrenceCalculator {
         dates.Sort();
         return dates;
     }
+
     private static DateTimeOffset? GetMonthlyEligibleDate(DateTime month, EnumMonthlyFrequency frequency, EnumMonthlyDateType dateType, TimeSpan timeOfDay, TimeZoneInfo tz) {
         var firstDayOfMonth = new DateTime(month.Year, month.Month, 1);
         var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);

@@ -20,7 +20,7 @@ public class CalculateRecurrent {
             var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
             next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, schedulerInput.DaysOfWeek!, tz);
         } else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
-            //var futureDates = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
+            var futureDates = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
             next =  new DateTimeOffset(schedulerInput.CurrentDate.DateTime, tz.GetUtcOffset(schedulerInput.CurrentDate.DateTime));
         }else {
             if (schedulerInput.OccursOnceChk) {

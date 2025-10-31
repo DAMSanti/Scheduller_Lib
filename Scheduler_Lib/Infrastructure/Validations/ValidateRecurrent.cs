@@ -84,9 +84,7 @@ public class ValidationRecurrent {
 
             if (schedulerInput.MonthlyDayPeriod is null or <= 0)
                 errors.AppendLine(Messages.ErrorMonthlyDayPeriodRequired);
-        }
-
-        if (schedulerInput.MonthlyTheChk) {
+        } else if (schedulerInput.MonthlyTheChk) {
             if (schedulerInput.MonthlyFrequency == null)
                 errors.AppendLine(Messages.ErrorMonthlyFrequencyRequired);
 
@@ -97,9 +95,7 @@ public class ValidationRecurrent {
                 errors.AppendLine(Messages.ErrorMonthlyThePeriodRequired);
         }
 
-        return errors.Length > 0
-            ? ResultPattern<bool>.Failure(errors.ToString())
-            : ResultPattern<bool>.Success(true);
+        return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 }
 
