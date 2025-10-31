@@ -7,19 +7,18 @@ public class CalculateOneTime {
         var validation = ValidationOnce.ValidateOnce(schedulerInput);
 
         return !validation.IsSuccess
-            ? ResultPattern<SchedulerOutput>.Failure(validation.Error ?? "Unknown validation error")
-            : ResultPattern<SchedulerOutput>.Success(BuildResult(schedulerInput));
+            ? ResultPattern<SchedulerOutput>.Failure(validation.Error!)
+            : ResultPattern<SchedulerOutput>.Success(BuildResultOnce(schedulerInput));
     }
 
-    private static SchedulerOutput BuildResult(SchedulerInput schedulerInput) {
+    private static SchedulerOutput BuildResultOnce(SchedulerInput schedulerInput) {
         var tz = RecurrenceCalculator.GetTimeZone();
         var targetDate = schedulerInput.TargetDate!.Value;
         var next = new DateTimeOffset(targetDate.DateTime, tz.GetUtcOffset(targetDate.DateTime));
 
         return new SchedulerOutput {
             NextDate = next,
-            Description = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, next),
-            FutureDates = null
+            Description = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, next),
         };
     }
 }

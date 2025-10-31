@@ -7,29 +7,18 @@ public class CalculateRecurrent {
         var validation = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
         return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) :
-            ResultPattern<SchedulerOutput>.Success(BuildResult(schedulerInput));
+            ResultPattern<SchedulerOutput>.Success(BuildResultRecurrent(schedulerInput));
     }
 
-    private static SchedulerOutput BuildResult(SchedulerInput schedulerInput) {
+    private static SchedulerOutput BuildResultRecurrent(SchedulerInput schedulerInput) {
         var tz = RecurrenceCalculator.GetTimeZone();
-
-        List<DateTimeOffset>? futureDates = null;
-        if (schedulerInput.Periodicity == EnumConfiguration.Recurrent)
-            futureDates = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
         DateTimeOffset next;
 
         if (schedulerInput.Recurrency == EnumRecurrency.Weekly) {
-
             var baseLocal = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
-
             var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
-
             next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, schedulerInput.DaysOfWeek!, tz);
-
-            if (futureDates is { Count: > 0 }) {
-                futureDates.RemoveAll(d => d == next);
-            }
         } else {
             if (schedulerInput.OccursOnceChk) {
                 var once = schedulerInput.OccursOnceAt!.Value;
@@ -43,16 +32,11 @@ public class CalculateRecurrent {
                     next = new DateTimeOffset(cur.DateTime, tz.GetUtcOffset(cur.DateTime));
                 }
             }
-
-            if (futureDates is { Count: > 0 }) {
-                futureDates.RemoveAll(d => d == next);
-            }
         }
 
         return new SchedulerOutput {
             NextDate = next,
-            Description = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, next),
-            FutureDates = futureDates
+            Description = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, next)
         };
 
     }

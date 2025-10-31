@@ -49,7 +49,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {string.Join(", ", schedulerInput.DaysOfWeek!.Select(d => d.ToString()))} every {periodStr} " +
                        $"between 08:30 AM and 05:00 PM starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
 
@@ -74,7 +74,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {periodStr}. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
                        $"at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -95,7 +95,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var startDateStr = DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
         var expected = $"Occurs once: Schedule will be used on {nextLocal.Date.ToShortDateString()} at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -114,8 +114,8 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         Assert.Equal(expected, converted);
 
         var ts = new TimeSpan(5, 30, 0);
-        Assert.Equal("05:30 AM", DescriptionBuilder.TimeSpanToString(ts));
-        Assert.Equal("02:30 PM", DescriptionBuilder.TimeSpanToString(new TimeSpan(14, 30, 0)));
+        Assert.Equal("05:30 AM", DescriptionBuilder.TimeSpanToString12HourFormat(ts));
+        Assert.Equal("02:30 PM", DescriptionBuilder.TimeSpanToString12HourFormat(new TimeSpan(14, 30, 0)));
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {nextLocal.DayOfWeek} every {periodStr} " +
                        $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
 
@@ -175,7 +175,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {periodStr} between 08:00 AM and 05:00 PM " +
                        $"at starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -184,7 +184,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [Fact]
     public void DescriptionBuilder_ShouldSucceed_WhenPmTimeFormat() {
         var ts = new TimeSpan(14, 30, 0);
-        var actual = DescriptionBuilder.TimeSpanToString(ts);
+        var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
 
         output.WriteLine(actual);
 
@@ -223,7 +223,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {nextLocal.DayOfWeek} every {periodStr} " +
                        $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -248,7 +248,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {nextLocal.DayOfWeek} every {periodStr} " +
                        $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -271,7 +271,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {schedulerInput.WeeklyPeriod} week(s) on {string.Join(", ", schedulerInput.DaysOfWeek!.Select(d => d.ToString()))} every 1 week " +
                        $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -294,7 +294,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every 1 day. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
                        $"at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -322,7 +322,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var nextLocal = new DateTimeOffset(2025, 10, 5, 14, 45, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 14, 45, 0)));
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         
@@ -332,7 +332,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [Fact]
     public void DescriptionBuilder_ShouldSucceed_WhenNoonTime() {
         var ts = new TimeSpan(12, 0, 0);
-        var actual = DescriptionBuilder.TimeSpanToString(ts);
+        var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
 
         output.WriteLine(actual);
 
@@ -342,7 +342,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [Fact]
     public void DescriptionBuilder_ShouldSucceed_WhenMidnightTime() {
         var ts = new TimeSpan(0, 0, 0);
-        var actual = DescriptionBuilder.TimeSpanToString(ts);
+        var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
 
         output.WriteLine(actual);
 
@@ -369,7 +369,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every {periodStr}. Schedule will be used on {nextLocal.Date.ToShortDateString()} " +
                        $"at {nextLocal.DateTime.ToShortTimeString()} starting on {startDateStr}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -395,7 +395,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var expected = $"Occurs every 1 week(s) on {string.Join(", ", schedulerInput.DaysOfWeek!.Select(d => d.ToString()))} every {periodStr} " +
                        $"starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         output.WriteLine(actual);
         Assert.Equal(expected, actual);
@@ -412,7 +412,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var nextLocal = new DateTimeOffset(2025, 10, 6, 8, 30, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 6, 8, 30, 0)));
 
-        var actual = DescriptionBuilder.BuildDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
+        var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
         
         output.WriteLine(actual);
 

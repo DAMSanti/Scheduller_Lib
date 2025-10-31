@@ -107,9 +107,12 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 })
+        {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates)
+            {
                 output.WriteLine(dto.ToString());
             }
         }
@@ -200,9 +203,11 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates)
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 })
+        {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates)
             {
                 output.WriteLine(dto.ToString());
             }

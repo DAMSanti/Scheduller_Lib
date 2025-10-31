@@ -21,9 +21,10 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
@@ -52,9 +53,10 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
-        if (result.Value.FutureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {result.Value.FutureDates.Count}):");
-            foreach (var dto in result.Value.FutureDates) {
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }

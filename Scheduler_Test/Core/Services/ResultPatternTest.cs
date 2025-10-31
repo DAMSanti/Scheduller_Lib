@@ -21,7 +21,6 @@ public class ResultPatternTest(ITestOutputHelper output) {
         var schedulerOutput = new SchedulerOutput();
         schedulerOutput.NextDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         schedulerOutput.Description = "Test description";
-        schedulerOutput.FutureDates = [];
 
         var result = ResultPattern<SchedulerOutput>.Success(schedulerOutput);
 
@@ -96,28 +95,24 @@ public class ResultPatternTest(ITestOutputHelper output) {
         Assert.False(result.Value);
         Assert.Null(result.Error);
     }
-    
+
     [Fact]
     public void ResultPattern_Success_WithComplexObject_ShouldStoreAllProperties() {
-        var futureDate1 = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
-        var futureDate2 = new DateTimeOffset(2025, 10, 2, 10, 0, 0, TimeSpan.Zero);
-
         var schedulerOutput = new SchedulerOutput();
-        schedulerOutput.NextDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
-        schedulerOutput.Description = "Complex test description";
-        schedulerOutput.FutureDates = [futureDate1, futureDate2];
+        schedulerOutput.NextDate = new DateTimeOffset(2025, 10, 5, 14, 30, 0, TimeSpan.Zero);
+        schedulerOutput.Description = "Complex test description with detailed information";
 
         var result = ResultPattern<SchedulerOutput>.Success(schedulerOutput);
 
-        output.WriteLine($"Result: {result.IsSuccess}, Description: {result.Value.Description}, Future dates count: {result.Value.FutureDates!.Count}");
+        output.WriteLine($"Result: {result.IsSuccess}, Description: {result.Value.Description}, NextDate: {result.Value.NextDate}");
+
         Assert.True(result.IsSuccess);
         Assert.Equal(schedulerOutput, result.Value);
-        Assert.Equal(2, result.Value.FutureDates.Count);
-        Assert.Contains(futureDate1, result.Value.FutureDates);
-        Assert.Contains(futureDate2, result.Value.FutureDates);
+        Assert.Equal("Complex test description with detailed information", result.Value.Description);
+        Assert.Equal(new DateTimeOffset(2025, 10, 5, 14, 30, 0, TimeSpan.Zero), result.Value.NextDate);
         Assert.Null(result.Error);
     }
-    
+
     [Fact]
     public void ResultPattern_Failure_WithLongErrorMessage_ShouldStoreFullMessage() {
         var longError = new string('A', 1000);

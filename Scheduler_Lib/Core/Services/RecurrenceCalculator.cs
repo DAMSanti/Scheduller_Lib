@@ -265,4 +265,34 @@ public class RecurrenceCalculator {
 
         return baseLocal;
     }
+    public static List<DateTimeOffset> GetFutureDates(SchedulerInput schedulerInput) {
+        if (schedulerInput.Periodicity != EnumConfiguration.Recurrent)
+            return [];
+
+        var tz = GetTimeZone();
+        var futureDates = CalculateFutureDates(schedulerInput, tz);
+
+        DateTimeOffset next;
+        if (schedulerInput.Recurrency == EnumRecurrency.Weekly) {
+            var baseLocal = GetBaseLocalTime(schedulerInput);
+            var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+            next = SelectNextEligibleDate(baseDtoForNext, schedulerInput.DaysOfWeek!, tz);
+        } else {
+            if (schedulerInput.OccursOnceChk) {
+                var once = schedulerInput.OccursOnceAt!.Value;
+                next = new DateTimeOffset(once.DateTime, tz.GetUtcOffset(once.DateTime));
+            } else {
+                if (schedulerInput.TargetDate.HasValue) {
+                    var td = schedulerInput.TargetDate.Value;
+                    next = new DateTimeOffset(td.DateTime, tz.GetUtcOffset(td.DateTime));
+                } else {
+                    var cur = schedulerInput.CurrentDate;
+                    next = new DateTimeOffset(cur.DateTime, tz.GetUtcOffset(cur.DateTime));
+                }
+            }
+        }
+
+        futureDates.RemoveAll(d => d == next);
+        return futureDates;
+    }
 }
