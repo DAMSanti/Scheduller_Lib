@@ -1,4 +1,5 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Model.Enum;
 using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
 

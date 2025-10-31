@@ -1,9 +1,11 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Model.Enum;
+using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
 
-namespace Scheduler_Lib.Core.Services;
+namespace Scheduler_Test.Core.Services;
 public class CalculateRecurrentTests(ITestOutputHelper output) {
     [Theory]
     [InlineData( null, "2025-10-03T10:00:00", "2025-10-03T10:00:00", "2025-10-03T10:00:00", null)]
@@ -38,7 +40,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         ) : null;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -73,7 +75,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
         schedulerInput.WeeklyPeriod = 2;
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -101,7 +103,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -117,6 +119,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
         schedulerInput.StartDate = startDate != null ? new DateTimeOffset(
@@ -138,7 +141,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = daysOfWeek?.ToList();
         schedulerInput.WeeklyPeriod = 1;
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -159,6 +162,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         var current = new DateTimeOffset(2025, 10, 3, 7, 0, 0, TimeSpan.Zero);
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.EndDate = current.AddDays(30);
@@ -167,7 +171,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = null;
         schedulerInput.WeeklyPeriod = 2;
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -180,6 +184,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         var current = new DateTimeOffset(2025, 10, 3, 7, 0, 0, TimeSpan.Zero);
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.EndDate = current.AddDays(30);
@@ -188,7 +193,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.WeeklyPeriod = null;
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -210,7 +215,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -229,6 +234,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     public void GenerateDescription_ShouldSuccess_WhenExpectedDescription() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
@@ -237,7 +243,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -277,7 +283,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
             new DateTimeOffset(2025, 10, 1, 8, 30, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1, 8, 30, 0)));
         schedulerInput.TargetDate = DateTimeOffset.Parse(nextDateStr);
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -309,6 +315,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
@@ -318,7 +325,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceAt = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -334,6 +341,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
@@ -343,7 +351,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
         schedulerInput.TargetDate = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
 
-        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 

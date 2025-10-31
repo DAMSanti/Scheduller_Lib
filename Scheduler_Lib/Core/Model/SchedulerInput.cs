@@ -1,4 +1,6 @@
-﻿namespace Scheduler_Lib.Core.Model;
+﻿using Scheduler_Lib.Core.Model.Enum;
+
+namespace Scheduler_Lib.Core.Model;
 
 public class SchedulerInput {
     public DateTimeOffset CurrentDate { get; set; }

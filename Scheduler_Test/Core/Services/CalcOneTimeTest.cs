@@ -1,9 +1,11 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Model.Enum;
+using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
 
-namespace Scheduler_Lib.Core.Services;
+namespace Scheduler_Test.Core.Services;
 
 public class CalcOneTimeTest(ITestOutputHelper output) {
     [Theory]
@@ -15,6 +17,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(
             DateTime.Parse(startDate),
@@ -28,7 +31,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = CalculateOneTime.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -44,6 +47,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(
             DateTime.Parse(startDate),
@@ -60,7 +64,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = CalculateOneTime.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -87,6 +91,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var tz = RecurrenceCalculator.GetTimeZone();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput!.TargetDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 5, 0, 0, 0, DateTimeKind.Unspecified)));
@@ -96,7 +101,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.DailyPeriod = new TimeSpan(2, 0, 0, 0);
 
-        var result = CalculateOneTime.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -116,6 +121,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var tz = RecurrenceCalculator.GetTimeZone();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, 
             tz.GetUtcOffset(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)));
@@ -123,7 +129,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.TargetDate = null;
 
-        var result = CalculateOneTime.CalculateDate(schedulerInput);
+        var result = SchedulerService.CalculateDate(schedulerInput);
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);

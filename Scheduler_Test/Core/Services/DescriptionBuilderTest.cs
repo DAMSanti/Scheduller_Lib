@@ -1,4 +1,5 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Model.Enum;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
 

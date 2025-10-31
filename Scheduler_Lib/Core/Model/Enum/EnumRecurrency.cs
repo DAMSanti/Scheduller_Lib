@@ -1,4 +1,4 @@
-﻿namespace Scheduler_Lib.Core.Model;
+﻿namespace Scheduler_Lib.Core.Model.Enum;
 
 public enum EnumRecurrency {
     Weekly, 

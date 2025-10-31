@@ -2,6 +2,7 @@
 using Scheduler_Lib.Resources;
 using Scheduler_Lib.Core.Services;
 using Xunit.Abstractions;
+using Scheduler_Lib.Core.Model.Enum;
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Scheduler_Lib.Infrastructure.Validations;
