@@ -26,18 +26,15 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
         Assert.False(string.IsNullOrEmpty(result.Value.Description));
-        //Assert.True(result.Value.FutureDates is { Count: > 0 });
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -57,17 +54,14 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
-        //Assert.True(result.Value.FutureDates is { Count: > 0 });
         Assert.Contains("Monday", result.Value.Description);
         Assert.Contains("Wednesday", result.Value.Description);
         Assert.Contains("Friday", result.Value.Description);
@@ -90,11 +84,9 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
@@ -121,17 +113,15 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
-        //Assert.All(result.Value.FutureDates!, date => Assert.True(date <= schedulerInput.EndDate));
+        Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -152,17 +142,15 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
-        //Assert.True(result.Value.FutureDates!.Count >= 7);
+        Assert.True(futureDates!.Count >= 7);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -182,11 +170,9 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
@@ -267,17 +253,14 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
-        //Assert.True(result.Value.FutureDates is { Count: > 0 });
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -299,17 +282,14 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
-        //Assert.True(result.Value.FutureDates!.Count > 1);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -330,17 +310,15 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
-        //Assert.All(result.Value.FutureDates!, date => Assert.True(date <= schedulerInput.EndDate));
+        Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -362,17 +340,15 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
 
         Assert.True(result.IsSuccess);
-        //Assert.True(result.Value.FutureDates!.Count > 5);
+        Assert.True(futureDates!.Count > 5);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -597,11 +573,9 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
+        if (futureDates is { Count: > 0 }) {
             output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
+            foreach (var dto in futureDates) {
                 output.WriteLine(dto.ToString());
             }
         }
