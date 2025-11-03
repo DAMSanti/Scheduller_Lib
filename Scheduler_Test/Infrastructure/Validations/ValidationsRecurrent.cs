@@ -700,12 +700,11 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
             MonthlyDayChk = false,
             MonthlyTheChk = true,
             MonthlyFrequency = EnumMonthlyFrequency.First,
-            MonthlyDateType = (EnumMonthlyDateType)999, // Valor inválido
+            MonthlyDateType = (EnumMonthlyDateType)999,
             MonthlyThePeriod = 1
         };
         var result = SchedulerService.CalculateDate(input);
         Assert.True(result.IsSuccess);
-        // No debe haber fechas válidas en el resultado
     }
 
     [Fact]
@@ -721,12 +720,11 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
             EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero),
             MonthlyDayChk = false,
             MonthlyTheChk = true,
-            MonthlyFrequency = (EnumMonthlyFrequency)999, // Valor inválido
+            MonthlyFrequency = (EnumMonthlyFrequency)999,
             MonthlyDateType = EnumMonthlyDateType.Monday,
             MonthlyThePeriod = 1
         };
         var result = SchedulerService.CalculateDate(input);
         Assert.True(result.IsSuccess);
-        // El resultado debe usar el primer lunes del mes
     }
 }

@@ -710,7 +710,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
-        // Este test debe pasar ya que OccursOnceAt es solo hora
         Assert.True(result.IsSuccess);
     }
 
@@ -730,7 +729,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
-        // Este test debe pasar ya que OccursOnceAt es solo hora
         Assert.True(result.IsSuccess);
     }
 }

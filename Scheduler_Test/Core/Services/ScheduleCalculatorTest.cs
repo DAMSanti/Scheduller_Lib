@@ -6,9 +6,6 @@ using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
 
-/// <summary>
-/// Tests for ScheduleCalculatorFactory functionality.
-/// </summary>
 public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     [Fact]
     public void CreateAndExecute_ShouldSuccess_WhenPeriodicityOnce() {
