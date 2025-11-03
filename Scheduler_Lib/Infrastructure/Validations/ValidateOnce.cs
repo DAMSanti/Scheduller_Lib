@@ -9,6 +9,9 @@ public class ValidationOnce {
     public static ResultPattern<bool> ValidateOnce(SchedulerInput schedulerInput) {
         var errors = new StringBuilder();
 
+        if (schedulerInput is { Periodicity: EnumConfiguration.Once, Recurrency: EnumRecurrency.Weekly })
+            errors.AppendLine(Messages.ErrorOnceWeekly);
+
         if (schedulerInput.EndDate != null && schedulerInput.StartDate > schedulerInput.EndDate)
             errors.AppendLine(Messages.ErrorStartDatePostEndDate);
 

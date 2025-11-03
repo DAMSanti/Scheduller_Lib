@@ -76,12 +76,9 @@ public class ValidationRecurrent {
             return errors.Length > 0
                 ? ResultPattern<bool>.Failure(errors.ToString())
                 : ResultPattern<bool>.Success(true);
+        
         if (!schedulerInput.OccursOnceAt.HasValue)
             errors.AppendLine(Messages.ErrorOccursOnceAtNull);
-        else {
-            if (schedulerInput.OccursOnceAt < schedulerInput.StartDate || (schedulerInput.EndDate.HasValue && schedulerInput.OccursOnceAt > schedulerInput.EndDate))
-                errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
-        }
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }

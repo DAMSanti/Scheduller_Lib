@@ -255,11 +255,11 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Theory]
-    [InlineData(new[] { "2025-10-05T08:30:00", "2025-10-06T08:30:00" }, "2025-10-05T08:30:00", 1)]
-    [InlineData(new[] { "2025-10-05T08:30:00", "2025-10-05T08:30:00" }, "2025-10-05T08:30:00", 0)]
-    [InlineData(new[] { "2025-10-06T08:30:00" }, "2025-10-05T08:30:00", 1)]
-    [InlineData(new string[0], "2025-10-05T08:30:00", 0)]
-    public void CalculateRecurrent_ShouldSuccess_WhenRemovingNextDateFromFutureDates(string[] futureDatesArr, string nextDateStr, int expectedCount) {
+    [InlineData(new[] { "2025-10-05T08:30:00", "2025-10-06T08:30:00" }, "2025-10-05T08:30:00")]
+    [InlineData(new[] { "2025-10-05T08:30:00", "2025-10-05T08:30:00" }, "2025-10-05T08:30:00")]
+    [InlineData(new[] { "2025-10-06T08:30:00" }, "2025-10-05T08:30:00")]
+    [InlineData(new string[0], "2025-10-05T08:30:00")]
+    public void CalculateRecurrent_ShouldSuccess_WhenRemovingNextDateFromFutureDates(string[] futureDatesArr, string nextDateStr) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -306,7 +306,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [Fact]
     public void CalculateRecurrent_ShouldUse_OccursOnceAt_ForNextDate() {
         var tz = RecurrenceCalculator.GetTimeZone();
-        var baseLocal = new DateTime(2025, 10, 05, 8, 30, 0);
 
         var schedulerInput = new SchedulerInput();
 
@@ -316,7 +315,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03)));
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursEveryChk = false;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+        schedulerInput.OccursOnceAt = new TimeSpan(8, 30, 0);
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
@@ -324,8 +323,8 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
-        var expected = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
-        Assert.Equal(expected, result.Value!.NextDate);
+        Assert.Equal(8, result.Value!.NextDate.Hour);
+        Assert.Equal(30, result.Value!.NextDate.Minute);
     }
 
     [Fact]

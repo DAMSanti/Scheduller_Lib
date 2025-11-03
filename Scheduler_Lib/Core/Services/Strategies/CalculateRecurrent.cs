@@ -3,6 +3,7 @@ using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services.Strategies;
+
 public class CalculateRecurrent {
     public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput schedulerInput) {
         var validation = ValidationRecurrent.ValidateRecurrent(schedulerInput);
@@ -20,20 +21,46 @@ public class CalculateRecurrent {
             next = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
             
             if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
-                var occursTime = schedulerInput.OccursOnceAt.Value.TimeOfDay;
+                var occursTime = schedulerInput.OccursOnceAt.Value;
                 var nextDate = next.DateTime.Date;
                 var nextWithTime = new DateTime(nextDate.Year, nextDate.Month, nextDate.Day,
                     occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
                 next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
             }
-        } else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
+        } 
+        else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
             var futureDates = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
             if (futureDates.Count > 0) {
                 next = futureDates.First();
+                
+                if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
+                    var occursTime = schedulerInput.OccursOnceAt.Value;
+                    var nextDate = next.DateTime.Date;
+                    var nextWithTime = new DateTime(nextDate.Year, nextDate.Month, nextDate.Day,
+                        occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
+                    next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
+                }
             } else {
                 next = schedulerInput.CurrentDate;
             }
-        } else {
+        }
+        else if (schedulerInput.Recurrency == EnumRecurrency.Daily) {
+            var futureDates = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+            if (futureDates.Count > 0) {
+                next = futureDates.First();
+                
+                if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
+                    var occursTime = schedulerInput.OccursOnceAt.Value;
+                    var nextDate = next.DateTime.Date;
+                    var nextWithTime = new DateTime(nextDate.Year, nextDate.Month, nextDate.Day,
+                        occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
+                    next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
+                }
+            } else {
+                next = schedulerInput.CurrentDate;
+            }
+        }
+        else {
             next = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
         }
 
@@ -41,6 +68,5 @@ public class CalculateRecurrent {
             NextDate = next,
             Description = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, next)
         };
-
     }
 }

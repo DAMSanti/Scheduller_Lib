@@ -249,7 +249,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 06, 14, 30, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -280,7 +280,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 06, 09, 00, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(9, 0, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -312,7 +312,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 2;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 06, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 06, 10, 0, 0)));
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -510,7 +510,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 13, 14, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 13, 14, 0, 0)));
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 0, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -776,7 +776,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 06, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
 

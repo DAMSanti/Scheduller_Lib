@@ -42,10 +42,6 @@ public static class RecurrenceCalculator {
             return SelectNextEligibleDate(baseDtoForNext, schedulerInput.DaysOfWeek!, tz);
         }
 
-        if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
-            return schedulerInput.OccursOnceAt.Value;
-        }
-
         if (schedulerInput.TargetDate.HasValue) {
             return schedulerInput.TargetDate.Value;
         }

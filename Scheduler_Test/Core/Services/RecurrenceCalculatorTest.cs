@@ -1,4 +1,5 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
@@ -127,7 +128,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void NextWeekday_ShouldSucceed_WhenHandleBoundaryConditions() {
+    public void SelectNextEligibleDate_ShouldSuccess_WhenHandlingBoundaryConditions() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var nearMaxDate = DateTime.MaxValue.AddDays(-7);
@@ -144,7 +145,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void TryAddDaysSafely_ShouldFail_WhenDateTimeMaxValue() {
+    public void CalculateWeeklyRecurrence_ShouldSuccess_WhenDateTimeMaxValue() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -194,7 +195,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateFutureDates_ShouldSuccess_WhenAddsSimpleDailySlotsInDailyWithoutWindow() {
+    public void CalculateFutureDates_ShouldSuccess_WhenAddingSimpleDailySlotsWithoutWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -225,7 +226,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateFutureDates_ShouldSuccess_WhenUsesTargetTimeOfDayInTargetDateProvided() {
+    public void CalculateFutureDates_ShouldSuccess_WhenUsingTargetTimeOfDay() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -367,7 +368,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GetBaseLocalTime_ShouldSuccess_WhenTargetDateProvided() {
+    public void GetNextExecutionDate_ShouldSuccess_WhenTargetDateProvided() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var targetDate = new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
@@ -390,7 +391,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GetBaseLocalTime_ShouldSuccess_WhenTargetNotProvided() {
+    public void GetNextExecutionDate_ShouldSuccess_WhenTargetNotProvided() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var currentDate = new DateTimeOffset(2023, 9, 11, 8, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
@@ -445,16 +446,149 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 11)));
-            schedulerInput.EndDate = new DateTimeOffset(2025, 10, 26, 11, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 26)));
-            schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 11)));
-            schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-            schedulerInput.Recurrency = EnumRecurrency.Weekly;
-            schedulerInput.WeeklyPeriod = 1;
-            schedulerInput.DaysOfWeek = [];
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 26, 11, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 26)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 11)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [];
 
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
         Assert.Empty(result);
+    }
+
+    [Fact]
+    public void TryAddDaysSafely_ShouldSuccess_WhenDaysIsZero() {
+        var date = new DateTime(2025, 10, 15, 10, 30, 0);
+
+        var result = DateSafetyHelper.TryAddDaysSafely(date, 0, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: 0, Result: {resultDate}, Success: {result}");
+
+        Assert.True(result);
+        Assert.Equal(date, resultDate);
+    }
+
+    [Fact]
+    public void TryAddDaysSafely_ShouldSuccess_WhenAddingPositiveDays() {
+        var date = new DateTime(2025, 10, 15, 10, 30, 0);
+        var daysToAdd = 5;
+
+        var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
+
+        Assert.True(result);
+        Assert.Equal(new DateTime(2025, 10, 20, 10, 30, 0), resultDate);
+    }
+
+    [Fact]
+    public void TryAddDaysSafely_ShouldFail_WhenOverflowingMaxValue() {
+        var date = DateTime.MaxValue.AddDays(-5);
+        var daysToAdd = 10;
+
+        var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
+
+        Assert.False(result);
+        Assert.Equal(date, resultDate);
+    }
+
+    [Fact]
+    public void TryAddDaysSafely_ShouldSuccess_WhenAddingNegativeDays() {
+        var date = new DateTime(2025, 10, 15, 10, 30, 0);
+        var daysToAdd = -5;
+
+        var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
+
+        Assert.True(result);
+        Assert.Equal(new DateTime(2025, 10, 10, 10, 30, 0), resultDate);
+    }
+
+    [Fact]
+    public void TryAddDaysSafely_ShouldFail_WhenOverflowingMinValue() {
+        var date = DateTime.MinValue.AddDays(5);
+        var daysToAdd = -10;
+
+        var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
+
+        Assert.False(result);
+        Assert.Equal(date, resultDate);
+    }
+
+    [Fact]
+    public void TryAddDaysSafely_ShouldSuccess_WhenDateIsMaxValueAndDaysIsZero() {
+        var date = DateTime.MaxValue;
+        var daysToAdd = 0;
+
+        var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
+
+        Assert.True(result);
+        Assert.Equal(date, resultDate);
+    }
+
+    [Fact]
+    public void GetUtcOffset_ShouldSuccess_WhenValidDateTime() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var dateTime = new DateTime(2025, 1, 15, 10, 30, 0);
+
+        var offset = TimeZoneConverter.GetUtcOffset(dateTime, tz);
+
+        output.WriteLine($"DateTime: {dateTime}, TimeZone: {tz.Id}, Offset: {offset}");
+        Assert.Equal(tz.GetUtcOffset(dateTime), offset);
+    }
+
+    [Fact]
+    public void GetUtcOffset_ShouldSuccess_WhenDSTChanges() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var winterDate = new DateTime(2025, 1, 15, 10, 30, 0);
+        var summerDate = new DateTime(2025, 7, 15, 10, 30, 0);
+
+        var winterOffset = TimeZoneConverter.GetUtcOffset(winterDate, tz);
+        var summerOffset = TimeZoneConverter.GetUtcOffset(summerDate, tz);
+
+        output.WriteLine($"Winter Offset: {winterOffset}, Summer Offset: {summerOffset}");
+
+        if (tz.SupportsDaylightSavingTime) {
+            Assert.NotEqual(winterOffset, summerOffset);
+        }
+    }
+
+    [Fact]
+    public void ConvertToTimeZone_ShouldSuccess_WhenUtcDateProvided() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var utcDate = new DateTimeOffset(2025, 10, 15, 10, 30, 0, TimeSpan.Zero);
+
+        var result = TimeZoneConverter.ConvertToTimeZone(utcDate, tz);
+
+        output.WriteLine($"UTC: {utcDate}, Converted: {result}, TimeZone: {tz.Id}");
+
+        if (tz.Id != "UTC") {
+            Assert.NotEqual(utcDate.Offset, result.Offset);
+        }
+
+        var expectedOffset = tz.GetUtcOffset(result.DateTime);
+        Assert.Equal(expectedOffset, result.Offset);
+    }
+
+    [Fact]
+    public void ConvertToTimeZone_ShouldSuccess_WhenPreservingUtcTime() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var utcDate = new DateTimeOffset(2025, 10, 15, 10, 30, 0, TimeSpan.Zero);
+
+        var result = TimeZoneConverter.ConvertToTimeZone(utcDate, tz);
+
+        output.WriteLine($"Original UTC: {utcDate.UtcDateTime}, Result UTC: {result.UtcDateTime}");
+
+        Assert.Equal(utcDate.UtcDateTime, result.UtcDateTime);
     }
 }
 

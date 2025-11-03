@@ -9,7 +9,7 @@ public class SchedulerInput {
     public int? WeeklyPeriod { get; set; }
     public List<DayOfWeek>? DaysOfWeek { get; set; }
     public bool OccursOnceChk { get; set; }
-    public DateTimeOffset? OccursOnceAt { get; set; }
+    public TimeSpan? OccursOnceAt { get; set; }  // CAMBIADO: ahora es TimeSpan para representar solo hora
     public bool OccursEveryChk { get; set; }
     public TimeSpan? DailyPeriod { get; set; }
     public TimeSpan? DailyStartTime { get; set; }
@@ -23,5 +23,4 @@ public class SchedulerInput {
     public EnumMonthlyFrequency? MonthlyFrequency { get; set; }
     public EnumMonthlyDateType? MonthlyDateType { get; set; }
     public int? MonthlyThePeriod { get; set; }
-
 }

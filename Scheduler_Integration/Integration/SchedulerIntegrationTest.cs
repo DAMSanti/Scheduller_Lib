@@ -37,7 +37,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 

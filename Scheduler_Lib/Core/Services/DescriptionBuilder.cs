@@ -9,13 +9,10 @@ public class DescriptionBuilder {
     public static string HandleDescriptionForCalculatedDate(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
         var errors = new StringBuilder();
 
-        if (schedulerInput is { Recurrency: EnumRecurrency.Weekly, Periodicity: EnumConfiguration.Once })
-            errors.AppendLine(Messages.ErrorOnceWeekly);
-
         return schedulerInput.Recurrency switch {
-            EnumRecurrency.Weekly => BuildWeeklyDescription(schedulerInput, tz, nextLocal),
+            EnumRecurrency.Weekly => BuildWeeklyDescription(schedulerInput, tz),
             EnumRecurrency.Daily => BuildDailyDescription(schedulerInput, tz, nextLocal),
-            EnumRecurrency.Monthly => BuildMonthlyDescription(schedulerInput, tz, nextLocal),
+            EnumRecurrency.Monthly => BuildMonthlyDescription(schedulerInput, tz),
             _ => BuildOnceDescription(schedulerInput, tz, nextLocal)
         };
     }
@@ -25,10 +22,10 @@ public class DescriptionBuilder {
         return $"Occurs once: Schedule will be used on {FormatDate(nextLocal)} at {FormatTime(nextLocal)} starting on {startDateStr}";
     }
 
-    private static string BuildWeeklyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal)  {
+    private static string BuildWeeklyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz)  {
         var daysOfWeek = schedulerInput.DaysOfWeek is { Count: > 0 }
             ? string.Join(", ", schedulerInput.DaysOfWeek.Select(d => d.ToString()))
-            : nextLocal.DayOfWeek.ToString(); 
+            : "ERROR"; 
         
         var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
         var weeklyPeriod = schedulerInput.WeeklyPeriod ?? 1;
@@ -63,7 +60,7 @@ public class DescriptionBuilder {
                $"at {FormatTime(nextLocal)} starting on {startDateStr}";
     }
 
-    private static string BuildMonthlyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+    private static string BuildMonthlyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
 
         if (schedulerInput.MonthlyTheChk) {
@@ -90,7 +87,7 @@ public class DescriptionBuilder {
 
             return $"Occurs day {day} of every {period} month(s) starting on {startDateStr}";
         }
-        return $"Occurs day {startDateStr} of every X month(s) starting on {startDateStr}";
+        return $"Occurs monthly starting on {startDateStr}";
     }
 
     private static string FormatMonthlyFrequency(EnumMonthlyFrequency frequency) {

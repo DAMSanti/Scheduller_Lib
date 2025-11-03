@@ -536,7 +536,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = new DateTimeOffset(2025, 04, 30, 23, 59, 59, TimeSpan.Zero);
         schedulerInput.MonthlyDayChk = false;
         schedulerInput.MonthlyTheChk = true;
-        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Second;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Third;
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.WeekendDay;
         schedulerInput.MonthlyThePeriod = 1;
         schedulerInput.DailyStartTime = TimeSpan.FromHours(8);

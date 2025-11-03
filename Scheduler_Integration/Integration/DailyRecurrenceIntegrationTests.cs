@@ -18,7 +18,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 01, 14, 30, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -47,7 +47,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31, 23, 59, 59)));
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 15, 14, 30, 0, tz.GetUtcOffset(new DateTime(2025, 10, 15, 14, 30, 0)));
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -55,7 +55,8 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value.NextDate <= schedulerInput.EndDate);
-        Assert.Equal(schedulerInput.OccursOnceAt!.Value.DateTime, result.Value.NextDate.DateTime);
+        Assert.Equal(14, result.Value.NextDate.Hour);
+        Assert.Equal(30, result.Value.NextDate.Minute);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -70,14 +71,15 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 20, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 20, 10, 0, 0)));
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 20, 15, 30, 0, tz.GetUtcOffset(new DateTime(2025, 10, 20, 15, 30, 0)));
+        schedulerInput.OccursOnceAt = new TimeSpan(15, 30, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(schedulerInput.OccursOnceAt!.Value.DateTime, result.Value.NextDate.DateTime);
+        Assert.Equal(15, result.Value.NextDate.Hour);
+        Assert.Equal(30, result.Value.NextDate.Minute);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -90,7 +92,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 09, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 15, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -231,7 +233,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 05, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
@@ -307,7 +309,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         }
 
         Assert.True(result.IsSuccess);
-        Assert.True(futureDates!.Count == 5);
+        Assert.Equal(5, futureDates!.Count);
         Assert.Contains("15 minutes", result.Value.Description);
     }
 
@@ -491,7 +493,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         }
 
         Assert.True(result.IsSuccess);
-        Assert.True(futureDates!.Count == 12);
+        Assert.Equal(12, futureDates!.Count);
         Assert.Contains("30 days", result.Value.Description);
     }
 
@@ -567,7 +569,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
 
@@ -703,13 +705,13 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 10, 23, 59, 59, TimeSpan.Zero);
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 15, 14, 30, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
-        Assert.False(result.IsSuccess);
-        Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
+        // Este test debe pasar ya que OccursOnceAt es solo hora
+        Assert.True(result.IsSuccess);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -723,12 +725,12 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 20, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.OccursOnceChk = true;
-        schedulerInput.OccursOnceAt = new DateTimeOffset(2025, 10, 05, 14, 30, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
         var result = SchedulerService.CalculateDate(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
-        Assert.False(result.IsSuccess);
-        Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
+        // Este test debe pasar ya que OccursOnceAt es solo hora
+        Assert.True(result.IsSuccess);
     }
 }
