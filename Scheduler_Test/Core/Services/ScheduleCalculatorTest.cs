@@ -1,13 +1,17 @@
 ﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Factory;
 using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Scheduler_Lib.Core.Services;
 
-public class ScheduleCalculatorTest(ITestOutputHelper output) {
+/// <summary>
+/// Tests for ScheduleCalculatorFactory functionality.
+/// </summary>
+public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     [Fact]
-    public void GetScheduleCalculator_ShouldSuccess_WhenPeriodicityOnce() {
+    public void CreateAndExecute_ShouldSuccess_WhenPeriodicityOnce() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -17,7 +21,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
         schedulerInput.EndDate = DateTimeOffset.Now.AddDays(180);
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
+        var result = ScheduleCalculatorFactory.CreateAndExecute(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -34,7 +38,7 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GetScheduleCalculator_ShouldSuccess_WhenPeriodicityRecurrent() {
+    public void CreateAndExecute_ShouldSuccess_WhenPeriodicityRecurrent() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -47,9 +51,9 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
         schedulerInput.DailyPeriod = TimeSpan.FromHours(1);
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday]; ;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
+        var result = ScheduleCalculatorFactory.CreateAndExecute(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -66,15 +70,33 @@ public class ScheduleCalculatorTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GetScheduleCalculator_ShouldFail_WhenConfigUnsupported() {
+    public void CreateAndExecute_ShouldFail_WhenConfigUnsupported() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput!.Periodicity = (EnumConfiguration) 5;
 
-        var result = ScheduleCalculator.GetScheduleCalculator(schedulerInput);
+        var result = ScheduleCalculatorFactory.CreateAndExecute(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.Equal(Messages.ErrorUnsupportedPeriodicity, result.Error);
+    }
+
+    [Fact]
+    public void GetStrategyType_ShouldReturnCorrectType_WhenPeriodicityOnce() {
+        var strategyType = ScheduleCalculatorFactory.GetStrategyType(EnumConfiguration.Once);
+
+        output.WriteLine($"Strategy Type: {strategyType}");
+
+        Assert.Equal("CalculateOneTime", strategyType);
+    }
+
+    [Fact]
+    public void GetStrategyType_ShouldReturnCorrectType_WhenPeriodicityRecurrent() {
+        var strategyType = ScheduleCalculatorFactory.GetStrategyType(EnumConfiguration.Recurrent);
+
+        output.WriteLine($"Strategy Type: {strategyType}");
+
+        Assert.Equal("CalculateRecurrent", strategyType);
     }
 }

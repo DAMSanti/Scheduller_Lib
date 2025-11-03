@@ -1,7 +1,8 @@
-﻿using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Infrastructure.Validations;
 
-namespace Scheduler_Lib.Core.Services;
+namespace Scheduler_Lib.Core.Services.Strategies;
 public class CalculateRecurrent {
     public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput schedulerInput) {
         var validation = ValidationRecurrent.ValidateRecurrent(schedulerInput);
@@ -11,7 +12,7 @@ public class CalculateRecurrent {
     }
 
     private static SchedulerOutput BuildResultRecurrent(SchedulerInput schedulerInput) {
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
 
         DateTimeOffset next;
 
