@@ -21,7 +21,11 @@ public class CalculateRecurrent {
             next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, schedulerInput.DaysOfWeek!, tz);
         } else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
             var futureDates = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
-            next =  new DateTimeOffset(schedulerInput.CurrentDate.DateTime, tz.GetUtcOffset(schedulerInput.CurrentDate.DateTime));
+            if (futureDates != null && futureDates.Count > 0) {
+                next = futureDates.First();
+            } else {
+                next = new DateTimeOffset(schedulerInput.CurrentDate.DateTime, tz.GetUtcOffset(schedulerInput.CurrentDate.DateTime));
+            }
         }else {
             if (schedulerInput.OccursOnceChk) {
                 var once = schedulerInput.OccursOnceAt!.Value;

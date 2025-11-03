@@ -70,19 +70,30 @@ public class RecurrenceCalculator {
         var timeOfDay = schedulerInput.TargetDate?.TimeOfDay ?? schedulerInput.StartDate.TimeOfDay;
 
         while (currentMonth <= endMonth && iteration < maxIterations) {
-            var targetDate = new DateTimeOffset(
-                new DateTime(currentMonth.Year, currentMonth.Month, 1, timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds),
-                tz.GetUtcOffset(currentMonth));
+            DateTimeOffset? nextEligible = null;
 
-            var nextEligible = SelectNextEligibleDate(targetDate, null!, tz, schedulerInput.MonthlyFrequency, schedulerInput.MonthlyDateType, currentMonth);
+            if (schedulerInput.MonthlyDayChk && schedulerInput.MonthlyDay.HasValue) {
+                nextEligible = GetMonthlyEligibleDateByDay(currentMonth, schedulerInput.MonthlyDay.Value, timeOfDay, tz);
+            }
 
-            if (nextEligible >= new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal)) && nextEligible <= endLocal && !dates.Contains(nextEligible))
-                dates.Add(nextEligible);
+            else if (schedulerInput.MonthlyTheChk && schedulerInput.MonthlyFrequency.HasValue && schedulerInput.MonthlyDateType.HasValue) {
+                var targetDate = new DateTimeOffset(
+                    new DateTime(currentMonth.Year, currentMonth.Month, 1, timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds),
+                    tz.GetUtcOffset(currentMonth));
+
+                nextEligible = SelectNextEligibleDate(targetDate, null!, tz, schedulerInput.MonthlyFrequency, schedulerInput.MonthlyDateType, currentMonth);
+            }
+
+            if (nextEligible.HasValue) {
+                var baseOffset = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
+                if (nextEligible.Value >= baseOffset && nextEligible.Value <= endLocal && !dates.Contains(nextEligible.Value))
+                    dates.Add(nextEligible.Value);
+            }
 
             if (dates.Count >= maxIterations)
                 break;
 
-            var monthlyPeriod = schedulerInput.MonthlyThePeriod ?? 1;
+            var monthlyPeriod = (schedulerInput.MonthlyDayChk ? schedulerInput.MonthlyDayPeriod : schedulerInput.MonthlyThePeriod) ?? 1;
             currentMonth = currentMonth.AddMonths(monthlyPeriod);
             iteration++;
         }
@@ -120,6 +131,18 @@ public class RecurrenceCalculator {
         };
 
         var resultLocal = new DateTime(selectedDay.Year, selectedDay.Month, selectedDay.Day,
+            timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
+
+        return CreateDateTimeOffset(resultLocal, tz);
+    }
+
+    private static DateTimeOffset? GetMonthlyEligibleDateByDay(DateTime month, int dayOfMonth, TimeSpan timeOfDay, TimeZoneInfo tz) {
+        var lastDayOfMonth = DateTime.DaysInMonth(month.Year, month.Month);
+
+        if (dayOfMonth > lastDayOfMonth)
+            return null;
+        
+        var resultLocal = new DateTime(month.Year, month.Month, dayOfMonth,
             timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
 
         return CreateDateTimeOffset(resultLocal, tz);
@@ -178,11 +201,18 @@ public class RecurrenceCalculator {
                 dates.Sort();
                 break;
             case EnumRecurrency.Monthly:
-                if (!schedulerInput.MonthlyFrequency.HasValue || !schedulerInput.MonthlyDateType.HasValue)
-                    return dates;
 
-                dates = CalculateMonthlyRecurrence(schedulerInput, tz);
-                break;
+                if (schedulerInput.MonthlyDayChk && schedulerInput.MonthlyDay.HasValue && schedulerInput.MonthlyDayPeriod.HasValue) {
+                    dates = CalculateMonthlyRecurrence(schedulerInput, tz);
+                    break;
+                }
+                
+                if (schedulerInput.MonthlyTheChk && schedulerInput.MonthlyFrequency.HasValue && schedulerInput.MonthlyDateType.HasValue) {
+                    dates = CalculateMonthlyRecurrence(schedulerInput, tz);
+                    break;
+                }
+                
+                return dates;
             default:
                 break;
         }

@@ -22,7 +22,12 @@ public class ValidationRecurrent {
             _ => ResultPattern<bool>.Failure(Messages.ErrorUnsupportedRecurrency)
         };
 
-        return !validation.IsSuccess ? ResultPattern<bool>.Failure(validation.Error!) : ResultPattern<bool>.Success(true);
+        if (!validation.IsSuccess)
+            return ResultPattern<bool>.Failure(validation.Error!);
+
+        return errors.Length > 0
+            ? ResultPattern<bool>.Failure(errors.ToString())
+            : ResultPattern<bool>.Success(true);
     }
 
     private static ResultPattern<bool> ValidateWeekly(SchedulerInput schedulerInput, StringBuilder errors) {
@@ -98,6 +103,3 @@ public class ValidationRecurrent {
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 }
-
-
-  

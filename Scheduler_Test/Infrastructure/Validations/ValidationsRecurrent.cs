@@ -219,6 +219,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateMonthly_ShouldFail_WhenBothMonthlyDayAndMonthlyTheAreTrue() {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -320,18 +321,6 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         Assert.Contains(Messages.ErrorMonthlyFrequencyRequired, result.Error ?? string.Empty);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     [Fact]
     public void ValidateMonthly_ShouldFail_WhenMonthlyDateTypeIsMissing() {
         var schedulerInput = new SchedulerInput();
@@ -384,10 +373,11 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     public void ValidateMonthly_ShouldSucceed_WhenMonthlyDayModeIsValid(int monthlyDay) {
         var schedulerInput = new SchedulerInput();
 
+        schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.MonthlyDayChk = true;
         schedulerInput.MonthlyTheChk = false;
         schedulerInput.MonthlyDay = monthlyDay;
@@ -411,7 +401,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.MonthlyDayChk = false;
         schedulerInput.MonthlyTheChk = true;
         schedulerInput.MonthlyFrequency = frequency;
@@ -466,5 +456,127 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         Assert.Contains(Messages.ErrorMonthlyFrequencyRequired, result.Error ?? string.Empty);
         Assert.Contains(Messages.ErrorMonthlyDateTypeRequired, result.Error ?? string.Empty);
         Assert.Contains(Messages.ErrorMonthlyThePeriodRequired, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateMonthly_ShouldSucceed_WhenMonthlyDayChkCalculatesDates() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 6, 30, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyTheChk = false;
+        schedulerInput.MonthlyDay = 15;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
+        output.WriteLine(result.Value.Description);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine(dto.ToString());
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.NotEqual("", result.Value.Description);
+    }
+
+    [Fact]
+    public void ValidateMonthly_ShouldSucceed_WhenMonthlyDayChkHandlesFebruaryEdgeCase() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyTheChk = false;
+        schedulerInput.MonthlyDay = 31;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
+        
+        if (result.IsSuccess) {
+            output.WriteLine(result.Value.Description);
+            var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+            if (futureDates is { Count: > 0 }) {
+                output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+                foreach (var dto in futureDates) {
+                    output.WriteLine($"  {dto:yyyy-MM-dd HH:mm:ss}");
+                }
+                
+                var februaryDate = futureDates.FirstOrDefault(d => d.Month == 2);
+                Assert.Equal(default(DateTimeOffset), februaryDate);
+
+                var april = futureDates.FirstOrDefault(d => d.Month == 4);
+                var june = futureDates.FirstOrDefault(d => d.Month == 6);
+                var september = futureDates.FirstOrDefault(d => d.Month == 9);
+                var november = futureDates.FirstOrDefault(d => d.Month == 11);
+                Assert.Equal(default(DateTimeOffset), april);
+                Assert.Equal(default(DateTimeOffset), june);
+                Assert.Equal(default(DateTimeOffset), september);
+                Assert.Equal(default(DateTimeOffset), november);
+
+                Assert.True(futureDates.All(d => d.Day == 31));
+
+                Assert.True(futureDates.Count >= 6);
+
+                var monthsWith31Days = new[] { 1, 3, 5, 7, 8, 10, 12 };
+                foreach (var date in futureDates) {
+                    Assert.Contains(date.Month, monthsWith31Days);
+                }
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void ValidateMonthly_ShouldSucceed_WhenMonthlyDayChkWithMultipleMonthsPeriod() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyTheChk = false;
+        schedulerInput.MonthlyDay = 10;
+        schedulerInput.MonthlyDayPeriod = 3; // Every 3 months
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
+        
+        if (result.IsSuccess) {
+            output.WriteLine(result.Value.Description);
+            var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+            if (futureDates is { Count: > 0 }) {
+                output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+                foreach (var dto in futureDates) {
+                    output.WriteLine($"  {dto:yyyy-MM-dd HH:mm:ss}");
+                }
+
+                Assert.True(futureDates.All(d => d.Day == 10));
+                Assert.True(futureDates.Count >= 3);
+            }
+        }
+
+        Assert.True(result.IsSuccess);
     }
 }

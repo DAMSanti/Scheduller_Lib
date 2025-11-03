@@ -14,7 +14,7 @@ public static class Validations {
         if (schedulerInput.Periodicity != EnumConfiguration.Once && schedulerInput.Periodicity != EnumConfiguration.Recurrent)
             return ResultPattern<bool>.Failure(Messages.ErrorUnsupportedPeriodicity);
 
-        if (schedulerInput.Recurrency != EnumRecurrency.Weekly && schedulerInput.Recurrency != EnumRecurrency.Daily)
+        if (schedulerInput.Recurrency != EnumRecurrency.Weekly && schedulerInput.Recurrency != EnumRecurrency.Daily && schedulerInput.Recurrency != EnumRecurrency.Monthly)
             return ResultPattern<bool>.Failure(Messages.ErrorUnsupportedRecurrency);
 
         if (schedulerInput.CurrentDate == default)
