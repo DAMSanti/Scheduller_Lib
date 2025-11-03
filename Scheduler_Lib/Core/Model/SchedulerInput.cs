@@ -9,7 +9,7 @@ public class SchedulerInput {
     public int? WeeklyPeriod { get; set; }
     public List<DayOfWeek>? DaysOfWeek { get; set; }
     public bool OccursOnceChk { get; set; }
-    public TimeSpan? OccursOnceAt { get; set; }  // CAMBIADO: ahora es TimeSpan para representar solo hora
+    public TimeSpan? OccursOnceAt { get; set; }
     public bool OccursEveryChk { get; set; }
     public TimeSpan? DailyPeriod { get; set; }
     public TimeSpan? DailyStartTime { get; set; }
