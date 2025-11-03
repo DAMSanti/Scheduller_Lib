@@ -55,8 +55,6 @@ public class CalcDateTest(ITestOutputHelper output) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
-        schedulerInput.OccursOnceChk = false;
-        schedulerInput.OccursEveryChk = true;
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);

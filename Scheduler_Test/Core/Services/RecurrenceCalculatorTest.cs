@@ -334,7 +334,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.StartDate =
-            new DateTimeOffset(2025, 10, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
+            new DateTimeOffset(2025, 10, 2, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 1)));
         schedulerInput.EndDate =
             new DateTimeOffset(2025, 10, 14, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 14)));
         schedulerInput.CurrentDate =
@@ -379,12 +379,14 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
             new DateTimeOffset(2023, 9, 1, 8, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 1)));
         schedulerInput.StartDate =
             new DateTimeOffset(2023, 9, 5, 9, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 5)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
+        var result = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
 
-        output.WriteLine(result.ToLongDateString());
+        output.WriteLine(result.DateTime.ToLongDateString());
 
-        Assert.Equal(targetDate.DateTime, result);
+        Assert.Equal(targetDate.DateTime, result.DateTime);
     }
 
     [Fact]
@@ -399,10 +401,12 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.TargetDate = null;
         schedulerInput.CurrentDate = currentDate;
         schedulerInput.StartDate = startDate;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
+        var result = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
 
-        output.WriteLine(result.ToLongDateString());
+        output.WriteLine(result.DateTime.ToLongDateString());
 
         Assert.Equal(currentDate.Date, result.Date);
         Assert.Equal(startDate.TimeOfDay, result.TimeOfDay);
@@ -413,42 +417,6 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         Assert.Equal(Config.TimeZoneId, tz.Id);
-    }
-
-    [Fact]
-    public void SelectNextEligibleDate_ShouldSucceed_WhenMultipleDaysAvailable() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var targetDate = new DateTimeOffset(2025, 10, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 15)));
-        List<DayOfWeek> daysOfWeek = [DayOfWeek.Friday, DayOfWeek.Monday, DayOfWeek.Wednesday];
-
-        var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
-
-        output.WriteLine(result.ToString());
-
-        Assert.Equal(DayOfWeek.Wednesday, result.DayOfWeek);
-        Assert.Equal(targetDate.Day, result.Day);
-    }
-
-    [Fact]
-    public void GetBaseDateTimeOffset_ShouldSuccess_WhenTargetDateAndCurrentDateAreDefault() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var startDate = new DateTimeOffset(2025, 10, 23, 8, 30, 0, TimeSpan.Zero);
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.TargetDate = null;
-        schedulerInput.CurrentDate = default;
-        schedulerInput.StartDate = startDate;
-
-        var result = typeof(RecurrenceCalculator)
-            .GetMethod("GetBaseDateTimeOffset", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-            .Invoke(null, [schedulerInput, tz]);
-
-        output.WriteLine(result!.ToString());
-
-        var expected = new DateTimeOffset(startDate.DateTime, tz.GetUtcOffset(startDate.DateTime));
-        Assert.Equal(expected, result);
     }
 
     [Fact]

@@ -16,29 +16,24 @@ public class CalculateRecurrent {
         DateTimeOffset next;
 
         if (schedulerInput.Recurrency == EnumRecurrency.Weekly) {
-            var baseLocal = RecurrenceCalculator.GetBaseLocalTime(schedulerInput);
-            var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
-            next = RecurrenceCalculator.SelectNextEligibleDate(baseDtoForNext, schedulerInput.DaysOfWeek!, tz);
+            next = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
+            
+            if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
+                var occursTime = schedulerInput.OccursOnceAt.Value.TimeOfDay;
+                var nextDate = next.DateTime.Date;
+                var nextWithTime = new DateTime(nextDate.Year, nextDate.Month, nextDate.Day,
+                    occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
+                next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
+            }
         } else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
             var futureDates = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
-            if (futureDates != null && futureDates.Count > 0) {
+            if (futureDates.Count > 0) {
                 next = futureDates.First();
             } else {
-                next = new DateTimeOffset(schedulerInput.CurrentDate.DateTime, tz.GetUtcOffset(schedulerInput.CurrentDate.DateTime));
+                next = schedulerInput.CurrentDate;
             }
-        }else {
-            if (schedulerInput.OccursOnceChk) {
-                var once = schedulerInput.OccursOnceAt!.Value;
-                next = new DateTimeOffset(once.DateTime, tz.GetUtcOffset(once.DateTime));
-            } else {
-                if (schedulerInput.TargetDate.HasValue) {
-                    var td = schedulerInput.TargetDate.Value;
-                    next = new DateTimeOffset(td.DateTime, tz.GetUtcOffset(td.DateTime));
-                } else {
-                    var cur = schedulerInput.CurrentDate;
-                    next = new DateTimeOffset(cur.DateTime, tz.GetUtcOffset(cur.DateTime));
-                }
-            }
+        } else {
+            next = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
         }
 
         return new SchedulerOutput {

@@ -30,15 +30,23 @@ public class DescriptionBuilder {
             ? string.Join(", ", schedulerInput.DaysOfWeek.Select(d => d.ToString()))
             : nextLocal.DayOfWeek.ToString(); 
         
-        var period = schedulerInput.DailyPeriod.HasValue ? FormatPeriod(schedulerInput.DailyPeriod.Value) : "1 week";
         var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
         var weeklyPeriod = schedulerInput.WeeklyPeriod ?? 1;
 
-        if ((schedulerInput.Periodicity == EnumConfiguration.Recurrent) && (schedulerInput.DailyEndTime.HasValue || schedulerInput.DailyStartTime.HasValue)) {
-                return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {period} between {TimeSpanToString12HourFormat(schedulerInput.DailyStartTime!.Value)} and {TimeSpanToString12HourFormat(schedulerInput.DailyEndTime!.Value)} " +
-                       $"starting on {startDateStr}";
+        if (schedulerInput.Periodicity == EnumConfiguration.Recurrent && 
+            schedulerInput.DailyStartTime.HasValue && schedulerInput.DailyEndTime.HasValue &&
+            schedulerInput.DailyPeriod.HasValue) {
+            var dailyPeriod = FormatPeriod(schedulerInput.DailyPeriod.Value);
+            return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {dailyPeriod} between {TimeSpanToString12HourFormat(schedulerInput.DailyStartTime.Value)} and {TimeSpanToString12HourFormat(schedulerInput.DailyEndTime.Value)} " +
+                   $"starting on {startDateStr}";
         }
-        return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {period} starting on {startDateStr}";
+
+        if (schedulerInput.Periodicity == EnumConfiguration.Recurrent && schedulerInput.DailyPeriod.HasValue) {
+            var dailyPeriod = FormatPeriod(schedulerInput.DailyPeriod.Value);
+            return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every {dailyPeriod} starting on {startDateStr}";
+        }
+
+        return $"Occurs every {weeklyPeriod} week(s) on {daysOfWeek} every 1 week starting on {startDateStr}";
     }
 
     private static string BuildDailyDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
@@ -85,44 +93,32 @@ public class DescriptionBuilder {
         return $"Occurs day {startDateStr} of every X month(s) starting on {startDateStr}";
     }
 
-    private static string FormatMonthlyFrequency(EnumMonthlyFrequency frequency)
-    {
-        return frequency switch
-        {
+    private static string FormatMonthlyFrequency(EnumMonthlyFrequency frequency) {
+        return frequency switch {
             EnumMonthlyFrequency.First => "first",
             EnumMonthlyFrequency.Second => "second",
             EnumMonthlyFrequency.Third => "third",
             EnumMonthlyFrequency.Fourth => "fourth",
             EnumMonthlyFrequency.Last => "last",
-            _ => frequency.ToString().ToLower()
+            _ => frequency.ToString()
         };
     }
 
-    private static string FormatMonthlyDateType(EnumMonthlyDateType dateType)
-    {
-        return dateType switch
-        {
+    private static string FormatMonthlyDateType(EnumMonthlyDateType dateType) {
+        return dateType switch {
             EnumMonthlyDateType.Day => "day",
             EnumMonthlyDateType.Weekday => "weekday",
             EnumMonthlyDateType.WeekendDay => "weekend day",
+            EnumMonthlyDateType.Monday => "Monday",
+            EnumMonthlyDateType.Tuesday => "Tuesday",
+            EnumMonthlyDateType.Wednesday => "Wednesday",
+            EnumMonthlyDateType.Thursday => "Thursday",
+            EnumMonthlyDateType.Friday => "Friday",
+            EnumMonthlyDateType.Saturday => "Saturday",
+            EnumMonthlyDateType.Sunday => "Sunday",
             _ => dateType.ToString()
         };
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var startInZone = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, tz);
@@ -145,8 +141,11 @@ public class DescriptionBuilder {
             return FormatUnit(period.TotalHours, "hour", "hours");
         return period.TotalMinutes >= 1 ? FormatUnit(period.TotalMinutes, "minute", "minutes") : FormatUnit(period.TotalSeconds, "second", "seconds");
     }
+    
     private static string FormatDate(DateTimeOffset dto) => dto.Date.ToShortDateString();
+    
     private static string FormatTime(DateTimeOffset dto) => dto.DateTime.ToShortTimeString();
+    
     private static string FormatUnit(double value, string singular, string plural) {
         var formatted = value.ToString("0.##", CultureInfo.InvariantCulture);
         return value > 1 ? $"{formatted} {plural}" : $"{formatted} {singular}";

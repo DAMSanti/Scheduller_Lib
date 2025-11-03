@@ -31,13 +31,25 @@ public class ValidationRecurrent {
     }
 
     private static ResultPattern<bool> ValidateWeekly(SchedulerInput schedulerInput, StringBuilder errors) {
-        if (schedulerInput.WeeklyPeriod is null or < 0)
+        if (schedulerInput.WeeklyPeriod is null or <= 0)
             errors.AppendLine(Messages.ErrorWeeklyPeriodRequired);
 
         if (schedulerInput.DaysOfWeek == null || schedulerInput.DaysOfWeek.Count == 0)
             errors.AppendLine(Messages.ErrorDaysOfWeekRequired);
         else if (schedulerInput.DaysOfWeek.Distinct().Count() != schedulerInput.DaysOfWeek.Count)
             errors.AppendLine(Messages.ErrorDuplicateDaysOfWeek);
+
+        if (schedulerInput.OccursOnceChk && schedulerInput.OccursEveryChk)
+            errors.AppendLine(Messages.ErrorDailyModeConflict);
+
+        if (schedulerInput.OccursOnceChk && !schedulerInput.OccursOnceAt.HasValue)
+            errors.AppendLine(Messages.ErrorOccursOnceAtNull);
+
+        if (schedulerInput.OccursEveryChk && (!schedulerInput.DailyPeriod.HasValue || schedulerInput.DailyPeriod <= TimeSpan.Zero))
+            errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
+
+        if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null } && schedulerInput.DailyStartTime > schedulerInput.DailyEndTime)
+            errors.AppendLine(Messages.ErrorDailyStartAfterEnd);
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
@@ -99,6 +111,12 @@ public class ValidationRecurrent {
             if (schedulerInput.MonthlyThePeriod is null or <= 0)
                 errors.AppendLine(Messages.ErrorMonthlyThePeriodRequired);
         }
+
+        if (schedulerInput is { DailyStartTime: not null, DailyEndTime: not null } && schedulerInput.DailyStartTime > schedulerInput.DailyEndTime)
+            errors.AppendLine(Messages.ErrorDailyStartAfterEnd);
+
+        if (schedulerInput.DailyPeriod.HasValue && schedulerInput.DailyPeriod <= TimeSpan.Zero)
+            errors.AppendLine(Messages.ErrorPositiveOffsetRequired);
 
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }

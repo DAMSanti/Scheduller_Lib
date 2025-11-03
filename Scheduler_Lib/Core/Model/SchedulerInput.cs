@@ -16,8 +16,6 @@ public class SchedulerInput {
     public TimeSpan? DailyEndTime { get; set; }
     public DateTimeOffset StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
-
-
     public bool MonthlyDayChk { get; set; }
     public int? MonthlyDay { get; set; }
     public int? MonthlyDayPeriod { get; set; }
