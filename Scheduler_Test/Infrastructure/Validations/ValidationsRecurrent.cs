@@ -429,7 +429,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.Error ?? "SUCCESS");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyDayInvalid, result.Error ?? string.Empty);
         Assert.Contains(Messages.ErrorMonthlyDayPeriodRequired, result.Error ?? string.Empty);
@@ -451,7 +451,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
+        output.WriteLine(result.Error ?? "SUCCESS");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyFrequencyRequired, result.Error ?? string.Empty);
         Assert.Contains(Messages.ErrorMonthlyDateTypeRequired, result.Error ?? string.Empty);
