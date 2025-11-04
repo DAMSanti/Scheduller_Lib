@@ -351,4 +351,79 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         var expected = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
         Assert.Equal(expected, result.Value!.NextDate);
     }
+
+    [Fact]
+    public void CalculateRecurrent_ShouldApplyOccursOnceAt_WhenWeeklyRecurrencyWithOccursOnce() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03)));
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursEveryChk = false;
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Friday];
+        schedulerInput.WeeklyPeriod = 1;
+
+        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(14, result.Value!.NextDate.Hour);
+        Assert.Equal(30, result.Value!.NextDate.Minute);
+        Assert.Equal(0, result.Value!.NextDate.Second);
+    }
+
+    [Fact]
+    public void CalculateRecurrent_ShouldApplyOccursOnceAt_WhenMonthlyRecurrencyWithOccursOnce() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03)));
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursEveryChk = false;
+        schedulerInput.OccursOnceAt = new TimeSpan(16, 45, 30);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 15;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(16, result.Value!.NextDate.Hour);
+        Assert.Equal(45, result.Value!.NextDate.Minute);
+        Assert.Equal(30, result.Value!.NextDate.Second);
+    }
+
+    [Fact]
+    public void CalculateRecurrent_ShouldUseGetNextExecutionDate_WhenRecurrencyIsNotDailyWeeklyOrMonthly() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = (EnumRecurrency)999; // Valor no esperado para cubrir el else
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03, 10, 0, 0)));
+        schedulerInput.OccursOnceChk = false;
+        schedulerInput.OccursEveryChk = true;
+
+        var result = CalculateRecurrent.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        // El test debe fallar porque la recurrency no es soportada
+        Assert.False(result.IsSuccess);
+        Assert.Contains("Unsupported recurrency", result.Error);
+    }
 }

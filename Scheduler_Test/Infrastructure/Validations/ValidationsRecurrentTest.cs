@@ -1,4 +1,4 @@
-using Scheduler_Lib.Core.Model;
+﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
 using Xunit.Abstractions;
@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 
-public class ValidationsRecurrent(ITestOutputHelper output) {
+public class ValidationsRecurrentTest(ITestOutputHelper output) {
     [Theory]
     [InlineData(null, Messages.ErrorPositiveOffsetRequired)]
     [InlineData(-1.0, Messages.ErrorPositiveOffsetRequired)]
@@ -773,5 +773,45 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateRecurrent_ShouldFail_WhenStartDateIsAfterEndDate_OnlyErrorStartDatePostEndDate()
+    {
+        var schedulerInput = new SchedulerInput
+        {
+            StartDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            CurrentDate = new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero),
+            Recurrency = EnumRecurrency.Daily,
+            Periodicity = EnumConfiguration.Recurrent,
+            OccursEveryChk = true,
+            DailyPeriod = TimeSpan.FromDays(1)
+        };
+
+        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
+    }
+
+    [Fact]
+    public void ValidateRecurrent_ShouldFail_WhenOnlyGeneralErrorsExistAndValidationIsSuccess()
+    {
+        var schedulerInput = new SchedulerInput
+        {
+            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
+            CurrentDate = new DateTimeOffset(2024, 12, 31, 0, 0, 0, TimeSpan.Zero), // Fuera de rango
+            Recurrency = EnumRecurrency.Daily,
+            Periodicity = EnumConfiguration.Recurrent,
+            OccursEveryChk = true,
+            DailyPeriod = TimeSpan.FromDays(1)
+        };
+
+        var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
+
+        Assert.False(result.IsSuccess);
+        Assert.Contains(Messages.ErrorDateOutOfRange, result.Error ?? string.Empty);
     }
 }

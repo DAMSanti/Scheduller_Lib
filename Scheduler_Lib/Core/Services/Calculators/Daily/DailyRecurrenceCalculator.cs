@@ -46,9 +46,6 @@ public static class DailyRecurrenceCalculator {
                     dates = MonthlyRecurrenceCalculator.Calculate(schedulerInput, tz);
                     break;
                 }
-                
-                return dates;
-            default:
                 break;
         }
         return dates;

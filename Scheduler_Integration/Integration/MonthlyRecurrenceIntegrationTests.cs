@@ -738,22 +738,22 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         output.WriteLine($"\nTimeZone: {tz.DisplayName}");
         output.WriteLine($"Date range: {startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}");
         
-        output.WriteLine("\n=== All Slots (incluyendo período de cambio de hora) ===");
+        output.WriteLine("\n=== All Slots (incluyendo perï¿½odo de cambio de hora) ===");
         foreach (var slot in result) {
             var localTime = TimeZoneInfo.ConvertTime(slot, tz);
             var utcTime = slot.ToUniversalTime();
             output.WriteLine($"  Local: {slot:yyyy-MM-dd HH:mm:ss} | UTC: {utcTime:yyyy-MM-dd HH:mm:ss} | IsDST: {tz.IsDaylightSavingTime(slot.DateTime)}");
         }
         
-        output.WriteLine("\n=== Slots por día ===");
+        output.WriteLine("\n=== Slots por dï¿½a ===");
         var groupedByDay = result.GroupBy(d => d.Day);
         foreach (var group in groupedByDay) {
-            output.WriteLine($"\nDía {group.Key}: {group.Count()} slots");
+            output.WriteLine($"\nDï¿½a {group.Key}: {group.Count()} slots");
             output.WriteLine($"  Primera franja: {group.First():yyyy-MM-dd HH:mm:ss}");
-            output.WriteLine($"  Última franja:  {group.Last():yyyy-MM-dd HH:mm:ss}");
+            output.WriteLine($"  ï¿½ltima franja:  {group.Last():yyyy-MM-dd HH:mm:ss}");
         }
         
-        Assert.True(result.Count > 0, "Debería haber al menos un slot generado");
+        Assert.True(result.Count > 0, "Deberï¿½a haber al menos un slot generado");
 
         Assert.All(result, slot => Assert.Equal(26, slot.Day));
 
@@ -762,10 +762,10 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.All(result, slot => {
             var hour = slot.Hour;
             Assert.True(hour >= 1 && hour <= 4, 
-                $"La hora {hour} debería estar entre 1:00 y 4:00 AM");
+                $"La hora {hour} deberï¿½a estar entre 1:00 y 4:00 AM");
         });
 
-        output.WriteLine($"\n*** Número total de slots generados: {result.Count} ***");
+        output.WriteLine($"\n*** Nï¿½mero total de slots generados: {result.Count} ***");
         output.WriteLine("Nota: Durante el cambio de hora (26 oct 3:00->2:00), algunas franjas pueden duplicarse");
     }
 
@@ -799,22 +799,22 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         output.WriteLine("*** El 30 de marzo de 2025 a las 2:00 AM -> 3:00 AM ***");
         output.WriteLine("*** La hora 2:00-3:00 NO EXISTE (se salta) ***\n");
         
-        output.WriteLine("\n=== All Slots (incluyendo período de cambio de hora) ===");
+        output.WriteLine("\n=== All Slots (incluyendo perï¿½odo de cambio de hora) ===");
         foreach (var slot in result) {
             var localTime = TimeZoneInfo.ConvertTime(slot, tz);
             var utcTime = slot.ToUniversalTime();
             output.WriteLine($"  Local: {slot:yyyy-MM-dd HH:mm:ss} | UTC: {utcTime:yyyy-MM-dd HH:mm:ss} | IsDST: {tz.IsDaylightSavingTime(slot.DateTime)}");
         }
         
-        output.WriteLine("\n=== Slots por día ===");
+        output.WriteLine("\n=== Slots por dï¿½a ===");
         var groupedByDay = result.GroupBy(d => d.Day);
         foreach (var group in groupedByDay) {
-            output.WriteLine($"\nDía {group.Key}: {group.Count()} slots");
+            output.WriteLine($"\nDï¿½a {group.Key}: {group.Count()} slots");
             output.WriteLine($"  Primera franja: {group.First():yyyy-MM-dd HH:mm:ss}");
-            output.WriteLine($"  Última franja:  {group.Last():yyyy-MM-dd HH:mm:ss}");
+            output.WriteLine($"  ï¿½ltima franja:  {group.Last():yyyy-MM-dd HH:mm:ss}");
         }
 
-        Assert.True(result.Count > 0, "Debería haber al menos un slot generado");
+        Assert.True(result.Count > 0, "Deberï¿½a haber al menos un slot generado");
 
         Assert.All(result, slot => Assert.Equal(30, slot.Day));
 
@@ -831,7 +831,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
             output.WriteLine($"    {invalidSlot:yyyy-MM-dd HH:mm:ss}");
         }
 
-        output.WriteLine($"\n*** Número total de slots generados: {result.Count} ***");
+        output.WriteLine($"\n*** Nï¿½mero total de slots generados: {result.Count} ***");
         output.WriteLine("Nota: Durante el cambio de hora (30 marzo 2:00->3:00), la franja 2:00-3:00 se salta");
         output.WriteLine("Esperamos aproximadamente 5 slots en lugar de 7");
     }
@@ -904,4 +904,311 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.Equal(schedulerInput.CurrentDate.DateTime, result.Value.NextDate.DateTime);
     }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyTheSecondThursday() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Second;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Thursday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss} - {dto.DayOfWeek}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.Contains("second", result.Value.Description);
+        Assert.Contains("Thursday", result.Value.Description);
+        Assert.True(futureDates!.All(d => d.DayOfWeek == DayOfWeek.Thursday));
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyTheLastDay() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Last;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Day;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss} - Day: {dto.Day}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.Contains("last", result.Value.Description);
+        Assert.Contains("day", result.Value.Description);
+        
+        // Verificar que cada fecha es el Ãºltimo dÃ­a de su mes
+        Assert.All(futureDates!, d => {
+            var lastDayOfMonth = DateTime.DaysInMonth(d.Year, d.Month);
+            Assert.Equal(lastDayOfMonth, d.Day);
+        });
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyTheWithQuarterlyPeriod() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.First;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Wednesday;
+        schedulerInput.MonthlyThePeriod = 3;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.Contains("every 3 month(s)", result.Value.Description);
+        Assert.True(futureDates!.All(d => d.DayOfWeek == DayOfWeek.Wednesday));
+
+        var months = futureDates.Select(d => d.Month).Distinct().OrderBy(m => m).ToList();
+        Assert.Equal(new[] { 4, 7, 10 }, months);
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyDayFirstOfMonth() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 1;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.Contains("day 1", result.Value.Description);
+        Assert.True(futureDates!.All(d => d.Day == 1));
+        Assert.Equal(5, futureDates.Count);
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenTargetDateIsProvided() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+        var localDate = new DateTime(2025, 3, 15, 16, 45, 0);
+        var targetDate = new DateTimeOffset(localDate, tz.GetUtcOffset(localDate));
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = targetDate;
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 15;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+        output.WriteLine($"NextDate: {result.Value.NextDate:yyyy-MM-dd HH:mm:ss}");
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(targetDate, result.Value.NextDate);
+        Assert.Equal(16, result.Value.NextDate.Hour);
+        Assert.Equal(45, result.Value.NextDate.Minute);
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenLeapYearFebruary29() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2024, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2024, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2024, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 29;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.Contains("day 29", result.Value.Description);
+
+        Assert.Contains(futureDates!, d => d.Month == 2 && d.Day == 29);
+
+        var monthsWithDay29 = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        Assert.All(futureDates!, d => Assert.Contains(d.Month, monthsWithDay29));
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenNotLeapYearFebruary29() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 29;
+        schedulerInput.MonthlyDayPeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+
+        var monthsWithDay29 = new[] { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        Assert.All(futureDates!, d => Assert.Contains(d.Month, monthsWithDay29));
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyTheSaturday() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Third;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Saturday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss} - {dto.DayOfWeek}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.Contains("third", result.Value.Description);
+        Assert.Contains("Saturday", result.Value.Description);
+        Assert.True(futureDates!.All(d => d.DayOfWeek == DayOfWeek.Saturday));
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyTheSunday() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Fourth;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Sunday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
+
+        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss} - {dto.DayOfWeek}");
+            }
+        }
+
+        Assert.True(result.IsSuccess);
+        Assert.Contains("fourth", result.Value.Description);
+        Assert.Contains("Sunday", result.Value.Description);
+        Assert.True(futureDates!.All(d => d.DayOfWeek == DayOfWeek.Sunday));
+    }
 }
+

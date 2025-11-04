@@ -25,9 +25,7 @@ public class ValidationRecurrent {
         if (!validation.IsSuccess)
             return ResultPattern<bool>.Failure(validation.Error!);
 
-        return errors.Length > 0
-            ? ResultPattern<bool>.Failure(errors.ToString())
-            : ResultPattern<bool>.Success(true);
+        return ResultPattern<bool>.Success(true);
     }
 
     private static ResultPattern<bool> ValidateWeekly(SchedulerInput schedulerInput, StringBuilder errors) {
