@@ -600,150 +600,143 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
     [Fact]
-    public void MonthlyRecurrence_ShouldSuccess_WhenFirstWednesdayIsConfigured()
-    {
-        var input = new SchedulerInput
-        {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = false,
-            MonthlyTheChk = true,
-            MonthlyFrequency = EnumMonthlyFrequency.First,
-            MonthlyDateType = EnumMonthlyDateType.Wednesday,
-            MonthlyThePeriod = 1
-        };
-        var result = SchedulerService.CalculateDate(input);
+    public void MonthlyRecurrence_ShouldSuccess_WhenFirstWednesdayIsConfigured() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.First;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Wednesday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Wednesday", result.Value.Description);
     }
 
     [Fact]
-    public void MonthlyRecurrence_ShouldSuccess_WhenSecondThursdayIsConfigured()
-    {
-        var input = new SchedulerInput
-        {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = false,
-            MonthlyTheChk = true,
-            MonthlyFrequency = EnumMonthlyFrequency.Second,
-            MonthlyDateType = EnumMonthlyDateType.Thursday,
-            MonthlyThePeriod = 1
-        };
-        var result = SchedulerService.CalculateDate(input);
+    public void MonthlyRecurrence_ShouldSuccess_WhenSecondThursdayIsConfigured() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Second;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Thursday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Thursday", result.Value.Description);
     }
 
     [Fact]
-    public void MonthlyRecurrence_ShouldSuccess_WhenThirdSaturdayIsConfigured()
-    {
-        var input = new SchedulerInput
-        {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = false,
-            MonthlyTheChk = true,
-            MonthlyFrequency = EnumMonthlyFrequency.Third,
-            MonthlyDateType = EnumMonthlyDateType.Saturday,
-            MonthlyThePeriod = 1
-        };
-        var result = SchedulerService.CalculateDate(input);
+    public void MonthlyRecurrence_ShouldSuccess_WhenThirdSaturdayIsConfigured() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Third;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Saturday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Saturday", result.Value.Description);
     }
 
     [Fact]
-    public void MonthlyRecurrence_ShouldSuccess_WhenFourthSundayIsConfigured()
-    {
-        var input = new SchedulerInput
-        {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = false,
-            MonthlyTheChk = true,
-            MonthlyFrequency = EnumMonthlyFrequency.Fourth,
-            MonthlyDateType = EnumMonthlyDateType.Sunday,
-            MonthlyThePeriod = 1
-        };
-        var result = SchedulerService.CalculateDate(input);
+    public void MonthlyRecurrence_ShouldSuccess_WhenFourthSundayIsConfigured() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Fourth;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Sunday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Sunday", result.Value.Description);
     }
+
     [Fact]
-    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyDateTypeIsInvalid()
-    {
-        var input = new SchedulerInput
-        {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = false,
-            MonthlyTheChk = true,
-            MonthlyFrequency = EnumMonthlyFrequency.First,
-            MonthlyDateType = (EnumMonthlyDateType)999,
-            MonthlyThePeriod = 1
-        };
-        var result = SchedulerService.CalculateDate(input);
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyDateTypeIsInvalid() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.First;
+        schedulerInput.MonthlyDateType = (EnumMonthlyDateType)999;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
         Assert.True(result.IsSuccess);
     }
 
     [Fact]
-    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyFrequencyIsInvalid()
-    {
-        var input = new SchedulerInput
-        {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = false,
-            MonthlyTheChk = true,
-            MonthlyFrequency = (EnumMonthlyFrequency)999,
-            MonthlyDateType = EnumMonthlyDateType.Monday,
-            MonthlyThePeriod = 1
-        };
-        var result = SchedulerService.CalculateDate(input);
+    public void MonthlyRecurrence_ShouldSuccess_WhenMonthlyFrequencyIsInvalid() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 3, 31, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = false;
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = (EnumMonthlyFrequency)999;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
+        schedulerInput.MonthlyThePeriod = 1;
+
+        var result = SchedulerService.CalculateDate(schedulerInput);
         Assert.True(result.IsSuccess);
     }
 
     [Fact]
-    public void ValidateMonthly_ShouldFail_WhenDailyStartTimeIsAfterEndTime()
-    {
-        var schedulerInput = new SchedulerInput
-        {
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = true,
-            MonthlyTheChk = false,
-            MonthlyDay = 10,
-            MonthlyDayPeriod = 1,
-            DailyStartTime = TimeSpan.FromHours(18),
-            DailyEndTime = TimeSpan.FromHours(8)
-        };
+    public void ValidateMonthly_ShouldFail_WhenDailyStartTimeIsAfterEndTime() {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyTheChk = false;
+        schedulerInput.MonthlyDay = 10;
+        schedulerInput.MonthlyDayPeriod = 1;
+        schedulerInput.DailyStartTime = TimeSpan.FromHours(18);
+        schedulerInput.DailyEndTime = TimeSpan.FromHours(8);
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
@@ -754,20 +747,18 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void ValidateMonthly_ShouldFail_WhenDailyPeriodIsZeroOrNegative(int hours)
-    {
-        var schedulerInput = new SchedulerInput
-        {
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero),
-            MonthlyDayChk = true,
-            MonthlyTheChk = false,
-            MonthlyDay = 10,
-            MonthlyDayPeriod = 1,
-            DailyPeriod = TimeSpan.FromHours(hours)
-        };
+    public void ValidateMonthly_ShouldFail_WhenDailyPeriodIsZeroOrNegative(int hours) {
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyTheChk = false;
+        schedulerInput.MonthlyDay = 10;
+        schedulerInput.MonthlyDayPeriod = 1;
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(hours);
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
