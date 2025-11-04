@@ -971,7 +971,6 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.Contains("last", result.Value.Description);
         Assert.Contains("day", result.Value.Description);
         
-        // Verificar que cada fecha es el último día de su mes
         Assert.All(futureDates!, d => {
             var lastDayOfMonth = DateTime.DaysInMonth(d.Year, d.Month);
             Assert.Equal(lastDayOfMonth, d.Day);

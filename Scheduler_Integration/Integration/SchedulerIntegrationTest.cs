@@ -440,7 +440,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.StartDate = new DateTimeOffset(2024, 01, 01, 10, 0, 0, TimeSpan.Zero); // 2024 es año bisiesto
+        schedulerInput.StartDate = new DateTimeOffset(2024, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2024, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2024, 12, 31, 23, 59, 59, TimeSpan.Zero);
         schedulerInput.MonthlyDayChk = true;

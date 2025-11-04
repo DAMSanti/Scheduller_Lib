@@ -412,7 +412,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = (EnumRecurrency)999; // Valor no esperado para cubrir el else
+        schedulerInput.Recurrency = (EnumRecurrency)999;
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 03, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 03, 10, 0, 0)));
         schedulerInput.OccursOnceChk = false;
@@ -422,7 +422,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
-        // El test debe fallar porque la recurrency no es soportada
         Assert.False(result.IsSuccess);
         Assert.Contains("Unsupported recurrency", result.Error);
     }

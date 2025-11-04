@@ -579,13 +579,13 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var schedulerInput = new SchedulerInput();
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
-        schedulerInput.EndDate = null; // Esto forzará el uso de GetEffectiveEndDate
+        schedulerInput.EndDate = null;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
         schedulerInput.MonthlyDayChk = true;
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(2); // Se usará para calcular el EndDate efectivo
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(2);
 
         var result = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
 
@@ -596,7 +596,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
-        // Verificar que las fechas son el día 15 de cada mes
+  
         foreach (var date in result) {
             Assert.Equal(15, date.Day);
         }
@@ -615,7 +615,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayChk = true;
         schedulerInput.MonthlyDay = 1;
         schedulerInput.MonthlyDayPeriod = 1;
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(5); // Período personalizado
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(5);
 
         var result = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
 
@@ -641,7 +641,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayChk = true;
         schedulerInput.MonthlyDay = 10;
         schedulerInput.MonthlyDayPeriod = 1;
-        schedulerInput.DailyPeriod = null; // Usará TimeSpan.FromDays(3) por defecto
+        schedulerInput.DailyPeriod = null;
 
         var result = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
 
@@ -682,7 +682,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
-        // Verificar que todas las fechas son lunes
+
         foreach (var date in result) {
             Assert.Equal(DayOfWeek.Monday, date.DayOfWeek);
         }

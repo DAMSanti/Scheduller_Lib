@@ -802,7 +802,7 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         {
             StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
             EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2024, 12, 31, 0, 0, 0, TimeSpan.Zero), // Fuera de rango
+            CurrentDate = new DateTimeOffset(2024, 12, 31, 0, 0, 0, TimeSpan.Zero),
             Recurrency = EnumRecurrency.Daily,
             Periodicity = EnumConfiguration.Recurrent,
             OccursEveryChk = true,
