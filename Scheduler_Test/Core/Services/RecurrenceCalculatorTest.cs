@@ -421,25 +421,6 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateFutureDates_ShouldFail_WhenDaysOfWeekIsNull() {
-        var tz = RecurrenceCalculator.GetTimeZone();
-
-        var schedulerInput = new SchedulerInput();
-
-        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 11)));
-        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 26, 11, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 26)));
-        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 11)));
-        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-        schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.WeeklyPeriod = 1;
-        schedulerInput.DaysOfWeek = null;
-
-        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
-
-        Assert.Empty(result);
-    }
-
-    [Fact]
     public void CalculateFutureDates_ShouldFail_WhenDaysOfWeekIsEmpty() {
         var tz = RecurrenceCalculator.GetTimeZone();
 

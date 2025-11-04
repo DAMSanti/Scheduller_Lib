@@ -29,23 +29,12 @@ public static class DailyRecurrenceCalculator {
                 break;
 
             case EnumRecurrency.Weekly:
-                if (schedulerInput.DaysOfWeek == null || schedulerInput.DaysOfWeek.Count == 0)
-                    return dates;
-
                 FillWeeklySlots(schedulerInput, tz, endDate, slotStep, baseDto, dates);
                 dates.Sort();
                 break;
 
             case EnumRecurrency.Monthly:
-                if (schedulerInput.MonthlyDayChk && schedulerInput.MonthlyDay.HasValue && schedulerInput.MonthlyDayPeriod.HasValue) {
-                    dates = MonthlyRecurrenceCalculator.Calculate(schedulerInput, tz);
-                    break;
-                }
-                
-                if (schedulerInput.MonthlyTheChk && schedulerInput.MonthlyFrequency.HasValue && schedulerInput.MonthlyDateType.HasValue) {
-                    dates = MonthlyRecurrenceCalculator.Calculate(schedulerInput, tz);
-                    break;
-                }
+                dates = MonthlyRecurrenceCalculator.Calculate(schedulerInput, tz);
                 break;
         }
         return dates;

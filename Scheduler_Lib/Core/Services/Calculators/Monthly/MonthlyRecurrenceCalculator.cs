@@ -26,8 +26,7 @@ public static class MonthlyRecurrenceCalculator {
 
             if (schedulerInput.MonthlyDayChk && schedulerInput.MonthlyDay.HasValue) {
                 nextEligible = GetEligibleDateByDay(currentMonth, schedulerInput.MonthlyDay.Value, timeOfDay, tz);
-            }
-            else if (schedulerInput.MonthlyTheChk && schedulerInput.MonthlyFrequency.HasValue && schedulerInput.MonthlyDateType.HasValue) {
+            } else if (schedulerInput.MonthlyTheChk && schedulerInput.MonthlyFrequency.HasValue && schedulerInput.MonthlyDateType.HasValue) {
                 var targetDate = new DateTimeOffset(
                     new DateTime(currentMonth.Year, currentMonth.Month, 1, timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds),
                     tz.GetUtcOffset(currentMonth));
