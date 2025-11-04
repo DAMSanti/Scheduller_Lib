@@ -8,7 +8,7 @@ namespace Scheduler_Lib.Core.Services;
 
 public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     [Fact]
-    public void CreateAndExecute_ShouldSuccess_WhenPeriodicityOnce() {
+    public void CreateAndExecute_ShouldSuccess_WhenPeriodicityIsOnce() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -35,7 +35,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CreateAndExecute_ShouldSuccess_WhenPeriodicityRecurrent() {
+    public void CreateAndExecute_ShouldSuccess_WhenPeriodicityIsRecurrent() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -67,7 +67,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CreateAndExecute_ShouldFail_WhenConfigUnsupported() {
+    public void CreateAndExecute_ShouldFail_WhenPeriodicityIsUnsupported() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput!.Periodicity = (EnumConfiguration) 5;
@@ -80,7 +80,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GetStrategyType_ShouldReturnCorrectType_WhenPeriodicityOnce() {
+    public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsOnce() {
         var strategyType = ScheduleCalculatorFactory.GetStrategyType(EnumConfiguration.Once);
 
         output.WriteLine($"Strategy Type: {strategyType}");
@@ -89,7 +89,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GetStrategyType_ShouldReturnCorrectType_WhenPeriodicityRecurrent() {
+    public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsRecurrent() {
         var strategyType = ScheduleCalculatorFactory.GetStrategyType(EnumConfiguration.Recurrent);
 
         output.WriteLine($"Strategy Type: {strategyType}");

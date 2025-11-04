@@ -11,7 +11,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [InlineData(2, "2 hours", 0, 2, 0, 0)]
     [InlineData(5, "5 minutes", 0, 0, 5, 0)]
     [InlineData(30, "30 seconds", 0, 0, 0, 30)]
-    public void DescriptionBuilder_ShouldSucceed_WhenIntegerUnits(long value, string expected, int days = 0, int hours = 0, int minutes = 0, int seconds = 0) {
+    public void FormatPeriod_ShouldSuccess_WhenUnitsAreInteger(long value, string expected, int days = 0, int hours = 0, int minutes = 0, int seconds = 0) {
         TimeSpan period;
         if (days > 0) period = TimeSpan.FromDays(days);
         else if (hours > 0) period = TimeSpan.FromHours(hours);
@@ -27,7 +27,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenWeeklyRecurrentWithTimeWindow() {
+    public void HandleDescription_ShouldSuccess_WhenWeeklyRecurrentWithTimeWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -57,7 +57,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenDailyRecurrentExpectedString() {
+    public void HandleDescription_ShouldSuccess_WhenDailyRecurrentWithExpectedString() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -81,7 +81,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenNoDailyPeriodOnce() {
+    public void HandleDescription_ShouldSuccess_WhenPeriodicityIsOnceAndNoDailyPeriod() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -102,7 +102,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenConvertStartDateToZoneAndTimeSpanFormatting() {
+    public void ConvertStartDateToZoneAndTimeSpanFormatting_ShouldSuccess_WhenCalledCorrectly() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -119,7 +119,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenFormatPeriodWithFractionalAndUnits() {
+    public void FormatPeriod_ShouldSuccess_WhenPeriodHasFractionalAndUnits() {
         Assert.Equal("1.5 hours", DescriptionBuilder.FormatPeriod(TimeSpan.FromHours(1.5)));
         Assert.Equal("1 hour", DescriptionBuilder.FormatPeriod(TimeSpan.FromHours(1)));
         Assert.Equal("1.25 days", DescriptionBuilder.FormatPeriod(TimeSpan.FromDays(1.25)));
@@ -130,7 +130,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenDailyRecurrentWithTimeWindow() {
+    public void HandleDescription_ShouldSuccess_WhenDailyRecurrentWithTimeWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -156,7 +156,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenPmTimeFormat() {
+    public void TimeSpanToString12HourFormat_ShouldSuccess_WhenTimeIsPm() {
         var ts = new TimeSpan(14, 30, 0);
         var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
 
@@ -169,7 +169,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     [InlineData(1.25, "1.25 days")]
     [InlineData(0.5, "12 hours")]
     [InlineData(0.75, "18 hours")]
-    public void DescriptionBuilder_ShouldSucceed_WhenFractionalDays(double days, string expected) {
+    public void FormatPeriod_ShouldSuccess_WhenDaysAreFractional(double days, string expected) {
         var period = TimeSpan.FromDays(days);
         var actual = DescriptionBuilder.FormatPeriod(period);
 
@@ -179,7 +179,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenWeeklyWithNoDailyPeriod() {
+    public void HandleDescription_ShouldSuccess_WhenWeeklyRecurrentWithNoDailyPeriod() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
@@ -202,7 +202,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenDailyWithNoDailyPeriod() {
+    public void HandleDescription_ShouldSuccess_WhenDailyRecurrentWithNoDailyPeriod() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -225,7 +225,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenFormatUnitOne() {
+    public void FormatPeriod_ShouldSuccess_WhenUnitIsOne() {
         var period = TimeSpan.FromSeconds(1.0);
         var actual = DescriptionBuilder.FormatPeriod(period);
 
@@ -235,7 +235,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenUnsupportedRecurrency() {
+    public void HandleDescription_ShouldSuccess_WhenRecurrencyIsUnsupported() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -254,7 +254,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenNoonTime() {
+    public void TimeSpanToString12HourFormat_ShouldSuccess_WhenTimeIsNoon() {
         var ts = new TimeSpan(12, 0, 0);
         var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
 
@@ -264,7 +264,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMidnightTime() {
+    public void TimeSpanToString12HourFormat_ShouldSuccess_WhenTimeIsMidnight() {
         var ts = new TimeSpan(0, 0, 0);
         var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
 
@@ -274,7 +274,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenDailyRecurrentWithPartialWindow() {
+    public void HandleDescription_ShouldSuccess_WhenDailyRecurrentWithPartialWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -300,7 +300,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenWeeklyRecurrentWithoutWeeklyPeriod() {
+    public void HandleDescription_ShouldSuccess_WhenWeeklyRecurrentWithoutWeeklyPeriod() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -326,7 +326,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenBuildDescriptionDetectsErrors() {
+    public void BuildDescription_ShouldSuccess_WhenErrorsAreDetected() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
@@ -344,7 +344,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenFractionalMinutes() {
+    public void FormatPeriod_ShouldSuccess_WhenMinutesAreFractional() {
         var period = TimeSpan.FromMinutes(2.5);
         var actual = DescriptionBuilder.FormatPeriod(period);
         
@@ -353,7 +353,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenFractionalSeconds() {
+    public void FormatPeriod_ShouldSuccess_WhenSecondsAreFractional() {
         var period = TimeSpan.FromSeconds(3.75);
         var actual = DescriptionBuilder.FormatPeriod(period);
         
@@ -361,7 +361,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         Assert.Equal("3.75 seconds", actual);
     }
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyTheChkWithFrequencyAndDateType() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyTheChkWithFrequencyAndDateType() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -386,7 +386,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyTheChkWithLastWeekday() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyTheChkWithLastWeekday() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -411,7 +411,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyTheChkWithTimeWindow() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyTheChkWithTimeWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -439,7 +439,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyDayChk() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyDayChk() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -463,7 +463,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyDayChkWithTimeWindow() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyDayChkWithTimeWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -490,7 +490,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithWeekendDay() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyWithWeekendDay() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -515,7 +515,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithDay() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyWithDay() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -540,7 +540,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithAllDaysOfWeek() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyWithAllDaysOfWeek() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var daysToTest = new[] {
@@ -575,7 +575,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyWithNullPeriods() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyWithNullPeriods() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 
@@ -597,7 +597,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void DescriptionBuilder_ShouldSucceed_WhenMonthlyNeitherDayNorTheChk() {
+    public void HandleDescription_ShouldSuccess_WhenMonthlyNeitherDayNorTheChk() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var schedulerInput = new SchedulerInput();
 

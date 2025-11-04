@@ -6,7 +6,7 @@ namespace Scheduler_Lib.Core.Services;
 
 public class ResultPatternTest(ITestOutputHelper output) {
     [Fact]
-    public void ResultPattern_Success_WithNullValue_ShouldSetValueToNull() {
+    public void Success_ShouldSuccess_WhenValueIsNull() {
         string? nullValue = null;
         var result = ResultPattern<string>.Success(nullValue!);
 
@@ -17,7 +17,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ResultPattern_Success_WithObject_ShouldStoreObject() {
+    public void Success_ShouldSuccess_WhenValueIsObject() {
         var schedulerOutput = new SchedulerOutput();
         schedulerOutput.NextDate = new DateTimeOffset(2025, 10, 5, 0, 0, 0, TimeSpan.Zero);
         schedulerOutput.Description = "Test description";
@@ -32,7 +32,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ResultPattern_Failure_WithEmptyErrorMessage_ShouldStoreEmptyString() {
+    public void Failure_ShouldSuccess_WhenErrorMessageIsEmpty() {
         var result = ResultPattern<string>.Failure(string.Empty);
 
         output.WriteLine($"Result: {result.IsSuccess}, Error is empty: {string.IsNullOrEmpty(result.Error)}");
@@ -42,7 +42,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
     
     [Fact]
-    public void ResultPattern_Failure_WithErrorMessage_ShouldStoreError() {
+    public void Failure_ShouldSuccess_WhenErrorMessageIsProvided() {
         const string errorMessage = "An error occurred";
         var result = ResultPattern<int>.Failure(errorMessage);
         
@@ -53,7 +53,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
     
     [Fact]
-    public void ResultPattern_Failure_WithNullErrorMessage_ShouldStoreNull() {
+    public void Failure_ShouldSuccess_WhenErrorMessageIsNull() {
         string? nullError = null;
         var result = ResultPattern<bool>.Failure(nullError!);
         
@@ -64,7 +64,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
     
     [Fact]
-    public void ResultPattern_Success_WithValueType_ShouldStoreValue() {
+    public void Success_ShouldSuccess_WhenValueIsValueType() {
         const int value = 42;
         var result = ResultPattern<int>.Success(value);
         
@@ -75,7 +75,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
     
     [Fact]
-    public void ResultPattern_Success_WithDefaultValueType_ShouldStoreDefaultValue() {
+    public void Success_ShouldSuccess_WhenValueIsDefaultValueType() {
         const int defaultValue = 0;
         var result = ResultPattern<int>.Success(defaultValue);
         
@@ -86,7 +86,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
     
     [Fact]
-    public void ResultPattern_Success_WithFalse_ShouldStoreFalse() {
+    public void Success_ShouldSuccess_WhenValueIsFalse() {
         const bool falseValue = false;
         var result = ResultPattern<bool>.Success(falseValue);
         
@@ -97,7 +97,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ResultPattern_Success_WithComplexObject_ShouldStoreAllProperties() {
+    public void Success_ShouldSuccess_WhenValueIsComplexObject() {
         var schedulerOutput = new SchedulerOutput();
         schedulerOutput.NextDate = new DateTimeOffset(2025, 10, 5, 14, 30, 0, TimeSpan.Zero);
         schedulerOutput.Description = "Complex test description with detailed information";
@@ -114,7 +114,7 @@ public class ResultPatternTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ResultPattern_Failure_WithLongErrorMessage_ShouldStoreFullMessage() {
+    public void Failure_ShouldSuccess_WhenErrorMessageIsLong() {
         var longError = new string('A', 1000);
         var result = ResultPattern<object>.Failure(longError);
         

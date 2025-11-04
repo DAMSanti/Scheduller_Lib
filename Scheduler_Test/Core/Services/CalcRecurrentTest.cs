@@ -10,7 +10,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [InlineData( null, "2025-10-03T10:00:00", "2025-10-03T10:00:00", "2025-10-03T10:00:00", null)]
     [InlineData("2025-10-05T08:30:00", "2025-10-03T10:00:00", "2025-10-05T08:30:00", "2025-10-03T10:00:00", null)]
     [InlineData("2025-10-05T08:30:00", "2025-10-03T10:00:00", "2025-10-05T08:30:00", "2025-10-03T10:00:00", "2025-10-10T10:00:00")]
-    public void CalculateDailyRecurrent_ShouldSuccess_WhenNextDateCorrect(string? targetDate, string currentDate, string expectedNextDate, string? startDate, string? endDate) {
+    public void CalculateDailyRecurrent_ShouldSuccess_WhenNextDateIsCorrect(string? targetDate, string currentDate, string expectedNextDate, string? startDate, string? endDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -59,7 +59,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [Theory]
     [InlineData("2025-10-02", "2025-10-01", "2025-11-25", EnumRecurrency.Weekly, "2025-10-06")]
     [InlineData("2025-10-03", "2025-10-01", "2025-11-25", EnumRecurrency.Daily, "2025-10-03")]
-    public void CalculateNextDate_ShouldSuccess_WhenExpectedNextDate(string currentDate, string startDate, string endDate, EnumRecurrency recurrency, string expectedNextDate) {
+    public void CalculateNextDate_ShouldSuccess_WhenDateMatchesExpected(string currentDate, string startDate, string endDate, EnumRecurrency recurrency, string expectedNextDate) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -114,7 +114,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [Theory]
     [InlineData(new[] { DayOfWeek.Monday }, "2025-10-03T00:00:00", "2025-10-06T00:00:00", "2025-10-01T00:00:00", "2025-12-10T00:00:00", null)]
     [InlineData(new[] { DayOfWeek.Monday }, "2025-10-03T00:00:00", "2025-10-06T00:00:00", "2025-10-01T00:00:00", "2025-12-10T00:00:00", "2025-10-03T00:00:00")]
-    public void CalculateWeeklyRecurrent_ShouldSuccess_WhenNextDateCorrect(DayOfWeek[]? daysOfWeek, string currentDate, string expectedNextDate, string? startDate, string? endDate, string? targetDate) {
+    public void CalculateWeeklyRecurrent_ShouldSuccess_WhenNextDateIsCorrect(DayOfWeek[]? daysOfWeek, string currentDate, string expectedNextDate, string? startDate, string? endDate, string? targetDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -156,7 +156,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateWeeklyRecurrent_ShouldFail_WhenDaysOfWeekNull() {
+    public void CalculateWeeklyRecurrent_ShouldFail_WhenDaysOfWeekIsNull() {
         var current = new DateTimeOffset(2025, 10, 3, 7, 0, 0, TimeSpan.Zero);
         var schedulerInput = new SchedulerInput();
 
@@ -177,7 +177,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateWeeklyRecurrent_ShouldFail_WhenWeeklyPeriodNull() {
+    public void CalculateWeeklyRecurrent_ShouldFail_WhenWeeklyPeriodIsNull() {
         var current = new DateTimeOffset(2025, 10, 3, 7, 0, 0, TimeSpan.Zero);
         var schedulerInput = new SchedulerInput();
 
@@ -198,7 +198,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateDailyRecurrent_ShouldSuccess_WhenFutureDates() {
+    public void CalculateDailyRecurrent_ShouldSuccess_WhenFutureDatesAreCalculated() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -227,7 +227,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void GenerateDescription_ShouldSuccess_WhenExpectedDescription() {
+    public void GenerateDescription_ShouldSuccess_WhenDescriptionMatchesExpected() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -259,7 +259,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     [InlineData(new[] { "2025-10-05T08:30:00", "2025-10-05T08:30:00" }, "2025-10-05T08:30:00")]
     [InlineData(new[] { "2025-10-06T08:30:00" }, "2025-10-05T08:30:00")]
     [InlineData(new string[0], "2025-10-05T08:30:00")]
-    public void CalculateRecurrent_ShouldSuccess_WhenRemovingNextDateFromFutureDates(string[] futureDatesArr, string nextDateStr) {
+    public void CalculateRecurrent_ShouldSuccess_WhenNextDateIsRemovedFromFutureDates(string[] futureDatesArr, string nextDateStr) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -304,7 +304,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateRecurrent_ShouldUse_OccursOnceAt_ForNextDate() {
+    public void CalculateRecurrent_ShouldSuccess_WhenOccursOnceAtIsUsedForNextDate() {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -328,7 +328,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateRecurrent_ShouldUse_TargetDate_WhenPresent() {
+    public void CalculateRecurrent_ShouldSuccess_WhenTargetDateIsPresent() {
         var tz = RecurrenceCalculator.GetTimeZone();
         var targetLocal = new DateTime(2025, 10, 05, 9, 15, 0);
 

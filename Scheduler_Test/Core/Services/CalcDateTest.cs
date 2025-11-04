@@ -8,7 +8,7 @@ namespace Scheduler_Lib.Core.Services;
 public class CalcDateTest(ITestOutputHelper output) {
 
     [Fact]
-    public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationOnceDaily() {
+    public void CalculateDate_ShouldSuccess_WhenConfigurationIsOnceDaily() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -30,7 +30,7 @@ public class CalcDateTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationRecurrentDaily() {
+    public void CalculateDate_ShouldSuccess_WhenConfigurationIsRecurrentDaily() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -51,7 +51,7 @@ public class CalcDateTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateDate_ShouldSuccess_WhenCorrectConfigurationRecurrentWeekly() {
+    public void CalculateDate_ShouldSuccess_WhenConfigurationIsRecurrentWeekly() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -71,7 +71,7 @@ public class CalcDateTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateDate_ShouldFail_WhenInvalidConfiguration() {
+    public void CalculateDate_ShouldFail_WhenConfigurationIsInvalid() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput!.CurrentDate = new DateTimeOffset(2025, 10, 3, 0, 0, 0, TimeSpan.Zero);
@@ -89,7 +89,7 @@ public class CalcDateTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateDate_ShouldFail_WhenUnsupportedPeriodicity() {
+    public void CalculateDate_ShouldFail_WhenPeriodicityIsUnsupported() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;
@@ -108,7 +108,7 @@ public class CalcDateTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateDate_ShouldFail_WhenEndDateBeforeStartDate() {
+    public void CalculateDate_ShouldFail_WhenEndDateIsBeforeStartDate() {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.EnabledChk = true;

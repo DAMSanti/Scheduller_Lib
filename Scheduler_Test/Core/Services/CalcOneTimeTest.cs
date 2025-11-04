@@ -11,7 +11,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     [InlineData("2025-12-31", "2025-01-01", "2025-01-01", Messages.ErrorTargetDateAfterEndDate)]
     [InlineData("2025-01-01", "2025-12-30", "2024-12-31", Messages.ErrorTargetDateAfterEndDate)]
     [InlineData("2025-01-01", "2025-12-31", null, Messages.ErrorTargetDateNull)]
-    public void ValidateOnce_ShouldFail_WhenInvalidDates(string startDate, string endDate, string? targetDate, string expectedError) {
+    public void ValidateOnce_ShouldFail_WhenDatesAreInvalid(string startDate, string endDate, string? targetDate, string expectedError) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -40,7 +40,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     [Theory]
     [InlineData("2025-01-01", "2025-12-31", "2025-01-01")]
     [InlineData("2025-01-01", "2025-12-31", "2025-12-31")]
-    public void ValidateOnce_ShouldSuccess_WhenValidTargetDate(string startDate, string endDate, string targetDate) {
+    public void ValidateOnce_ShouldSuccess_WhenTargetDateIsValid(string startDate, string endDate, string targetDate) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var schedulerInput = new SchedulerInput();
@@ -83,7 +83,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void CalculateOnce_ShouldFail_WhenRecurrencyIsNotWeeklyFutureDatesIsNull() {
+    public void CalculateOnce_ShouldSuccess_WhenRecurrencyIsNotWeeklyAndFutureDatesIsNull() {
         var schedulerInput = new SchedulerInput();
 
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -112,7 +112,7 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
     }
 
     [Fact]
-    public void ValidateOnce_ShouldFail_WhenTargetDateNull() {
+    public void ValidateOnce_ShouldFail_WhenTargetDateIsNull() {
         var schedulerInput = new SchedulerInput();
 
         var tz = RecurrenceCalculator.GetTimeZone();
