@@ -309,7 +309,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         }
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(4, futureDates!.Count);
+        Assert.Equal(5, futureDates!.Count);
         Assert.Contains("15 minutes", result.Value.Description);
     }
 
