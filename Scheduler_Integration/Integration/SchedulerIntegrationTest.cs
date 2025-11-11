@@ -19,7 +19,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         Assert.False(result.IsSuccess);
@@ -39,7 +39,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         Assert.False(result.IsSuccess);
@@ -58,7 +58,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         Assert.False(result.IsSuccess);
@@ -74,7 +74,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = (EnumConfiguration)999;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         Assert.False(result.IsSuccess);
@@ -91,7 +91,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = (EnumRecurrency)999;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         Assert.False(result.IsSuccess);
@@ -110,7 +110,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 01, 01)));
         schedulerInput.TargetDate = new DateTimeOffset(2025, 01, 15, 14, 30, 0, tz.GetUtcOffset(new DateTime(2025, 01, 15, 14, 30, 0)));
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -128,7 +128,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = null;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         Assert.False(result.IsSuccess);
@@ -147,7 +147,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -168,7 +168,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(9);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         
@@ -196,7 +196,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.Zero;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         Assert.False(result.IsSuccess);
@@ -214,7 +214,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -242,7 +242,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -267,7 +267,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(9);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -297,7 +297,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -320,7 +320,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -345,7 +345,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         
@@ -375,7 +375,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         output.WriteLine($"NextDate: {result.Value.NextDate}");
@@ -399,7 +399,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -422,7 +422,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(18);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(3);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         Assert.True(result.IsSuccess);
@@ -447,7 +447,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 29;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         
@@ -476,7 +476,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         
@@ -508,7 +508,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(12);
         schedulerInput.DailyPeriod = TimeSpan.FromMinutes(15);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         
@@ -538,7 +538,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         output.WriteLine($"TimeZone: {tz.DisplayName}");

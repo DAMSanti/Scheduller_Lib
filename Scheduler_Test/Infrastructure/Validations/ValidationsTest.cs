@@ -19,7 +19,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.Value.Description);
 
@@ -48,7 +48,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = periodicity;
         schedulerInput.Recurrency = recurrency;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
@@ -71,7 +71,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = null;
         schedulerInput.DailyPeriod = null;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
@@ -83,7 +83,7 @@ public class ValidationsTest(ITestOutputHelper output) {
     public void ValidateCalculateDate_ShouldFail_WhenRequestIsNull() {
         SchedulerInput? schedulerInput = null;
 
-        var result = SchedulerService.CalculateDate(schedulerInput!);
+        var result = SchedulerService.InitialHandler(schedulerInput!);
 
         output.WriteLine(result.Error);
 
@@ -104,7 +104,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.DailyPeriod = new TimeSpan(1, 0, 0, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.Error);
 
@@ -177,7 +177,7 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.Value.Description);
 

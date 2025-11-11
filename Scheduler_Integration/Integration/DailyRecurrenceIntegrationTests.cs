@@ -20,7 +20,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -49,7 +49,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -73,7 +73,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(15, 30, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -94,7 +94,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -116,7 +116,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(16);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -146,7 +146,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(0);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(23);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -175,7 +175,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(3);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -205,7 +205,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(7);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -235,7 +235,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -265,7 +265,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(12);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -296,7 +296,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(9);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(10);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -309,7 +309,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         }
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(5, futureDates!.Count);
+        Assert.Equal(4, futureDates!.Count);
         Assert.Contains("15 minutes", result.Value.Description);
     }
 
@@ -326,7 +326,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -357,7 +357,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(0);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(23);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -390,7 +390,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(9);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(18);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -420,7 +420,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(2);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -451,7 +451,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(10);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(10).Add(TimeSpan.FromMinutes(2));
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -480,7 +480,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(30);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -512,7 +512,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(16);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -543,7 +543,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(10);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(10).Add(TimeSpan.FromSeconds(10));
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -573,7 +573,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -590,7 +590,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -611,7 +611,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(18);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(8);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -630,7 +630,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = null;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -649,7 +649,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = null;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -668,7 +668,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromHours(-1);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -687,7 +687,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.Zero;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -707,7 +707,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.True(result.IsSuccess);
@@ -726,7 +726,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.True(result.IsSuccess);

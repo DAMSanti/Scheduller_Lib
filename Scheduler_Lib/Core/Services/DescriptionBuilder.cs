@@ -117,8 +117,8 @@ public class DescriptionBuilder {
         };
     }
 
-    public static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        var startInZone = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, tz);
+    public static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo timeZone) {
+        var startInZone = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, timeZone);
         return startInZone.Date;
     }
 
@@ -139,9 +139,9 @@ public class DescriptionBuilder {
         return period.TotalMinutes >= 1 ? FormatUnit(period.TotalMinutes, "minute", "minutes") : FormatUnit(period.TotalSeconds, "second", "seconds");
     }
     
-    private static string FormatDate(DateTimeOffset dto) => dto.Date.ToShortDateString();
+    private static string FormatDate(DateTimeOffset dateTimeOffset) => dateTimeOffset.Date.ToShortDateString();
     
-    private static string FormatTime(DateTimeOffset dto) => dto.DateTime.ToShortTimeString();
+    private static string FormatTime(DateTimeOffset dateTimeOffset) => dateTimeOffset.DateTime.ToShortTimeString();
     
     private static string FormatUnit(double value, string singular, string plural) {
         var formatted = value.ToString("0.##", CultureInfo.InvariantCulture);

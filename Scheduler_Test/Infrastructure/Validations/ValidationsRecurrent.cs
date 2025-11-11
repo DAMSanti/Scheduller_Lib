@@ -24,7 +24,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
@@ -50,7 +50,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = TimeSpan.FromHours(startTime);
         schedulerInput.DailyEndTime = TimeSpan.FromHours(endTime);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
@@ -75,7 +75,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = daysOfWeek?.ToList();
         schedulerInput.WeeklyPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
@@ -102,7 +102,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
@@ -198,7 +198,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
@@ -473,7 +473,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         output.WriteLine(result.Value.Description);
@@ -505,7 +505,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 31;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
         
@@ -559,7 +559,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 10;
         schedulerInput.MonthlyDayPeriod = 3;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
         
@@ -615,7 +615,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Wednesday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Wednesday", result.Value.Description);
     }
@@ -636,7 +636,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Thursday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Thursday", result.Value.Description);
     }
@@ -657,7 +657,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Saturday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Saturday", result.Value.Description);
     }
@@ -678,7 +678,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Sunday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
         Assert.True(result.IsSuccess);
         Assert.Contains("Sunday", result.Value.Description);
     }
@@ -699,7 +699,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = (EnumMonthlyDateType)999;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
         Assert.True(result.IsSuccess);
     }
 
@@ -719,7 +719,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
         Assert.True(result.IsSuccess);
     }
 

@@ -5,8 +5,8 @@ using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Factory;
 
-public static class ScheduleCalculatorFactory {
-    public static ResultPattern<SchedulerOutput> CreateAndExecute(SchedulerInput schedulerInput) {
+public static class ScheduleCalculatorHandler {
+    public static ResultPattern<SchedulerOutput> GetPeriodicityType(SchedulerInput schedulerInput) {
         return schedulerInput.Periodicity switch {
             EnumConfiguration.Once => CalculateOneTime.CalculateDate(schedulerInput),
             EnumConfiguration.Recurrent => CalculateRecurrent.CalculateDate(schedulerInput),

@@ -18,7 +18,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
         schedulerInput.EndDate = DateTimeOffset.Now.AddDays(180);
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = ScheduleCalculatorFactory.CreateAndExecute(schedulerInput);
+        var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -50,7 +50,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = ScheduleCalculatorFactory.CreateAndExecute(schedulerInput);
+        var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -72,7 +72,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
 
         schedulerInput!.Periodicity = (EnumConfiguration) 5;
 
-        var result = ScheduleCalculatorFactory.CreateAndExecute(schedulerInput);
+        var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -81,7 +81,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
 
     [Fact]
     public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsOnce() {
-        var strategyType = ScheduleCalculatorFactory.GetStrategyType(EnumConfiguration.Once);
+        var strategyType = ScheduleCalculatorHandler.GetStrategyType(EnumConfiguration.Once);
 
         output.WriteLine($"Strategy Type: {strategyType}");
 
@@ -90,7 +90,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
 
     [Fact]
     public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsRecurrent() {
-        var strategyType = ScheduleCalculatorFactory.GetStrategyType(EnumConfiguration.Recurrent);
+        var strategyType = ScheduleCalculatorHandler.GetStrategyType(EnumConfiguration.Recurrent);
 
         output.WriteLine($"Strategy Type: {strategyType}");
 

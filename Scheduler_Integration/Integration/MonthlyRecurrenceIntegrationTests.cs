@@ -23,7 +23,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -55,7 +55,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 31;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -91,7 +91,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 10;
         schedulerInput.MonthlyDayPeriod = 3;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -124,7 +124,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -158,7 +158,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Friday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -192,7 +192,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Weekday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -226,7 +226,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.WeekendDay;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -260,7 +260,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Day;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -294,7 +294,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Tuesday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -329,7 +329,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -366,7 +366,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(12);
         schedulerInput.DailyPeriod = TimeSpan.FromMinutes(30);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -400,7 +400,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(16);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(4);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -436,7 +436,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(23);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(3);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -471,7 +471,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -507,7 +507,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(14);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(1);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -543,7 +543,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = TimeSpan.FromHours(20);
         schedulerInput.DailyPeriod = TimeSpan.FromHours(4);
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -577,7 +577,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -596,7 +596,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayChk = false;
         schedulerInput.MonthlyTheChk = false;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -617,7 +617,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 35;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -638,7 +638,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 0;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -660,7 +660,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -682,7 +682,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = null;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -704,7 +704,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Monday;
         schedulerInput.MonthlyThePeriod = -1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
@@ -850,7 +850,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 31;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         output.WriteLine($"NextDate: {result.Value.NextDate:yyyy-MM-dd HH:mm:ss}");
@@ -873,7 +873,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         output.WriteLine($"NextDate: {result.Value.NextDate:yyyy-MM-dd HH:mm:ss}");
@@ -896,7 +896,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 30;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         output.WriteLine($"NextDate: {result.Value.NextDate:yyyy-MM-dd HH:mm:ss}");
@@ -921,7 +921,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Thursday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -955,7 +955,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Day;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -993,7 +993,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Wednesday;
         schedulerInput.MonthlyThePeriod = 3;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -1027,7 +1027,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 1;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -1064,7 +1064,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
         output.WriteLine($"NextDate: {result.Value.NextDate:yyyy-MM-dd HH:mm:ss}");
@@ -1089,7 +1089,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 29;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -1124,7 +1124,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 29;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -1158,7 +1158,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Saturday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
@@ -1192,7 +1192,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDateType = EnumMonthlyDateType.Sunday;
         schedulerInput.MonthlyThePeriod = 1;
 
-        var result = SchedulerService.CalculateDate(schedulerInput);
+        var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
