@@ -34,7 +34,7 @@ public static class DailyRecurrenceCalculator {
                 break;
 
             case EnumRecurrency.Monthly:
-                dates = MonthlyRecurrenceCalculator.Calculate(schedulerInput, tz);
+                dates = MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
                 break;
         }
         return dates;

@@ -20,11 +20,11 @@ public static class RecurrenceCalculator {
     }
 
     public static List<DateTimeOffset>? CalculateWeeklyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        return WeeklyRecurrenceCalculator.Calculate(schedulerInput, tz);
+        return WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
     }
 
     public static List<DateTimeOffset> CalculateMonthlyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        return MonthlyRecurrenceCalculator.Calculate(schedulerInput, tz);
+        return MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
     }
 
     public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {

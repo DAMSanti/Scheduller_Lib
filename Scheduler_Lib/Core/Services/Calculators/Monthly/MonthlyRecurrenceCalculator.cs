@@ -8,7 +8,7 @@ using Scheduler_Lib.Resources;
 namespace Scheduler_Lib.Core.Services.Calculators.Monthly;
 
 public static class MonthlyRecurrenceCalculator {
-    public static List<DateTimeOffset> Calculate(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+    public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
         var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
         var endLocal = schedulerInput.EndDate ?? GetEffectiveEndDate(schedulerInput, tz);

@@ -9,7 +9,7 @@ namespace Scheduler_Lib.Core.Services.Calculators.Weekly;
 public static class WeeklyRecurrenceCalculator {
     private const int DaysInWeek = 7;
 
-    public static List<DateTimeOffset> Calculate(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+    public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
         var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
         var nextEligible = SelectNextEligibleDate(
