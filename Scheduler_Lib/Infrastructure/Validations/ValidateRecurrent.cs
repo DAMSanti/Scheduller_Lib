@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 
-public class ValidationRecurrent {
-    public static ResultPattern<bool> ValidateRecurrent(SchedulerInput schedulerInput) {
+internal class ValidationRecurrent {
+    internal static ResultPattern<bool> ValidateRecurrent(SchedulerInput schedulerInput) {
         var errors = new StringBuilder();
 
         if (schedulerInput.EndDate.HasValue && schedulerInput.StartDate > schedulerInput.EndDate)

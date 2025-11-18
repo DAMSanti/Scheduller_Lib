@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 
-public class ValidationOnce {
-    public static ResultPattern<bool> ValidateOnce(SchedulerInput schedulerInput) {
+internal class ValidationOnce {
+    internal static ResultPattern<bool> ValidateOnce(SchedulerInput schedulerInput) {
         var errors = new StringBuilder();
 
         if (schedulerInput is { Periodicity: EnumConfiguration.Once, Recurrency: EnumRecurrency.Weekly })

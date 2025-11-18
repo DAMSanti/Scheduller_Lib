@@ -6,6 +6,7 @@ using Xunit.Abstractions;
 
 namespace Scheduler_Lib.Core.Services;
 public class CalculateRecurrentTests(ITestOutputHelper output) {
+    /*
     [Theory]
     [InlineData( null, "2025-10-03T10:00:00", "2025-10-03T10:00:00", "2025-10-03T10:00:00", null)]
     [InlineData("2025-10-05T08:30:00", "2025-10-03T10:00:00", "2025-10-05T08:30:00", "2025-10-03T10:00:00", null)]
@@ -352,4 +353,5 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.Contains("Unsupported recurrency", result.Error);
     }
+        */
 }

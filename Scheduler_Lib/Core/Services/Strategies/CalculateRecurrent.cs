@@ -1,11 +1,17 @@
 using Scheduler_Lib.Core.Model;
+using Scheduler_Lib.Core.Services.Calculators.Daily;
+using Scheduler_Lib.Core.Services.Calculators.Monthly;
 using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services.Strategies;
 
-public class CalculateRecurrent {
-    public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput schedulerInput) {
+internal class CalculateRecurrent {
+    internal static ResultPattern<SchedulerOutput> CalculateRecurrentScheduler(SchedulerInput schedulerInput) {
+        return ValidateAndCalculateSchedule(schedulerInput);
+    }
+
+    private static ResultPattern<SchedulerOutput> ValidateAndCalculateSchedule(SchedulerInput schedulerInput) {
         var validation = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
         return !validation.IsSuccess ? ResultPattern<SchedulerOutput>.Failure(validation.Error!) :
@@ -27,9 +33,8 @@ public class CalculateRecurrent {
                     occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
                 next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
             }
-        } 
-        else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
-            var futureDates = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
+        } else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
+            var futureDates = MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
             if (futureDates.Count > 0) {
                 next = futureDates.First();
                 
@@ -43,9 +48,8 @@ public class CalculateRecurrent {
             } else {
                 next = schedulerInput.CurrentDate;
             }
-        }
-        else if (schedulerInput.Recurrency == EnumRecurrency.Daily) {
-            var futureDates = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+        } else if (schedulerInput.Recurrency == EnumRecurrency.Daily) {
+            var futureDates = DailyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
             if (futureDates.Count > 0) {
                 next = futureDates.First();
                 
@@ -59,8 +63,7 @@ public class CalculateRecurrent {
             } else {
                 next = schedulerInput.CurrentDate;
             }
-        }
-        else {
+        } else {
             next = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
         }
 

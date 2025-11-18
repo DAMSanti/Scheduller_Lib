@@ -1,5 +1,6 @@
 using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
+using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
 using Xunit;
 using Xunit.Abstractions;
@@ -24,11 +25,11 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         Assert.True(result.IsSuccess);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenOccursOnceWithEndDate() {
         var schedulerInput = new SchedulerInput();
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
 
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
@@ -50,7 +51,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenOccursOnceWithFutureTargetDate() {
         var schedulerInput = new SchedulerInput();
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
 
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
@@ -67,7 +68,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.Equal(15, result.Value.NextDate.Hour);
         Assert.Equal(30, result.Value.NextDate.Minute);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenCurrentDateAfterStartDate() {
         var schedulerInput = new SchedulerInput();
@@ -104,7 +105,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         Assert.True(result.IsSuccess);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenOccursEveryWithHourlyPeriod() {
         var schedulerInput = new SchedulerInput();
@@ -149,7 +150,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.True(futureDates!.Count >= 4); 
         Assert.Contains("3 days", result.Value.Description);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenOccursEveryWithWeeklyPeriod() {
         var schedulerInput = new SchedulerInput();
@@ -307,7 +308,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.Contains(futureDates!, d => d.Date == schedulerInput.TargetDate!.Value.Date);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenOccursEveryWithTargetDateWithoutTimeWindow() {
         var schedulerInput = new SchedulerInput();
@@ -327,7 +328,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.Equal(schedulerInput.TargetDate!.Value.DateTime, result.Value.NextDate.DateTime);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenVeryShortTimeWindow() {
         var schedulerInput = new SchedulerInput();
@@ -395,7 +396,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.All(d => d.Date == schedulerInput.StartDate.Date));
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void DailyRecurrence_ShouldSuccess_WhenOccursEveryWith1SecondPeriod() {
         var schedulerInput = new SchedulerInput();

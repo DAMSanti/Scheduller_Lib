@@ -3,8 +3,8 @@ using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
-public static class Validations {
-    public static ResultPattern<bool> ValidateCalculateDate(SchedulerInput? schedulerInput) {
+internal static class Validations {
+    internal static ResultPattern<bool> ValidateCalculateDate(SchedulerInput? schedulerInput) {
         if (schedulerInput == null)
             return ResultPattern<bool>.Failure(Messages.ErrorRequestNull);
 

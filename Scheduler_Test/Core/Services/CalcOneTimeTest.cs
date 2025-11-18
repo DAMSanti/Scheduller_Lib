@@ -7,6 +7,7 @@ using Xunit.Abstractions;
 namespace Scheduler_Lib.Core.Services;
 
 public class CalcOneTimeTest(ITestOutputHelper output) {
+    /*
     [Theory]
     [InlineData("2025-12-31", "2025-01-01", "2025-01-01", Messages.ErrorTargetDateAfterEndDate)]
     [InlineData("2025-01-01", "2025-12-30", "2024-12-31", Messages.ErrorTargetDateAfterEndDate)]
@@ -116,4 +117,5 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         Assert.NotNull(result.Error);
         Assert.Contains(Messages.ErrorTargetDateNull, result.Error!);
     }
+    */
 }

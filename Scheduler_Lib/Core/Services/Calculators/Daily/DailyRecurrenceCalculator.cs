@@ -6,8 +6,8 @@ using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services.Calculators.Daily;
 
-public static class DailyRecurrenceCalculator {
-    public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+internal static class DailyRecurrenceCalculator {
+    internal static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
 
         if (schedulerInput.StartDate == DateTimeOffset.MaxValue || schedulerInput.EndDate == DateTimeOffset.MaxValue)
@@ -22,7 +22,7 @@ public static class DailyRecurrenceCalculator {
         switch (schedulerInput.Recurrency) {
             case EnumRecurrency.Daily:
                 if (!schedulerInput.DailyStartTime.HasValue || !schedulerInput.DailyEndTime.HasValue) {
-                    DailySlotGenerator.AddSimpleDailySlots(baseDto, endDate, slotStep, schedulerInput, dates);
+                    AddSimpleDailySlots(baseDto, endDate, slotStep, schedulerInput, dates);
                     break;
                 }
                 FillDailyWindowSlots(schedulerInput, tz, endDate, slotStep, baseDto, dates);
@@ -143,5 +143,27 @@ public static class DailyRecurrenceCalculator {
         const int defaultPeriodMultiplier = 1000;
         var endLocal = beginning.Add(period * defaultPeriodMultiplier);
         return new DateTimeOffset(endLocal, tz.GetUtcOffset(endLocal));
+    }
+
+    private static void AddSimpleDailySlots(
+    DateTimeOffset startFrom,
+    DateTimeOffset endDate,
+    TimeSpan step,
+    SchedulerInput schedulerInput,
+    List<DateTimeOffset> accumulator) {
+
+        if (schedulerInput.TargetDate == null) {
+            var startTime = schedulerInput.CurrentDate.TimeOfDay;
+            startFrom = new DateTimeOffset(
+                startFrom.Year, startFrom.Month, startFrom.Day,
+                startTime.Hours, startTime.Minutes, startTime.Seconds,
+                startFrom.Offset
+            );
+        }
+
+        while (startFrom <= endDate) {
+            accumulator.Add(startFrom);
+            startFrom = startFrom.Add(step);
+        }
     }
 }

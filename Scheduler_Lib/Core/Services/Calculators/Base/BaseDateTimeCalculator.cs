@@ -2,8 +2,8 @@ using Scheduler_Lib.Core.Model;
 
 namespace Scheduler_Lib.Core.Services.Calculators.Base;
 
-public static class BaseDateTimeCalculator {
-    public static DateTime GetBaseDateTime(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+internal static class BaseDateTimeCalculator {
+    internal static DateTime GetBaseDateTime(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         if (schedulerInput.TargetDate.HasValue)
             return schedulerInput.TargetDate.Value.DateTime;
 

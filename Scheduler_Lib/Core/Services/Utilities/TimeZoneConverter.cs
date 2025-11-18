@@ -11,10 +11,6 @@ public static class TimeZoneConverter {
         return new DateTimeOffset(localWallClock, tz.GetUtcOffset(localWallClock));
     }
 
-    public static TimeSpan GetUtcOffset(DateTime dateTime, TimeZoneInfo tz) {
-        return tz.GetUtcOffset(dateTime);
-    }
-
     public static DateTime ConvertFromUtc(DateTime utcTime, TimeZoneInfo tz) {
         return TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
     }
@@ -23,5 +19,8 @@ public static class TimeZoneConverter {
         var utcTime = dateTimeOffset.UtcDateTime;
         var localInTz = ConvertFromUtc(utcTime, tz);
         return CreateDateTimeOffset(localInTz, tz);
+    }
+    public static TimeSpan GetUtcOffset(DateTime dateTime, TimeZoneInfo tz) {
+        return tz.GetUtcOffset(dateTime);
     }
 }

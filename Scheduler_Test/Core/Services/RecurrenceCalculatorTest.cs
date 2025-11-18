@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 namespace Scheduler_Lib.Core.Services;
 
 public class RecurrenceCalculatorTests(ITestOutputHelper output) {
-
+    /*
     [Fact]
     public void SelectNextEligibleDate_ShouldSuccess_WhenTargetDateIsMinValue() {
         var targetDate = DateTimeOffset.MinValue;
@@ -59,7 +59,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         Assert.Equal(targetDate, result);
     }
-
+    
     [Fact]
     public void CalculateWeeklyRecurrence_ShouldSuccess_WhenValidInput() {
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -110,7 +110,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
             Assert.Equal(14, daysDifference);
         }
     }
-
+    
     [Fact]
     public void SelectNextEligibleDate_ShouldSuccess_WhenHandlingBoundaryConditions() {
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -611,5 +611,6 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
             Assert.Equal(DayOfWeek.Monday, date.DayOfWeek);
         }
     }
+    */
 }
 

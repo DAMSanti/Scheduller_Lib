@@ -4,8 +4,8 @@ using Scheduler_Lib.Resources;
 
 namespace Scheduler_Lib.Core.Services.Calculators.Daily;
 
-public static class DailySlotGenerator {
-    public static void GenerateSlotsForDay(
+internal static class DailySlotGenerator {
+    internal static void GenerateSlotsForDay(
         DateTime day, 
         TimeSpan startTime, 
         TimeSpan endTime, 
@@ -81,27 +81,5 @@ public static class DailySlotGenerator {
             && slot <= endDate 
             && slot > earliestAllowed 
             && !accumulator.Contains(slot);
-    }
-
-    public static void AddSimpleDailySlots(
-        DateTimeOffset startFrom, 
-        DateTimeOffset endDate, 
-        TimeSpan step, 
-        SchedulerInput schedulerInput, 
-        List<DateTimeOffset> accumulator) {
-        
-        if (schedulerInput.TargetDate == null) {
-            var startTime = schedulerInput.CurrentDate.TimeOfDay;
-            startFrom = new DateTimeOffset(
-                startFrom.Year, startFrom.Month, startFrom.Day,
-                startTime.Hours, startTime.Minutes, startTime.Seconds,
-                startFrom.Offset
-            );
-        }
-
-        while (startFrom <= endDate) {
-            accumulator.Add(startFrom);
-            startFrom = startFrom.Add(step);
-        }
     }
 }

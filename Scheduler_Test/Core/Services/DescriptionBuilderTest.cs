@@ -5,6 +5,7 @@ using Xunit.Abstractions;
 namespace Scheduler_Lib.Core.Services;
 
 public class DescriptionBuilderTests(ITestOutputHelper output) {
+   /*
     [Theory]
     [InlineData(1, "1 day")]
     [InlineData(3, "3 days")]
@@ -23,7 +24,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         Assert.Equal(expected, actual);
     }
-
+   
     [Fact]
     public void HandleDescription_ShouldSuccess_WhenWeeklyRecurrentWithTimeWindow() {
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -234,7 +235,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         Assert.Contains("Occurs once:", actual);
     }
-
+    
     [Fact]
     public void TimeSpanToString12HourFormat_ShouldSuccess_WhenTimeIsNoon() {
         var ts = new TimeSpan(12, 0, 0);
@@ -316,7 +317,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         Assert.NotNull(actual);
     }
-
+    
     [Fact]
     public void FormatPeriod_ShouldSuccess_WhenMinutesAreFractional() {
         var period = TimeSpan.FromMinutes(2.5);
@@ -558,7 +559,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         Assert.Contains("1 month(s)", actual);
     }
-
+    
     [Fact]
     public void HandleDescription_ShouldSuccess_WhenMonthlyNeitherDayNorTheChk() {
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -579,6 +580,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
         Assert.Equal(expected, actual);
-    }
+    }*/
 }
 

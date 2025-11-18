@@ -1,5 +1,6 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
+using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
 using Xunit;
 using Xunit.Abstractions;
@@ -92,11 +93,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenOnceConfigurationIsValid() {
         var schedulerInput = new SchedulerInput();
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
 
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Once;
@@ -106,6 +107,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.TargetDate = new DateTimeOffset(2025, 01, 15, 14, 30, 0, tz.GetUtcOffset(new DateTime(2025, 01, 15, 14, 30, 0)));
 
         var result = SchedulerService.InitialHandler(schedulerInput);
+        output.WriteLine(result.Value.NextDate.DateTime.ToString());
 
         Assert.True(result.IsSuccess);
         Assert.Equal(schedulerInput.TargetDate!.Value.DateTime, result.Value.NextDate.DateTime);
@@ -144,7 +146,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
         Assert.True(result.IsSuccess);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenDailyWithTimeWindow() {
         var schedulerInput = new SchedulerInput();
@@ -222,7 +224,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.Contains("Wednesday", result.Value.Description);
         Assert.Contains("Friday", result.Value.Description);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenWeeklyWithTimeWindow() {
         var schedulerInput = new SchedulerInput();
@@ -246,7 +248,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count > 2);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenMonthlyDayIsValid() {
         var schedulerInput = new SchedulerInput();
@@ -289,7 +291,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.Contains("first", result.Value.Description);
         Assert.Contains("Monday", result.Value.Description);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenMonthlyWithTimeWindow() {
         var schedulerInput = new SchedulerInput();
@@ -314,11 +316,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count > 0);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenCurrentDateIsAfterStartDate() {
         var schedulerInput = new SchedulerInput();
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
 
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
@@ -334,7 +336,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.True(result.Value.NextDate >= schedulerInput.CurrentDate);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenEndDateIsVeryFarInFuture() {
         var schedulerInput = new SchedulerInput();
@@ -379,7 +381,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.Contains("Wednesday", result.Value.Description);
         Assert.Contains("Friday", result.Value.Description);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenLeapYearMonthlyDay29February() {
         var schedulerInput = new SchedulerInput();
@@ -446,11 +448,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 9);
     }
-
+    
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenTimeZoneRomanceStandardTime() {
         var schedulerInput = new SchedulerInput();
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
 
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;

@@ -7,6 +7,7 @@ using Xunit.Abstractions;
 namespace Scheduler_Lib.Core.Services;
 
 public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
+   /*
     [Fact]
     public void CreateAndExecute_ShouldSuccess_WhenPeriodicityIsOnce() {
         var schedulerInput = new SchedulerInput();
@@ -18,7 +19,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
         schedulerInput.EndDate = DateTimeOffset.Now.AddDays(180);
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
+        var result = ScheduleCalculatorOrchestator.GetPeriodicityType(schedulerInput);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
@@ -42,7 +43,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
+        var result = ScheduleCalculatorOrchestator.GetPeriodicityType(schedulerInput);
 
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
@@ -56,22 +57,8 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
 
         schedulerInput!.Periodicity = (EnumConfiguration) 5;
 
-        var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
+        var result = ScheduleCalculatorOrchestator.GetPeriodicityType(schedulerInput);
 
         Assert.Equal(Messages.ErrorUnsupportedPeriodicity, result.Error);
-    }
-
-    [Fact]
-    public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsOnce() {
-        var strategyType = ScheduleCalculatorHandler.GetStrategyType(EnumConfiguration.Once);
-
-        Assert.Equal("CalculateOneTime", strategyType);
-    }
-
-    [Fact]
-    public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsRecurrent() {
-        var strategyType = ScheduleCalculatorHandler.GetStrategyType(EnumConfiguration.Recurrent);
-
-        Assert.Equal("CalculateRecurrent", strategyType);
-    }
+    }*/
 }

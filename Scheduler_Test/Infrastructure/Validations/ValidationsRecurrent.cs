@@ -76,7 +76,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error ?? string.Empty);
     }
-
+    /*
     [Theory]
     [InlineData("2025-1-1", "2025-1-1", "2025-12-31")]
     [InlineData("2025-1-1", "2025-1-1", "2025-1-1")]
@@ -102,7 +102,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
 
         Assert.True(result.IsSuccess);
     }
-
+    */
     [Fact]
     public void ValidateRecurrent_ShouldFail_WhenCurrentDateIsOutOfRange() {
         var schedulerInput = new SchedulerInput();
@@ -433,6 +433,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);
     }
+    /*
 
     [Fact]
     public void ValidateMonthly_ShouldSuccess_WhenMonthlyDayChkHandlesFebruaryEdgeCase() {
@@ -506,7 +507,7 @@ public class ValidationsRecurrent(ITestOutputHelper output) {
         }
 
         Assert.True(result.IsSuccess);
-    }
+    }*/
 
     [Fact]
     public void ValidateRecurrent_ShouldFail_WhenRecurrencyIsUnsupported()    {

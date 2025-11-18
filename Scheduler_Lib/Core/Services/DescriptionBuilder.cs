@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Scheduler_Lib.Core.Services;
 
-public class DescriptionBuilder {
-    public static string HandleDescriptionForCalculatedDate(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+internal class DescriptionBuilder {
+    internal static string HandleDescriptionForCalculatedDate(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
         var errors = new StringBuilder();
 
         return schedulerInput.Recurrency switch {
@@ -117,12 +117,12 @@ public class DescriptionBuilder {
         };
     }
 
-    public static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo timeZone) {
+    private static DateTime ConvertStartDateToZone(SchedulerInput schedulerInput, TimeZoneInfo timeZone) {
         var startInZone = TimeZoneInfo.ConvertTime(schedulerInput.StartDate, timeZone);
         return startInZone.Date;
     }
 
-    public static string TimeSpanToString12HourFormat(TimeSpan timeSpan) {
+    private static string TimeSpanToString12HourFormat(TimeSpan timeSpan) {
         var dateTime = DateTime.Today.Add(timeSpan);
         var hour12 = dateTime.Hour % 12;
         if (hour12 == 0) hour12 = 12;
@@ -131,7 +131,7 @@ public class DescriptionBuilder {
         return $"{hour12:D2}:{dateTime.Minute:D2} {period}";
     }
 
-    public static string FormatPeriod(TimeSpan period) {
+    private static string FormatPeriod(TimeSpan period) {
         if (period.TotalDays >= 1)
             return FormatUnit(period.TotalDays, "day", "days");
         if (period.TotalHours >= 1)

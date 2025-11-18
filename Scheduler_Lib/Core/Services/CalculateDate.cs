@@ -11,6 +11,6 @@ public class SchedulerService {
         if (!validation.IsSuccess) 
             return ResultPattern<SchedulerOutput>.Failure(validation.Error!);
 
-        return ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
+        return ScheduleCalculatorOrchestator.GetPeriodicityType(schedulerInput);
     }
 }

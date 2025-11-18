@@ -4,8 +4,12 @@ using Scheduler_Lib.Infrastructure.Validations;
 
 namespace Scheduler_Lib.Core.Services.Strategies;
 
-public class CalculateOneTime {
-    public static ResultPattern<SchedulerOutput> CalculateDate(SchedulerInput schedulerInput) {
+internal class CalculateOneTime {
+    internal static ResultPattern<SchedulerOutput> CalculateOneTimeScheduler(SchedulerInput schedulerInput) {
+        return ValidateAndCalculateSchedule(schedulerInput);
+    }
+
+    private static ResultPattern<SchedulerOutput> ValidateAndCalculateSchedule(SchedulerInput schedulerInput) {
         var validation = ValidationOnce.ValidateOnce(schedulerInput);
 
         return !validation.IsSuccess

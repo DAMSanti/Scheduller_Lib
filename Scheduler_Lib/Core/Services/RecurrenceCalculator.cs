@@ -8,33 +8,6 @@ using Scheduler_Lib.Core.Services.Utilities;
 namespace Scheduler_Lib.Core.Services;
 
 public static class RecurrenceCalculator {
-    public static DateTimeOffset SelectNextEligibleDate(
-        DateTimeOffset targetDate, 
-        List<DayOfWeek> daysOfWeek, 
-        TimeZoneInfo tz, 
-        EnumMonthlyFrequency? monthlyFrequency = null, 
-        EnumMonthlyDateType? monthlyDateType = null, 
-        DateTime? currentMonth = null) {
-        
-        return WeeklyRecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz, monthlyFrequency, monthlyDateType, currentMonth);
-    }
-
-    public static List<DateTimeOffset>? CalculateWeeklyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        return WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
-    }
-
-    public static List<DateTimeOffset> CalculateMonthlyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        return MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
-    }
-
-    public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        return DailyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
-    }
-
-    public static TimeZoneInfo GetTimeZone() {
-        return TimeZoneConverter.GetTimeZone();
-    }
-
     public static DateTimeOffset GetNextExecutionDate(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         if (schedulerInput.Recurrency == EnumRecurrency.Weekly) {
             var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
@@ -49,11 +22,11 @@ public static class RecurrenceCalculator {
         if (schedulerInput.CurrentDate != default) {
             var utcTime = schedulerInput.CurrentDate.UtcDateTime;
             var startTime = schedulerInput.StartDate.TimeOfDay;
-            
+
             var localInTz = TimeZoneConverter.ConvertFromUtc(utcTime, tz);
             var baseLocal = new DateTime(localInTz.Year, localInTz.Month, localInTz.Day,
                 startTime.Hours, startTime.Minutes, startTime.Seconds, DateTimeKind.Unspecified);
-            
+
             return new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
         }
 
@@ -61,12 +34,23 @@ public static class RecurrenceCalculator {
         return new DateTimeOffset(baseDateTime, tz.GetUtcOffset(baseDateTime));
     }
 
+    private static DateTimeOffset SelectNextEligibleDate(
+        DateTimeOffset targetDate, 
+        List<DayOfWeek> daysOfWeek, 
+        TimeZoneInfo tz, 
+        EnumMonthlyFrequency? monthlyFrequency = null, 
+        EnumMonthlyDateType? monthlyDateType = null, 
+        DateTime? currentMonth = null) {
+        
+        return WeeklyRecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz, monthlyFrequency, monthlyDateType, currentMonth);
+    }
+    
     public static List<DateTimeOffset> GetFutureDates(SchedulerInput schedulerInput) {
         if (schedulerInput.Periodicity != EnumConfiguration.Recurrent)
             return [];
 
-        var tz = GetTimeZone();
-        var futureDates = CalculateFutureDates(schedulerInput, tz);
+        var tz = TimeZoneConverter.GetTimeZone();
+        var futureDates = DailyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
         var next = GetNextExecutionDate(schedulerInput, tz);
 
         futureDates.RemoveAll(d => d.UtcDateTime == next.UtcDateTime || 

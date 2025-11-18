@@ -1,6 +1,6 @@
 namespace Scheduler_Lib.Core.Services.Utilities;
-public static class DateSafetyHelper {
-    public static bool TryAddDaysSafely(DateTime dt, int days, out DateTime result) {
+internal static class DateSafetyHelper {
+    internal static bool TryAddDaysSafely(DateTime dt, int days, out DateTime result) {
         result = dt;
         if (days == 0) return true;
 

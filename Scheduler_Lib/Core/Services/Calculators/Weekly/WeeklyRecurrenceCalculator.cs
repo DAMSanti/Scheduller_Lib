@@ -8,7 +8,7 @@ namespace Scheduler_Lib.Core.Services.Calculators.Weekly;
 
 public static class WeeklyRecurrenceCalculator {
     private const int DaysInWeek = 7;
-
+    /*
     public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
         var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
@@ -39,7 +39,7 @@ public static class WeeklyRecurrenceCalculator {
 
         dates.Sort();
         return dates;
-    }
+    }*/
 
     public static DateTimeOffset SelectNextEligibleDate(
         DateTimeOffset targetDate, 
@@ -55,7 +55,7 @@ public static class WeeklyRecurrenceCalculator {
         var targetLocal = targetDate.DateTime;
 
         if (monthlyFrequency.HasValue && monthlyDateType.HasValue && currentMonth.HasValue) {
-            var eligibleDate = MonthlyRecurrenceCalculator.GetEligibleDate(
+            var eligibleDate = GetEligibleDate(
                 currentMonth.Value, 
                 monthlyFrequency.Value, 
                 monthlyDateType.Value, 
@@ -124,5 +124,47 @@ public static class WeeklyRecurrenceCalculator {
         }
 
         return null;
+    }
+
+    private static DateTimeOffset? GetEligibleDate(
+    DateTime month,
+    EnumMonthlyFrequency frequency,
+    EnumMonthlyDateType dateType,
+    TimeSpan timeOfDay,
+    TimeZoneInfo tz) {
+
+        var firstDayOfMonth = new DateTime(month.Year, month.Month, 1);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+        List<DateTime> eligibleDays = dateType switch {
+            EnumMonthlyDateType.Day => MonthDayCollector.GetAllDaysInMonth(firstDayOfMonth, lastDayOfMonth),
+            EnumMonthlyDateType.Weekday => MonthDayCollector.GetWeekdaysInMonth(firstDayOfMonth, lastDayOfMonth),
+            EnumMonthlyDateType.WeekendDay => MonthDayCollector.GetWeekendDaysInMonth(firstDayOfMonth, lastDayOfMonth),
+            EnumMonthlyDateType.Monday => MonthDayCollector.GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, DayOfWeek.Monday),
+            EnumMonthlyDateType.Tuesday => MonthDayCollector.GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, DayOfWeek.Tuesday),
+            EnumMonthlyDateType.Wednesday => MonthDayCollector.GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, DayOfWeek.Wednesday),
+            EnumMonthlyDateType.Thursday => MonthDayCollector.GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, DayOfWeek.Thursday),
+            EnumMonthlyDateType.Friday => MonthDayCollector.GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, DayOfWeek.Friday),
+            EnumMonthlyDateType.Saturday => MonthDayCollector.GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, DayOfWeek.Saturday),
+            EnumMonthlyDateType.Sunday => MonthDayCollector.GetSpecificDayOfWeekInMonth(firstDayOfMonth, lastDayOfMonth, DayOfWeek.Sunday),
+            _ => []
+        };
+
+        if (eligibleDays.Count == 0)
+            return null;
+
+        var selectedDay = frequency switch {
+            EnumMonthlyFrequency.First => eligibleDays.First(),
+            EnumMonthlyFrequency.Second => eligibleDays.Count > 1 ? eligibleDays[1] : eligibleDays.Last(),
+            EnumMonthlyFrequency.Third => eligibleDays.Count > 2 ? eligibleDays[2] : eligibleDays.Last(),
+            EnumMonthlyFrequency.Fourth => eligibleDays.Count > 3 ? eligibleDays[3] : eligibleDays.Last(),
+            EnumMonthlyFrequency.Last => eligibleDays.Last(),
+            _ => eligibleDays.First()
+        };
+
+        var resultLocal = new DateTime(selectedDay.Year, selectedDay.Month, selectedDay.Day,
+            timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
+
+        return TimeZoneConverter.CreateDateTimeOffset(resultLocal, tz);
     }
 }
