@@ -203,11 +203,11 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 3);
     }
-    /*
+    
     [Fact, Trait("Category", "Integration")]
     public void WeeklyRecurrence_ShouldSuccess_WhenOccursOnceWithBiWeekly() {
         var schedulerInput = new SchedulerInput();
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
 
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
@@ -227,7 +227,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.True(result.IsSuccess);
         Assert.Contains("every 2 week(s)", result.Value.Description);
         Assert.True(futureDates!.Count >= 3); 
-    }*/
+    }
     
     [Fact, Trait("Category", "Integration")]
     public void WeeklyRecurrence_ShouldSuccess_WhenOccursEveryWithTimeWindow() {

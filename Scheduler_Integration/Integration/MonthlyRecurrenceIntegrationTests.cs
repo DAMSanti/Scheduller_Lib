@@ -576,10 +576,10 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyThePeriodRequired, result.Error ?? string.Empty);
     }
-    /*
+    
     [Fact, Trait("Category", "Integration")]
     public void MonthlyDay_ShouldSuccess_WhenFallBackDSTTransitionGeneratesExpectedSlots() {
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
         var startDate = new DateTimeOffset(2025, 10, 25, 0, 0, 0, TimeSpan.Zero);
         var endDate = new DateTimeOffset(2025, 10, 27, 23, 59, 59, TimeSpan.Zero);
 
@@ -622,7 +622,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
     
     [Fact, Trait("Category", "Integration")]
     public void MonthlyDay_ShouldSuccess_WhenSpringForwardDSTTransitionGeneratesExpectedSlots() {
-        var tz = RecurrenceCalculator.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone();
         var startDate = new DateTimeOffset(2025, 3, 29, 0, 0, 0, TimeSpan.Zero);
         var endDate = new DateTimeOffset(2025, 3, 31, 23, 59, 59, TimeSpan.Zero);
 
@@ -662,7 +662,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
             return hour == 2;
         }).ToList();
     }
-    */
+    
     [Fact, Trait("Category", "Integration")]
     public void MonthlyRecurrence_ShouldSuccess_WhenNoValidDatesInRange() {
         var schedulerInput = new SchedulerInput();
