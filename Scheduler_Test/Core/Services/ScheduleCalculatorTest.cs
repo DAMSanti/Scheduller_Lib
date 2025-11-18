@@ -20,15 +20,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
 
         var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.IsType<SchedulerOutput>(result.Value);
@@ -52,15 +44,7 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
 
         var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.IsType<SchedulerOutput>(result.Value);
@@ -74,8 +58,6 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
 
         var result = ScheduleCalculatorHandler.GetPeriodicityType(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         Assert.Equal(Messages.ErrorUnsupportedPeriodicity, result.Error);
     }
 
@@ -83,16 +65,12 @@ public class ScheduleCalculatorFactoryTest(ITestOutputHelper output) {
     public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsOnce() {
         var strategyType = ScheduleCalculatorHandler.GetStrategyType(EnumConfiguration.Once);
 
-        output.WriteLine($"Strategy Type: {strategyType}");
-
         Assert.Equal("CalculateOneTime", strategyType);
     }
 
     [Fact]
     public void GetStrategyType_ShouldSuccess_WhenPeriodicityIsRecurrent() {
         var strategyType = ScheduleCalculatorHandler.GetStrategyType(EnumConfiguration.Recurrent);
-
-        output.WriteLine($"Strategy Type: {strategyType}");
 
         Assert.Equal("CalculateRecurrent", strategyType);
     }

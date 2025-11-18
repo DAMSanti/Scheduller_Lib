@@ -31,8 +31,6 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
     }
@@ -63,16 +61,6 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         var expectedNewDate = schedulerInput.TargetDate;
         Assert.Equal(expectedNewDate, result.Value!.NextDate);
         var expectedResult =
@@ -99,16 +87,14 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is not { Count: > 0 }) return;
-        output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-        foreach (var dto in futureDates) {
-            output.WriteLine(dto.ToString());
+        if (futureDates is { Count: > 0 }) {
+            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
+            foreach (var dto in futureDates) {
+                output.WriteLine(dto.ToString());
+            }
         }
-
-        Assert.Null(futureDates);
+        Assert.Empty(futureDates);
     }
 
     [Fact]
@@ -125,7 +111,6 @@ public class CalcOneTimeTest(ITestOutputHelper output) {
         schedulerInput.TargetDate = null;
 
         var result = CalculateOneTime.CalculateDate(schedulerInput);
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.Error);

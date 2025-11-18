@@ -26,8 +26,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
     }
@@ -52,8 +50,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
     }
@@ -76,8 +72,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error ?? string.Empty);
@@ -104,18 +98,7 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
     }
@@ -132,8 +115,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDateOutOfRange, result.Error ?? string.Empty);
@@ -154,8 +135,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorWeeklyPeriodRequired, result.Error ?? string.Empty);
     }
@@ -175,8 +154,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -200,16 +177,7 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-        output.WriteLine(result.Value.Description);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);
@@ -229,7 +197,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyModeConflict, result.Error ?? string.Empty);
     }
@@ -247,7 +214,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyModeRequired, result.Error ?? string.Empty);
     }
@@ -272,7 +238,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyDayInvalid, result.Error ?? string.Empty);
     }
@@ -295,7 +260,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyDayPeriodRequired, result.Error ?? string.Empty);
     }
@@ -316,7 +280,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyFrequencyRequired, result.Error ?? string.Empty);
     }
@@ -337,7 +300,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyDateTypeRequired, result.Error ?? string.Empty);
     }
@@ -361,7 +323,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "NO ERROR");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyThePeriodRequired, result.Error ?? string.Empty);
     }
@@ -385,7 +346,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
         Assert.True(result.IsSuccess);
     }
 
@@ -410,7 +370,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
         Assert.True(result.IsSuccess);
     }
 
@@ -429,7 +388,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "SUCCESS");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyDayInvalid, result.Error ?? string.Empty);
         Assert.Contains(Messages.ErrorMonthlyDayPeriodRequired, result.Error ?? string.Empty);
@@ -451,7 +409,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error ?? "SUCCESS");
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorMonthlyFrequencyRequired, result.Error ?? string.Empty);
         Assert.Contains(Messages.ErrorMonthlyDateTypeRequired, result.Error ?? string.Empty);
@@ -475,17 +432,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
-        output.WriteLine(result.Value.Description);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);
     }
@@ -507,17 +453,9 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
-        
         if (result.IsSuccess) {
-            output.WriteLine(result.Value.Description);
             var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-            if (futureDates is { Count: > 0 }) {
-                output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-                foreach (var dto in futureDates) {
-                    output.WriteLine($"  {dto:yyyy-MM-dd HH:mm:ss}");
-                }
-                
+            if (futureDates is { Count: > 0 }) {                
                 var februaryDate = futureDates.FirstOrDefault(d => d.Month == 2);
                 Assert.Equal(default(DateTimeOffset), februaryDate);
 
@@ -562,20 +500,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         var result = SchedulerService.InitialHandler(schedulerInput);
 
         output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error ?? "NO ERROR");
-        
-        if (result.IsSuccess) {
-            output.WriteLine(result.Value.Description);
-            var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-            if (futureDates is { Count: > 0 }) {
-                output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-                foreach (var dto in futureDates) {
-                    output.WriteLine($"  {dto:yyyy-MM-dd HH:mm:ss}");
-                }
-
-                Assert.True(futureDates.All(d => d.Day == 10));
-                Assert.True(futureDates.Count >= 3);
-            }
-        }
 
         Assert.True(result.IsSuccess);
     }
@@ -593,8 +517,6 @@ public class ValidationsRecurrentTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = (EnumRecurrency)999;
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);

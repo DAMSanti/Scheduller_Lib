@@ -22,16 +22,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         Assert.True(result.IsSuccess);
     }
 
@@ -50,8 +40,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value.NextDate <= schedulerInput.EndDate);
@@ -75,8 +63,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         Assert.True(result.IsSuccess);
         Assert.Equal(15, result.Value.NextDate.Hour);
         Assert.Equal(30, result.Value.NextDate.Minute);
@@ -95,8 +81,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value.NextDate >= schedulerInput.CurrentDate);
@@ -118,16 +102,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         Assert.True(result.IsSuccess);
     }
 
@@ -148,15 +122,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 6);
@@ -177,15 +143,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:yyyy-MM-dd}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 4); 
@@ -207,15 +165,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:yyyy-MM-dd}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 4);
@@ -237,15 +187,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
@@ -267,15 +209,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count > 5);
@@ -298,15 +232,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:HH:mm:ss}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.Equal(5, futureDates!.Count);
@@ -328,15 +254,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 9);
@@ -359,15 +277,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
@@ -392,15 +302,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.Contains(futureDates!, d => d.Date == schedulerInput.TargetDate!.Value.Date);
@@ -421,16 +323,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyPeriod = TimeSpan.FromDays(2);
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:yyyy-MM-dd HH:mm:ss}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.Equal(schedulerInput.TargetDate!.Value.DateTime, result.Value.NextDate.DateTime);
@@ -453,15 +345,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:HH:mm:ss}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 2);
@@ -482,15 +366,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:yyyy-MM-dd}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.Equal(12, futureDates!.Count);
@@ -514,15 +390,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:HH:mm:ss}");
-            }
-        }
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.All(d => d.Date == schedulerInput.StartDate.Date));
@@ -545,16 +413,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine($"{dto:HH:mm:ss}");
-            }
-        }
-
         Assert.True(result.IsSuccess);
         Assert.Contains("1 second", result.Value.Description);
     }
@@ -575,7 +433,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyModeConflict, result.Error ?? string.Empty);
     }
@@ -592,7 +449,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyModeRequired, result.Error ?? string.Empty);
     }
@@ -613,7 +469,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
     }
@@ -632,7 +487,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOccursOnceAtNull, result.Error ?? string.Empty);
     }
@@ -651,7 +505,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
     }
@@ -670,7 +523,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
     }
@@ -689,7 +541,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
     }
@@ -709,7 +560,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.True(result.IsSuccess);
     }
 
@@ -728,7 +578,6 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "SUCCESS" : result.Error);
         Assert.True(result.IsSuccess);
     }
 }

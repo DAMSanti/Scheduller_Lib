@@ -41,16 +41,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         Assert.True(result.IsSuccess);
         Assert.Equal(DateTimeOffset.Parse(expectedNextDate), result.Value!.NextDate);
     }
@@ -76,16 +66,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         Assert.Equal(DateTimeOffset.Parse(expectedNextDate), result.Value.NextDate);
     }
 
@@ -103,8 +83,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error);
@@ -141,16 +119,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         Assert.True(result.IsSuccess);
         Assert.Equal(DateTimeOffset.Parse(expectedNextDate), result.Value!.NextDate);
     }
@@ -170,8 +138,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDaysOfWeekRequired, result.Error);
     }
@@ -190,8 +156,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = null;
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorWeeklyPeriodRequired, result.Error);
@@ -213,14 +177,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is not { Count: > 0 }) return;
-        output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-        foreach (var dto in futureDates) {
-            output.WriteLine(dto.ToString());
-        }
 
         Assert.NotNull(futureDates);
         Assert.True(futureDates.Count > 0);
@@ -239,16 +196,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday];
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.Contains("Occurs every", result.Value.Description);
         Assert.Contains("week(s)", result.Value.Description);
@@ -288,17 +235,7 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         var testFutureDates = futureDatesArr.Select(DateTimeOffset.Parse).ToList();
         testFutureDates.RemoveAll(d => d == value.NextDate);
 
-        output.WriteLine($"NextDate: {value.NextDate}");
-        output.WriteLine($"Test FutureDates after removal (count = {testFutureDates.Count}):");
-        foreach (var dto in testFutureDates) {
-            output.WriteLine(dto.ToString());
-        }
-
         var actualFutureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        output.WriteLine($"Actual FutureDates from RecurrenceCalculator (count = {actualFutureDates.Count}):");
-        foreach (var dto in actualFutureDates) {
-            output.WriteLine(dto.ToString());
-        }
 
         Assert.DoesNotContain(value.NextDate, actualFutureDates);
     }
@@ -319,8 +256,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(8, result.Value!.NextDate.Hour);
@@ -345,8 +280,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         Assert.True(result.IsSuccess);
         var expected = new DateTimeOffset(targetLocal, tz.GetUtcOffset(targetLocal));
         Assert.Equal(expected, result.Value!.NextDate);
@@ -369,8 +302,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.WeeklyPeriod = 1;
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(14, result.Value!.NextDate.Hour);
@@ -397,8 +328,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
-
         Assert.True(result.IsSuccess);
         Assert.Equal(16, result.Value!.NextDate.Hour);
         Assert.Equal(45, result.Value!.NextDate.Minute);
@@ -419,8 +348,6 @@ public class CalculateRecurrentTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
 
         var result = CalculateRecurrent.CalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? result.Value.Description : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains("Unsupported recurrency", result.Error);

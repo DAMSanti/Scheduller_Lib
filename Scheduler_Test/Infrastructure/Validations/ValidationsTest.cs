@@ -21,17 +21,7 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.Value.Description);
-
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 })
-        {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates)
-            {
-                output.WriteLine(dto.ToString());
-            }
-        }
 
         Assert.True(result.IsSuccess);
     }
@@ -49,8 +39,6 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = recurrency;
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
@@ -73,8 +61,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceWeekly, result.Error);
     }
@@ -84,8 +70,6 @@ public class ValidationsTest(ITestOutputHelper output) {
         SchedulerInput? schedulerInput = null;
 
         var result = SchedulerService.InitialHandler(schedulerInput!);
-
-        output.WriteLine(result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorRequestNull, result.Error);
@@ -106,8 +90,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDateMissing, result.Error);
     }
@@ -123,8 +105,6 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedPeriodicity, result.Error ?? string.Empty);
@@ -142,8 +122,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
@@ -159,8 +137,6 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.True(result.IsSuccess);
     }
@@ -178,8 +154,6 @@ public class ValidationsTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-
-        output.WriteLine(result.Value.Description);
 
         Assert.True(result.IsSuccess);
         Assert.NotEqual("", result.Value.Description);
@@ -200,7 +174,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = Validations.ValidateCalculateDate(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? result.Value.ToString() : result.Error);
         Assert.False(result.IsSuccess);
         Assert.Equal(Messages.ErrorApplicationDisabled, result.Error);
     }
@@ -218,7 +191,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyModeConflict, result.Error ?? string.Empty);
     }
@@ -236,7 +208,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyModeRequired, result.Error ?? string.Empty);
     }
@@ -255,7 +226,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
     }
@@ -276,7 +246,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
     }
@@ -295,7 +264,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOccursOnceAtNull, result.Error ?? string.Empty);
     }
@@ -313,7 +281,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDuplicateDaysOfWeek, result.Error ?? string.Empty);
     }
@@ -331,7 +298,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDaysOfWeekRequired, result.Error ?? string.Empty);
     }
@@ -349,7 +315,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationRecurrent.ValidateRecurrent(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorWeeklyPeriodRequired, result.Error ?? string.Empty);
     }
@@ -366,7 +331,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
     }
@@ -383,7 +347,6 @@ public class ValidationsTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.Error);
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
     }

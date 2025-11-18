@@ -12,14 +12,14 @@ public class ValidationOnce {
         if (schedulerInput is { Periodicity: EnumConfiguration.Once, Recurrency: EnumRecurrency.Weekly })
             errors.AppendLine(Messages.ErrorOnceWeekly);
 
+        if (schedulerInput.TargetDate != null && ((schedulerInput.TargetDate < schedulerInput.StartDate || schedulerInput.TargetDate > schedulerInput.EndDate)))
+            errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
+
         if (schedulerInput.EndDate != null && schedulerInput.StartDate > schedulerInput.EndDate)
             errors.AppendLine(Messages.ErrorStartDatePostEndDate);
 
         if (schedulerInput.TargetDate == null && schedulerInput.Recurrency != EnumRecurrency.Weekly)
             errors.AppendLine(Messages.ErrorTargetDateNull);
-
-        if (schedulerInput.TargetDate != null && ((schedulerInput.TargetDate < schedulerInput.StartDate || schedulerInput.TargetDate > schedulerInput.EndDate)))
-            errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
 
         if (schedulerInput is { Periodicity: EnumConfiguration.Once, Recurrency: EnumRecurrency.Weekly })
             errors.AppendLine(Messages.ErrorOnceWeekly);

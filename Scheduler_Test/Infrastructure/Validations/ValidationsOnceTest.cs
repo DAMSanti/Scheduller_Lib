@@ -27,8 +27,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(expectedError, result.Error);
     }
@@ -55,14 +53,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
         output.WriteLine(result.Value.Description);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
-        if (futureDates is { Count: > 0 }) {
-            output.WriteLine($"FutureDates (count = {futureDates.Count}):");
-            foreach (var dto in futureDates) {
-                output.WriteLine(dto.ToString());
-            }
-        }
-
         Assert.True(result.IsSuccess);
         Assert.DoesNotContain(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
     }
@@ -80,8 +70,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        output.WriteLine(result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceWeekly, result.Error);
     }
@@ -98,8 +86,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
     }
@@ -115,8 +101,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -138,9 +122,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine($"StartDate: {startDate}, EndDate: null, TargetDate: {targetDate}");
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
     }
 
@@ -155,8 +136,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
@@ -174,8 +153,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
     }
@@ -191,8 +168,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
@@ -210,8 +185,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
     }
@@ -227,8 +200,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
@@ -246,8 +217,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
     }
@@ -263,8 +232,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
@@ -282,8 +249,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
     }
@@ -300,8 +265,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
     }
@@ -317,8 +280,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value);
@@ -339,9 +300,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine($"StartDate: {startDate}, EndDate: {endDate}, TargetDate: {targetDate}");
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
     }
 
@@ -357,8 +315,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
 
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
-
         Assert.True(result.IsSuccess);
     }
 
@@ -373,8 +329,6 @@ public class ValidationsOnceTest(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
         var result = ValidationOnce.ValidateOnce(schedulerInput);
-
-        output.WriteLine(result.IsSuccess ? "NO ERROR" : result.Error);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);

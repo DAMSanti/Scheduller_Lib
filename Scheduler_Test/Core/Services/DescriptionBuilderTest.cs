@@ -21,8 +21,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.FormatPeriod(period);
 
-        output.WriteLine(actual);
-
         Assert.Equal(expected, actual);
     }
 
@@ -41,7 +39,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = new TimeSpan(8, 30, 0);
         schedulerInput.DailyEndTime = new TimeSpan(17, 0, 0);
 
-
         var nextLocal = new DateTimeOffset(2025, 10, 6, 8, 30, 0,
             tz.GetUtcOffset(new DateTime(2025, 10, 6, 8, 30, 0)));
 
@@ -50,8 +47,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
                        $"between 08:30 AM and 05:00 PM starting on {DescriptionBuilder.ConvertStartDateToZone(schedulerInput, tz).ToShortDateString()}";
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
-
-        output.WriteLine(actual);
 
         Assert.Equal(expected, actual);
     }
@@ -76,7 +71,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -97,7 +91,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -151,7 +144,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -159,8 +151,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void TimeSpanToString12HourFormat_ShouldSuccess_WhenTimeIsPm() {
         var ts = new TimeSpan(14, 30, 0);
         var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
-
-        output.WriteLine(actual);
 
         Assert.Equal("02:30 PM", actual);
     }
@@ -172,8 +162,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void FormatPeriod_ShouldSuccess_WhenDaysAreFractional(double days, string expected) {
         var period = TimeSpan.FromDays(days);
         var actual = DescriptionBuilder.FormatPeriod(period);
-
-        output.WriteLine(actual);
 
         Assert.Equal(expected, actual);
     }
@@ -197,7 +185,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -220,7 +207,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -228,8 +214,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void FormatPeriod_ShouldSuccess_WhenUnitIsOne() {
         var period = TimeSpan.FromSeconds(1.0);
         var actual = DescriptionBuilder.FormatPeriod(period);
-
-        output.WriteLine(actual);
 
         Assert.Equal("1 second", actual);
     }
@@ -248,8 +232,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
-        
         Assert.Contains("Occurs once:", actual);
     }
 
@@ -258,8 +240,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
         var ts = new TimeSpan(12, 0, 0);
         var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
 
-        output.WriteLine(actual);
-
         Assert.Equal("12:00 PM", actual);
     }
 
@@ -267,8 +247,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void TimeSpanToString12HourFormat_ShouldSuccess_WhenTimeIsMidnight() {
         var ts = new TimeSpan(0, 0, 0);
         var actual = DescriptionBuilder.TimeSpanToString12HourFormat(ts);
-
-        output.WriteLine(actual);
 
         Assert.Equal("12:00 AM", actual);
     }
@@ -295,7 +273,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -321,7 +298,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -337,8 +313,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
             tz.GetUtcOffset(new DateTime(2025, 10, 6, 8, 30, 0)));
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
-        
-        output.WriteLine(actual);
 
         Assert.NotNull(actual);
     }
@@ -347,8 +321,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void FormatPeriod_ShouldSuccess_WhenMinutesAreFractional() {
         var period = TimeSpan.FromMinutes(2.5);
         var actual = DescriptionBuilder.FormatPeriod(period);
-        
-        output.WriteLine(actual);
+
         Assert.Equal("2.5 minutes", actual);
     }
 
@@ -356,8 +329,7 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
     public void FormatPeriod_ShouldSuccess_WhenSecondsAreFractional() {
         var period = TimeSpan.FromSeconds(3.75);
         var actual = DescriptionBuilder.FormatPeriod(period);
-        
-        output.WriteLine(actual);
+
         Assert.Equal("3.75 seconds", actual);
     }
     [Fact]
@@ -381,7 +353,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -406,7 +377,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -434,7 +404,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -458,7 +427,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -485,7 +453,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -510,7 +477,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -535,7 +501,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 
@@ -568,7 +533,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
             var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-            output.WriteLine($"{dateType}: {actual}");
             Assert.Contains(expectedDay, actual);
             Assert.Contains("first", actual);
         }
@@ -592,7 +556,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Contains("1 month(s)", actual);
     }
 
@@ -615,7 +578,6 @@ public class DescriptionBuilderTests(ITestOutputHelper output) {
 
         var actual = DescriptionBuilder.HandleDescriptionForCalculatedDate(schedulerInput, tz, nextLocal);
 
-        output.WriteLine(actual);
         Assert.Equal(expected, actual);
     }
 }
