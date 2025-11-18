@@ -1,5 +1,6 @@
 using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services.Calculators.Base;
+using Scheduler_Lib.Core.Services.Calculators.Daily;
 using Scheduler_Lib.Core.Services.Calculators.Monthly;
 using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
@@ -8,23 +9,24 @@ namespace Scheduler_Lib.Core.Services.Calculators.Weekly;
 
 public static class WeeklyRecurrenceCalculator {
     private const int DaysInWeek = 7;
-    /*
+
     public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
         var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
         var nextEligible = SelectNextEligibleDate(
             new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal)),
-            schedulerInput.DaysOfWeek!, 
+            schedulerInput.DaysOfWeek!,
             tz);
 
-        var iteration = 0;
+        var endLocal = schedulerInput.EndDate ?? GetEffectiveEndDate(schedulerInput, tz);
         var weekStart = baseLocal.Date;
-        var endLocal = schedulerInput.EndDate;
+        var slotStep = schedulerInput.DailyPeriod ?? TimeSpan.FromHours(1);
 
         const int maxIterations = Config.MaxIterations;
+        var iteration = 0;
 
-        while (weekStart <= endLocal && iteration < maxIterations) {
-            GenerateSlotsForWeek(weekStart, schedulerInput, tz, nextEligible, dates);
+        while (weekStart <= endLocal.Date && iteration < maxIterations) {
+            GenerateSlotsForWeek(weekStart, schedulerInput, tz, nextEligible, endLocal, slotStep, dates);
 
             if (dates.Count >= maxIterations)
                 return dates;
@@ -39,7 +41,7 @@ public static class WeeklyRecurrenceCalculator {
 
         dates.Sort();
         return dates;
-    }*/
+    }
 
     public static DateTimeOffset SelectNextEligibleDate(
         DateTimeOffset targetDate, 
@@ -86,26 +88,44 @@ public static class WeeklyRecurrenceCalculator {
     }
 
     private static void GenerateSlotsForWeek(
-        DateTime weekStart, 
-        SchedulerInput schedulerInput, 
-        TimeZoneInfo tz, 
-        DateTimeOffset nextEligible, 
+        DateTime weekStart,
+        SchedulerInput schedulerInput,
+        TimeZoneInfo tz,
+        DateTimeOffset nextEligible,
+        DateTimeOffset endLocal,
+        TimeSpan slotStep,
         List<DateTimeOffset> accumulator) {
-        
+
         foreach (var day in schedulerInput.DaysOfWeek!) {
             var timeOfDay = schedulerInput.TargetDate?.TimeOfDay ?? schedulerInput.StartDate.TimeOfDay;
             var candidateLocal = GetCandidateForWeekAndDay(weekStart, day, timeOfDay);
-            
-            if (candidateLocal == null) 
+
+            if (candidateLocal == null)
                 continue;
 
             var candidate = TimeZoneConverter.CreateDateTimeOffset(candidateLocal.Value, tz);
 
-            if (candidate <= nextEligible) 
+            if (candidate <= nextEligible)
                 continue;
-                
-            if (!accumulator.Contains(candidate)) 
-                accumulator.Add(candidate);
+
+            if (candidate > endLocal)
+                continue;
+
+            if (schedulerInput.DailyStartTime.HasValue && schedulerInput.DailyEndTime.HasValue) {
+                DailySlotGenerator.GenerateSlotsForDay(
+                    candidateLocal.Value.Date,
+                    schedulerInput.DailyStartTime.Value,
+                    schedulerInput.DailyEndTime.Value,
+                    slotStep,
+                    tz,
+                    schedulerInput,
+                    endLocal,
+                    nextEligible,
+                    accumulator);
+            } else {
+                if (!accumulator.Contains(candidate))
+                    accumulator.Add(candidate);
+            }
         }
     }
 
@@ -124,6 +144,14 @@ public static class WeeklyRecurrenceCalculator {
         }
 
         return null;
+    }
+    private static DateTimeOffset GetEffectiveEndDate(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        var period = schedulerInput.DailyPeriod ?? TimeSpan.FromDays(3);
+        var beginning = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
+
+        const int defaultPeriodMultiplier = 1000;
+        var endLocal = beginning.Add(period * defaultPeriodMultiplier);
+        return new DateTimeOffset(endLocal, tz.GetUtcOffset(endLocal));
     }
 
     private static DateTimeOffset? GetEligibleDate(

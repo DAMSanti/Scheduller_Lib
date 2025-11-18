@@ -15,11 +15,11 @@ public static class TimeZoneConverter {
         return TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
     }
 
-    public static DateTimeOffset ConvertToTimeZone(DateTimeOffset dateTimeOffset, TimeZoneInfo tz) {
+   /* public static DateTimeOffset ConvertToTimeZone(DateTimeOffset dateTimeOffset, TimeZoneInfo tz) {
         var utcTime = dateTimeOffset.UtcDateTime;
         var localInTz = ConvertFromUtc(utcTime, tz);
         return CreateDateTimeOffset(localInTz, tz);
-    }
+    }*/
     public static TimeSpan GetUtcOffset(DateTime dateTime, TimeZoneInfo tz) {
         return tz.GetUtcOffset(dateTime);
     }

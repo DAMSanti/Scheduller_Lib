@@ -50,11 +50,26 @@ public static class RecurrenceCalculator {
             return [];
 
         var tz = TimeZoneConverter.GetTimeZone();
-        var futureDates = DailyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        List<DateTimeOffset> futureDates = schedulerInput.Recurrency switch {
+            EnumRecurrency.Daily => DailyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz),
+            EnumRecurrency.Weekly => WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz),
+            EnumRecurrency.Monthly => MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz),
+            _ => []
+        };
+
         var next = GetNextExecutionDate(schedulerInput, tz);
 
         futureDates.RemoveAll(d => d.UtcDateTime == next.UtcDateTime || 
                                    (d.DateTime == next.DateTime && d.Offset == next.Offset));
         return futureDates;
+    }
+
+    public static List<DateTimeOffset> CalculateWeeklyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        return WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+    }
+
+    public static List<DateTimeOffset> CalculateMonthlyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        return MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
     }
 }

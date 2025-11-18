@@ -11,6 +11,7 @@ internal static class MonthlyRecurrenceCalculator {
     internal static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
         var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
+        var baseDto = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
         var endLocal = schedulerInput.EndDate ?? GetEffectiveEndDate(schedulerInput, tz);
 
         var currentMonth = new DateTime(baseLocal.Year, baseLocal.Month, 1);
@@ -20,6 +21,7 @@ internal static class MonthlyRecurrenceCalculator {
         const int maxIterations = Config.MaxIterations;
 
         var timeOfDay = schedulerInput.TargetDate?.TimeOfDay ?? schedulerInput.StartDate.TimeOfDay;
+        var slotStep = schedulerInput.DailyPeriod ?? TimeSpan.FromHours(1);
 
         while (currentMonth <= endMonth && iteration < maxIterations) {
             DateTimeOffset? nextEligible = null;
@@ -32,17 +34,14 @@ internal static class MonthlyRecurrenceCalculator {
                     tz.GetUtcOffset(currentMonth));
 
                 nextEligible = WeeklyRecurrenceCalculator.SelectNextEligibleDate(
-                    targetDate, null!, tz, 
-                    schedulerInput.MonthlyFrequency, 
-                    schedulerInput.MonthlyDateType, 
+                    targetDate, null!, tz,
+                    schedulerInput.MonthlyFrequency,
+                    schedulerInput.MonthlyDateType,
                     currentMonth);
             }
 
-            if (nextEligible.HasValue) {
-                var baseOffset = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
-                
+            if (nextEligible.HasValue && nextEligible.Value <= endLocal) {
                 if (schedulerInput.DailyStartTime.HasValue && schedulerInput.DailyEndTime.HasValue) {
-                    var slotStep = schedulerInput.DailyPeriod ?? TimeSpan.FromMinutes(30);
                     DailySlotGenerator.GenerateSlotsForDay(
                         nextEligible.Value.DateTime.Date,
                         schedulerInput.DailyStartTime.Value,
@@ -51,10 +50,10 @@ internal static class MonthlyRecurrenceCalculator {
                         tz,
                         schedulerInput,
                         endLocal,
-                        baseOffset,
+                        baseDto,
                         dates);
                 } else {
-                    if (nextEligible.Value >= baseOffset && nextEligible.Value <= endLocal && !dates.Contains(nextEligible.Value))
+                    if (!dates.Contains(nextEligible.Value))
                         dates.Add(nextEligible.Value);
                 }
             }

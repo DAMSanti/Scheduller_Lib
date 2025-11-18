@@ -21,9 +21,6 @@ internal class ValidationOnce {
         if (schedulerInput.TargetDate == null && schedulerInput.Recurrency != EnumRecurrency.Weekly)
             errors.AppendLine(Messages.ErrorTargetDateNull);
 
-        if (schedulerInput is { Periodicity: EnumConfiguration.Once, Recurrency: EnumRecurrency.Weekly })
-            errors.AppendLine(Messages.ErrorOnceWeekly);
-
         return errors.Length > 0 ? ResultPattern<bool>.Failure(errors.ToString()) : ResultPattern<bool>.Success(true);
     }
 }
