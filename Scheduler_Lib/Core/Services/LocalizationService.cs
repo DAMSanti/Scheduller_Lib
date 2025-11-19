@@ -17,7 +17,13 @@ public static class LocalizationService {
 
     public static string FormatDate(DateTimeOffset date, string language) {
         var culture = GetCulture(language);
-        return date.DateTime.ToString("dddd, d 'de' MMMM 'de' yyyy HH:mm:ss", culture);
+
+        return language switch {
+            "es_ES" => date.DateTime.ToString("dddd, d 'de' MMMM 'de' yyyy HH:mm:ss", culture),
+            "en_GB" => date.DateTime.ToString("dddd, d MMMM yyyy HH:mm:ss", culture),
+            "en_US" => date.DateTime.ToString("dddd, MMMM d, yyyy HH:mm:ss", culture),
+            _ => date.DateTime.ToString("dddd, d MMMM yyyy HH:mm:ss", culture),
+        };
     }
 
     public static string FormatTime(TimeSpan time) {

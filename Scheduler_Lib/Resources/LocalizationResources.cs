@@ -159,6 +159,10 @@ internal static class LocalizationResources {
         ("to", "en_GB") => "to",
         ("and", "en_GB") => "and",
 
+    ("occurs.once", "es_ES") => "Ocurre una vez: El programador se usará el {0} a las {1} comenzando el {2}",
+    ("occurs.once", "en_US") => "Occurs once: Schedule will be used on {0} at {1} starting on {2}",
+    ("occurs.once", "en_GB") => "Occurs once: Schedule will be used on {0} at {1} starting on {2}",
+
         _ => key
     };
 }

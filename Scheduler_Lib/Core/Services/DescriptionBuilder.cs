@@ -16,6 +16,9 @@ internal class DescriptionBuilder {
         var culture = LocalizationService.GetCulture(language);
         var formattedDate = LocalizationService.FormatDate(nextDate, language);
 
+        if (schedulerInput.Periodicity == EnumConfiguration.Once)
+            return BuildOnceDescription(schedulerInput, tz, nextDate);
+
         var description = schedulerInput.Recurrency switch {
             EnumRecurrency.Weekly => BuildWeeklyDescription(schedulerInput, language, culture),
             EnumRecurrency.Daily => BuildDailyDescription(schedulerInput, language, culture),
@@ -27,8 +30,11 @@ internal class DescriptionBuilder {
     }
 
     private static string BuildOnceDescription(SchedulerInput schedulerInput, TimeZoneInfo tz, DateTimeOffset nextLocal) {
+        var language = schedulerInput.Language ?? "es_ES";
         var startDateStr = ConvertStartDateToZone(schedulerInput, tz).ToShortDateString();
-        return $"Occurs once: Schedule will be used on {FormatDate(nextLocal)} at {FormatTime(nextLocal)} starting on {startDateStr}";
+
+        var template = LocalizationResources.GetDescription("occurs.once", language);
+        return string.Format(template, LocalizationService.FormatDate(nextLocal, language), LocalizationService.FormatTime(nextLocal.TimeOfDay), startDateStr);
     }
 
     private static string BuildWeeklyDescription(SchedulerInput schedulerInput, string language, CultureInfo culture) {
@@ -51,11 +57,10 @@ internal class DescriptionBuilder {
             timeInfo = $" {string.Format(template, interval)}";
         }
 
-        return $"{periodText} en {days}{timeInfo}";
+    var onDays = LocalizationResources.GetDescription("weekly.on.days", language);
+    return $"{periodText} {onDays} {days}{timeInfo}";
     }
     private static string BuildDailyDescription(SchedulerInput schedulerInput, string language, CultureInfo culture) {
-        var timeInfo = "";
-
         if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
             var at = LocalizationResources.GetDescription("daily.at", language);
             return $"{LocalizationResources.GetDescription("daily.every.day", language)} {at} {schedulerInput.OccursOnceAt.Value:hh\\:mm\\:ss}";
@@ -87,9 +92,9 @@ internal class DescriptionBuilder {
                 ? LocalizationResources.GetDescription("monthly.every.month", language)
                 : string.Format(LocalizationResources.GetDescription("monthly.every.months", language), thePeriod);
 
-            var frequency = LocalizationResources.GetDescription($"frequency.{schedulerInput.MonthlyFrequency.ToString()!.ToLower()}", language);
+            var frequency = FormatMonthlyFrequency(schedulerInput.MonthlyFrequency.Value, language);
 
-            var dayTypeDescription = GetMonthlyDateTypeDescription(schedulerInput.MonthlyDateType.Value, language);
+            var dayTypeDescription = FormatMonthlyDateType(schedulerInput.MonthlyDateType.Value, language);
 
             var template = LocalizationResources.GetDescription("monthly.the.day", language);
 
@@ -116,29 +121,23 @@ internal class DescriptionBuilder {
             _ => dateType.ToString()
         };
     }
-    private static string FormatMonthlyFrequency(EnumMonthlyFrequency frequency) {
-        return frequency switch {
-            EnumMonthlyFrequency.First => "first",
-            EnumMonthlyFrequency.Second => "second",
-            EnumMonthlyFrequency.Third => "third",
-            EnumMonthlyFrequency.Fourth => "fourth",
-            EnumMonthlyFrequency.Last => "last",
-            _ => frequency.ToString()
-        };
+    private static string FormatMonthlyFrequency(EnumMonthlyFrequency frequency, string language) {
+        return LocalizationResources.GetDescription($"frequency.{frequency.ToString()!.ToLower()}", language);
     }
 
-    private static string FormatMonthlyDateType(EnumMonthlyDateType dateType) {
+    private static string FormatMonthlyDateType(EnumMonthlyDateType dateType, string language) {
+        // Reuse localization: use monthlytype.* keys for generic types and day names for specific weekdays
         return dateType switch {
-            EnumMonthlyDateType.Day => "day",
-            EnumMonthlyDateType.Weekday => "weekday",
-            EnumMonthlyDateType.WeekendDay => "weekend day",
-            EnumMonthlyDateType.Monday => "Monday",
-            EnumMonthlyDateType.Tuesday => "Tuesday",
-            EnumMonthlyDateType.Wednesday => "Wednesday",
-            EnumMonthlyDateType.Thursday => "Thursday",
-            EnumMonthlyDateType.Friday => "Friday",
-            EnumMonthlyDateType.Saturday => "Saturday",
-            EnumMonthlyDateType.Sunday => "Sunday",
+            EnumMonthlyDateType.Day => LocalizationResources.GetDescription("monthlytype.day", language),
+            EnumMonthlyDateType.Weekday => LocalizationResources.GetDescription("monthlytype.weekday", language),
+            EnumMonthlyDateType.WeekendDay => LocalizationResources.GetDescription("monthlytype.weekendday", language),
+            EnumMonthlyDateType.Monday => LocalizationResources.GetDayName(DayOfWeek.Monday, language),
+            EnumMonthlyDateType.Tuesday => LocalizationResources.GetDayName(DayOfWeek.Tuesday, language),
+            EnumMonthlyDateType.Wednesday => LocalizationResources.GetDayName(DayOfWeek.Wednesday, language),
+            EnumMonthlyDateType.Thursday => LocalizationResources.GetDayName(DayOfWeek.Thursday, language),
+            EnumMonthlyDateType.Friday => LocalizationResources.GetDayName(DayOfWeek.Friday, language),
+            EnumMonthlyDateType.Saturday => LocalizationResources.GetDayName(DayOfWeek.Saturday, language),
+            EnumMonthlyDateType.Sunday => LocalizationResources.GetDayName(DayOfWeek.Sunday, language),
             _ => dateType.ToString()
         };
     }
