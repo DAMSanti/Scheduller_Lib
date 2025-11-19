@@ -16,7 +16,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -69,7 +69,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -94,7 +94,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -121,7 +121,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -148,7 +148,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -175,7 +175,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -202,7 +202,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -229,7 +229,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -738,7 +738,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -765,7 +765,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -796,7 +796,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -825,7 +825,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -877,7 +877,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2024, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2024, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2024, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -929,7 +929,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -956,7 +956,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);
@@ -983,7 +983,7 @@ public class MonthlyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 06, 30, 0, 0, 0, TimeSpan.Zero);

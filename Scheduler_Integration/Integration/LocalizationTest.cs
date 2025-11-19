@@ -12,12 +12,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     #region Weekly Recurrence - All Languages
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void WeeklyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
@@ -45,12 +42,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void WeeklyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
@@ -83,13 +77,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     #region Daily Recurrence - All Languages
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
-    public void DailyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language) {
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]    public void DailyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
             EnabledChk = true,
@@ -114,12 +104,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void DailyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
@@ -150,12 +137,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     #region Monthly Recurrence - All Languages
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void MonthlyRecurrence_ByDay_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
@@ -184,12 +168,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void MonthlyRecurrence_ByFrequencyAndDateType_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
@@ -219,12 +200,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void MonthlyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
@@ -258,12 +236,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     #region Once Configuration - All Languages
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void Once_Configuration_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput {
@@ -306,7 +281,7 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
         var result = SchedulerService.InitialHandler(schedulerInput);
 
         Assert.False(result.IsSuccess);
-        Assert.Contains("Idioma no soportado", result.Error ?? string.Empty);
+        Assert.Contains("ERROR: Language not supported. Available ", result.Error ?? string.Empty);
         output.WriteLine($"❌ Error esperado: {result.Error}");
     }
 
@@ -326,7 +301,7 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
         var result = SchedulerService.InitialHandler(schedulerInput);
 
         Assert.False(result.IsSuccess);
-        Assert.Contains("El idioma es obligatorio", result.Error ?? string.Empty);
+        Assert.Contains("ERROR: The language is mandatory.", result.Error ?? string.Empty);
         output.WriteLine($"❌ Error esperado: {result.Error}");
     }
 
@@ -346,7 +321,7 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
         var result = SchedulerService.InitialHandler(schedulerInput);
 
         Assert.False(result.IsSuccess);
-        Assert.Contains("El idioma es obligatorio", result.Error ?? string.Empty);
+        Assert.Contains("ERROR: The language is mandatory.", result.Error ?? string.Empty);
         output.WriteLine($"❌ Error esperado: {result.Error}");
     }
 
@@ -355,7 +330,7 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
         var supportedLanguages = LocalizationService.GetSupportedLanguages().ToList();
 
         Assert.NotEmpty(supportedLanguages);
-        Assert.Equal(6, supportedLanguages.Count);
+        Assert.Equal(3, supportedLanguages.Count);
 
         output.WriteLine("✅ Idiomas soportados:");
         foreach (var lang in supportedLanguages) {
@@ -369,12 +344,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     #region Date Formatting Tests
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void DateFormatting_ShouldBeLocalizedCorrectly(string language) {
         var date = new DateTimeOffset(2025, 10, 15, 14, 30, 45, TimeSpan.Zero);
         var formattedDate = LocalizationService.FormatDate(date, language);
@@ -384,12 +356,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es-ES")]
-    [InlineData("en-US")]
-    [InlineData("en-GB")]
-    [InlineData("fr-FR")]
-    [InlineData("de-DE")]
-    [InlineData("pt-BR")]
+    [InlineData("es_ES")]
+    [InlineData("en_US")]
+    [InlineData("en_GB")]
     public void DayOfWeekFormatting_ShouldBeLocalizedCorrectly(string language) {
         var daysOfWeek = new[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday };
 

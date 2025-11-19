@@ -136,7 +136,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);
@@ -159,7 +159,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 0, 0, 0, TimeSpan.Zero);
@@ -225,7 +225,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 01, 23, 59, 59, TimeSpan.Zero);
@@ -362,7 +362,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -408,7 +408,7 @@ public class DailyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);

@@ -4,18 +4,15 @@ namespace Scheduler_Lib.Core.Services.Localization;
 
 public static class LocalizationService {
     private static readonly Dictionary<string, CultureInfo> SupportedCultures = new() {
-        { "es-ES", new CultureInfo("es-ES") },
-        { "en-US", new CultureInfo("en-US") },
+        { "es_ES", new CultureInfo("es_ES") },
+        { "en_US", new CultureInfo("en_US") },
         { "en_GB", new CultureInfo("en_GB") },
-        { "fr-FR", new CultureInfo("fr-FR") },
-        { "de-DE", new CultureInfo("de-DE") },
-        { "pt-BR", new CultureInfo("pt-BR") }
     };
 
     public static CultureInfo GetCulture(string language) {
         return SupportedCultures.TryGetValue(language, out var culture)
             ? culture
-            : SupportedCultures["es-ES"];
+            : SupportedCultures["es_ES"];
     }
 
     public static string FormatDate(DateTimeOffset date, string language) {

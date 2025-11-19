@@ -35,7 +35,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.WeeklyPeriod = 1;
@@ -77,7 +77,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.WeeklyPeriod = 2;
@@ -96,7 +96,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.WeeklyPeriod = 3;
@@ -215,7 +215,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.EndDate = new DateTimeOffset(2025, 11, 30, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 11, 30)));
@@ -412,7 +412,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.Language = "es-ES";
+        schedulerInput.Language = "es_ES";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -435,7 +435,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.Language = "en-US";
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 0, 0, 0, TimeSpan.Zero);

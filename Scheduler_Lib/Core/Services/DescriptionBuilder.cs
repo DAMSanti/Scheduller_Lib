@@ -12,7 +12,7 @@ internal class DescriptionBuilder {
         TimeZoneInfo tz,
         DateTimeOffset nextDate) {
 
-        var language = schedulerInput.Language ?? "es-ES";
+        var language = schedulerInput.Language ?? "es_ES";
         var culture = LocalizationService.GetCulture(language);
         var formattedDate = LocalizationService.FormatDate(nextDate, language);
 

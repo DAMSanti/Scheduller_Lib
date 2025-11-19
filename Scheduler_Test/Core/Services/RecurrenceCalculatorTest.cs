@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 namespace Scheduler_Lib.Core.Services;
 
 public class RecurrenceCalculatorTests(ITestOutputHelper output) {
-    /*
+
     [Fact]
     public void SelectNextEligibleDate_ShouldSuccess_WhenTargetDateIsMinValue() {
         var targetDate = DateTimeOffset.MinValue;
@@ -15,6 +15,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
+
+        output.WriteLine(result.DateTime.ToLongDateString());
 
         Assert.Equal(DateTimeOffset.MinValue, result);
     }
@@ -32,6 +34,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
 
+        output.WriteLine(result.DateTime.ToLongDateString());
+
         Assert.Equal(expectedDate.Date, result.Date);
         Assert.Equal(targetDate.TimeOfDay, result.TimeOfDay);
     }
@@ -45,6 +49,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
 
+        output.WriteLine(result.DateTime.ToLongDateString());
+
         Assert.Equal(expected.Date, result.Date);
         Assert.Equal(targetDate.TimeOfDay, result.TimeOfDay);
     }
@@ -57,9 +63,11 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
 
+        output.WriteLine(result.DateTime.ToLongDateString());
+
         Assert.Equal(targetDate, result);
     }
-    
+
     [Fact]
     public void CalculateWeeklyRecurrence_ShouldSuccess_WhenValidInput() {
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -73,9 +81,16 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
 
+        foreach (var date in result!) {
+            output.WriteLine(date.ToString());
+            Assert.True(date >= schedulerInput.StartDate);
+            Assert.True(date <= schedulerInput.EndDate);
+        }
+
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
         foreach (var date in result) {
+            output.WriteLine(date.ToString());
             Assert.True(date >= schedulerInput.StartDate);
             Assert.True(date <= schedulerInput.EndDate);
             Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek);
@@ -97,6 +112,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
 
         foreach (var date in result!) {
+            output.WriteLine(date.ToString());
             Assert.True(date >= schedulerInput.StartDate);
             Assert.True(date <= schedulerInput.EndDate);
             Assert.Contains(date.DayOfWeek, schedulerInput.DaysOfWeek);
@@ -110,7 +126,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
             Assert.Equal(14, daysDifference);
         }
     }
-    
+
     [Fact]
     public void SelectNextEligibleDate_ShouldSuccess_WhenHandlingBoundaryConditions() {
         var tz = RecurrenceCalculator.GetTimeZone();
@@ -122,6 +138,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var daysOfWeek = new List<DayOfWeek> { dayToFind };
 
         var result = RecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz);
+
+        output.WriteLine($"Target: {targetDate}, Result: {result}");
 
         Assert.Equal(dayToFind, result.DayOfWeek);
     }
@@ -141,6 +159,11 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.CalculateWeeklyRecurrence(schedulerInput, tz);
 
+        output.WriteLine($"FutureDates (count = {result?.Count ?? 0}):");
+        foreach (var dto in result ?? []) {
+            output.WriteLine(dto.ToString());
+        }
+
         Assert.NotNull(result);
     }
 
@@ -155,6 +178,11 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
 
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        output.WriteLine($"FutureDates (count = {result?.Count ?? 0}):");
+        foreach (var dto in result ?? []) {
+            output.WriteLine(dto.ToString());
+        }
 
         Assert.Empty(result!);
 
@@ -185,6 +213,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
         foreach (var date in result!) {
+            output.WriteLine(date.ToString());
             Assert.True(date >= schedulerInput.StartDate);
             Assert.True(date <= schedulerInput.EndDate);
         }
@@ -203,13 +232,13 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var schedulerInput = new SchedulerInput();
 
         schedulerInput.StartDate =
-            new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11, 10, 0, 0)));
+            new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.EndDate =
-            new DateTimeOffset(2023, 9, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 15, 10, 0, 0)));
+            new DateTimeOffset(2023, 9, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 15)));
         schedulerInput.CurrentDate =
-            new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11, 10, 0, 0)));
+            new DateTimeOffset(2023, 9, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.TargetDate =
-            new DateTimeOffset(2023, 9, 11, 14, 30, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11, 14, 30, 0)));
+            new DateTimeOffset(2023, 9, 11, 14, 30, 0, tz.GetUtcOffset(new DateTime(2023, 9, 11)));
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
@@ -217,6 +246,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
         foreach (var date in result!) {
+            output.WriteLine(date.ToString());
             Assert.True(date >= schedulerInput.StartDate);
             Assert.True(date <= schedulerInput.EndDate);
         }
@@ -248,6 +278,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
         foreach (var date in result!) {
+            output.WriteLine(date.ToString());
             Assert.True(date >= schedulerInput.StartDate);
             Assert.True(date <= schedulerInput.EndDate);
         }
@@ -281,6 +312,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
         foreach (var date in result!) {
+            output.WriteLine(date.ToString());
             Assert.True(date >= schedulerInput.StartDate);
             Assert.True(date <= schedulerInput.EndDate);
         }
@@ -319,6 +351,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
 
         foreach (var date in result!) {
+            output.WriteLine(date.ToString());
             Assert.True(date >= schedulerInput.StartDate);
             Assert.True(date <= schedulerInput.EndDate);
         }
@@ -352,6 +385,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
 
+        output.WriteLine(result.DateTime.ToLongDateString());
+
         Assert.Equal(targetDate.DateTime, result.DateTime);
     }
 
@@ -372,6 +407,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
 
+        output.WriteLine(result.DateTime.ToLongDateString());
+
         Assert.Equal(currentDate.Date, result.Date);
         Assert.Equal(startDate.TimeOfDay, result.TimeOfDay);
     }
@@ -381,6 +418,25 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var tz = RecurrenceCalculator.GetTimeZone();
 
         Assert.Equal(Config.TimeZoneId, tz.Id);
+    }
+
+    [Fact]
+    public void CalculateFutureDates_ShouldFail_WhenDaysOfWeekIsNull() {
+        var tz = RecurrenceCalculator.GetTimeZone();
+
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 11)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 26, 11, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 26)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 11, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 11)));
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = null;
+
+        var result = RecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -408,6 +464,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = DateSafetyHelper.TryAddDaysSafely(date, 0, out var resultDate);
 
+        output.WriteLine($"Original: {date}, Days: 0, Result: {resultDate}, Success: {result}");
+
         Assert.True(result);
         Assert.Equal(date, resultDate);
     }
@@ -418,6 +476,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var daysToAdd = 5;
 
         var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
 
         Assert.True(result);
         Assert.Equal(new DateTime(2025, 10, 20, 10, 30, 0), resultDate);
@@ -430,6 +490,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
 
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
+
         Assert.False(result);
         Assert.Equal(date, resultDate);
     }
@@ -440,6 +502,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var daysToAdd = -5;
 
         var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
 
         Assert.True(result);
         Assert.Equal(new DateTime(2025, 10, 10, 10, 30, 0), resultDate);
@@ -452,6 +516,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
 
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
+
         Assert.False(result);
         Assert.Equal(date, resultDate);
     }
@@ -462,6 +528,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var daysToAdd = 0;
 
         var result = DateSafetyHelper.TryAddDaysSafely(date, daysToAdd, out var resultDate);
+
+        output.WriteLine($"Original: {date}, Days: {daysToAdd}, Result: {resultDate}, Success: {result}");
 
         Assert.True(result);
         Assert.Equal(date, resultDate);
@@ -474,6 +542,7 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var offset = TimeZoneConverter.GetUtcOffset(dateTime, tz);
 
+        output.WriteLine($"DateTime: {dateTime}, TimeZone: {tz.Id}, Offset: {offset}");
         Assert.Equal(tz.GetUtcOffset(dateTime), offset);
     }
 
@@ -486,6 +555,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var winterOffset = TimeZoneConverter.GetUtcOffset(winterDate, tz);
         var summerOffset = TimeZoneConverter.GetUtcOffset(summerDate, tz);
 
+        output.WriteLine($"Winter Offset: {winterOffset}, Summer Offset: {summerOffset}");
+
         if (tz.SupportsDaylightSavingTime) {
             Assert.NotEqual(winterOffset, summerOffset);
         }
@@ -497,6 +568,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var utcDate = new DateTimeOffset(2025, 10, 15, 10, 30, 0, TimeSpan.Zero);
 
         var result = TimeZoneConverter.ConvertToTimeZone(utcDate, tz);
+
+        output.WriteLine($"UTC: {utcDate}, Converted: {result}, TimeZone: {tz.Id}");
 
         if (tz.Id != "UTC") {
             Assert.NotEqual(utcDate.Offset, result.Offset);
@@ -513,6 +586,8 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = TimeZoneConverter.ConvertToTimeZone(utcDate, tz);
 
+        output.WriteLine($"Original UTC: {utcDate.UtcDateTime}, Result UTC: {result.UtcDateTime}");
+
         Assert.Equal(utcDate.UtcDateTime, result.UtcDateTime);
     }
 
@@ -523,19 +598,24 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         var schedulerInput = new SchedulerInput();
         schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
-        schedulerInput.EndDate = null;
+        schedulerInput.EndDate = null; // Esto forzará el uso de GetEffectiveEndDate
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
         schedulerInput.MonthlyDayChk = true;
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(2);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(2); // Se usará para calcular el EndDate efectivo
 
         var result = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
 
+        output.WriteLine($"Monthly Recurrence dates (count = {result?.Count ?? 0}):");
+        foreach (var date in result ?? []) {
+            output.WriteLine(date.ToString());
+        }
+
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
-  
+        // Verificar que las fechas son el día 15 de cada mes
         foreach (var date in result) {
             Assert.Equal(15, date.Day);
         }
@@ -554,9 +634,14 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayChk = true;
         schedulerInput.MonthlyDay = 1;
         schedulerInput.MonthlyDayPeriod = 1;
-        schedulerInput.DailyPeriod = TimeSpan.FromDays(5);
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(5); // Período personalizado
 
         var result = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
+
+        output.WriteLine($"Monthly Recurrence with custom period (count = {result?.Count ?? 0}):");
+        foreach (var date in result ?? []) {
+            output.WriteLine(date.ToString());
+        }
 
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
@@ -575,9 +660,14 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayChk = true;
         schedulerInput.MonthlyDay = 10;
         schedulerInput.MonthlyDayPeriod = 1;
-        schedulerInput.DailyPeriod = null;
+        schedulerInput.DailyPeriod = null; // Usará TimeSpan.FromDays(3) por defecto
 
         var result = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
+
+        output.WriteLine($"Monthly Recurrence with default period (count = {result?.Count ?? 0}):");
+        foreach (var date in result ?? []) {
+            output.WriteLine(date.ToString());
+        }
 
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
@@ -604,13 +694,17 @@ public class RecurrenceCalculatorTests(ITestOutputHelper output) {
 
         var result = RecurrenceCalculator.CalculateMonthlyRecurrence(schedulerInput, tz);
 
+        output.WriteLine($"Monthly Recurrence using MonthlyTheChk (count = {result?.Count ?? 0}):");
+        foreach (var date in result ?? []) {
+            output.WriteLine($"{date} - {date.DayOfWeek}");
+        }
+
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
-
+        // Verificar que todas las fechas son lunes
         foreach (var date in result) {
             Assert.Equal(DayOfWeek.Monday, date.DayOfWeek);
         }
     }
-    */
 }
 

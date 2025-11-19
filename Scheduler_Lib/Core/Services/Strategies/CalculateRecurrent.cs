@@ -27,11 +27,7 @@ internal class CalculateRecurrent {
             next = RecurrenceCalculator.GetNextExecutionDate(schedulerInput, tz);
             
             if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
-                var occursTime = schedulerInput.OccursOnceAt.Value;
-                var nextDate = next.DateTime.Date;
-                var nextWithTime = new DateTime(nextDate.Year, nextDate.Month, nextDate.Day,
-                    occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
-                next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
+                next = OccursOnceHelper.ApplyOccursOnceAt(next, schedulerInput.OccursOnceAt, tz);
             }
         } else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
             var futureDates = MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
@@ -39,11 +35,7 @@ internal class CalculateRecurrent {
                 next = futureDates.First();
                 
                 if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
-                    var occursTime = schedulerInput.OccursOnceAt.Value;
-                    var nextDate = next.DateTime.Date;
-                    var nextWithTime = new DateTime(nextDate.Year, nextDate.Month, nextDate.Day,
-                        occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
-                    next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
+                    next = OccursOnceHelper.ApplyOccursOnceAt(next, schedulerInput.OccursOnceAt, tz);
                 }
             } else {
                 next = schedulerInput.CurrentDate;
@@ -54,11 +46,7 @@ internal class CalculateRecurrent {
                 next = futureDates.First();
                 
                 if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
-                    var occursTime = schedulerInput.OccursOnceAt.Value;
-                    var nextDate = next.DateTime.Date;
-                    var nextWithTime = new DateTime(nextDate.Year, nextDate.Month, nextDate.Day,
-                        occursTime.Hours, occursTime.Minutes, occursTime.Seconds, DateTimeKind.Unspecified);
-                    next = new DateTimeOffset(nextWithTime, tz.GetUtcOffset(nextWithTime));
+                    next = OccursOnceHelper.ApplyOccursOnceAt(next, schedulerInput.OccursOnceAt, tz);
                 }
             } else {
                 next = schedulerInput.CurrentDate;

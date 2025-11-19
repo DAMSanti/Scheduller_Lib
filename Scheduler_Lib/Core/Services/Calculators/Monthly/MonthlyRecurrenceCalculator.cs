@@ -86,8 +86,7 @@ internal static class MonthlyRecurrenceCalculator {
         var period = schedulerInput.DailyPeriod ?? TimeSpan.FromDays(3);
         var beginning = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
 
-        const int defaultPeriodMultiplier = 1000;
-        var endLocal = beginning.Add(period * defaultPeriodMultiplier);
+    var endLocal = beginning.Add(period * Config.EffectiveEndDateMultiplier);
         return new DateTimeOffset(endLocal, tz.GetUtcOffset(endLocal));
     }
 }
