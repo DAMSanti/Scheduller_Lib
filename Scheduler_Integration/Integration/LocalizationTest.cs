@@ -271,7 +271,7 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
             EnabledChk = true,
             Periodicity = EnumConfiguration.Recurrent,
             Recurrency = EnumRecurrency.Weekly,
-            Language = "ja-JP", // Idioma no soportado
+            Language = "ja-JP",
             StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
             CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
             WeeklyPeriod = 1,
