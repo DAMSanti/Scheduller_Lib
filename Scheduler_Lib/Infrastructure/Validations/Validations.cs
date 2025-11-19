@@ -1,12 +1,21 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
+using Scheduler_Lib.Core.Services.Localization;
 using Scheduler_Lib.Resources;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Scheduler_Lib.Infrastructure.Validations;
 internal static class Validations {
     internal static ResultPattern<bool> ValidateCalculateDate(SchedulerInput? schedulerInput) {
         if (schedulerInput == null)
             return ResultPattern<bool>.Failure(Messages.ErrorRequestNull);
+
+        if (string.IsNullOrWhiteSpace(schedulerInput.Language)) {
+            return ResultPattern<bool>.Failure(Messages.ErrorLanguageRequired);
+        } else if (!LocalizationService.IsSupportedLanguage(schedulerInput.Language)) {
+            var supportedLanguages = string.Join(", ", LocalizationService.GetSupportedLanguages());
+            return ResultPattern<bool>.Failure($"{Messages.ErrorLanguageNotSupported} {supportedLanguages}");
+        }
 
         if (!schedulerInput.EnabledChk)
             return ResultPattern<bool>.Failure(Messages.ErrorApplicationDisabled);

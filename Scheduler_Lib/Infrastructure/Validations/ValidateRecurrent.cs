@@ -1,5 +1,6 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
+using Scheduler_Lib.Core.Services.Localization;
 using Scheduler_Lib.Resources;
 using System.Text;
 

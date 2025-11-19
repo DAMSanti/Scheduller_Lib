@@ -27,4 +27,6 @@ public static class Messages {
     public const string ErrorMonthlyFrequencyRequired = "ERROR: Monthly frequency is required (First, Second, Third, Fourth, Last).";
     public const string ErrorMonthlyDateTypeRequired = "ERROR: Monthly date type is required (Monday, Tuesday, Day, Weekday, etc.).";
     public const string ErrorMonthlyThePeriodRequired = "ERROR: Monthly 'The' period is required and must be greater than 0.";
+    public const string ErrorLanguageRequired = "ERROR: The language is mandatory.";
+    public const string ErrorLanguageNotSupported = "ERROR: Language not supported. Available languages:";
 }

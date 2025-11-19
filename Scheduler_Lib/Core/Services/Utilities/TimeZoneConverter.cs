@@ -15,12 +15,43 @@ public static class TimeZoneConverter {
         return TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
     }
 
-   /* public static DateTimeOffset ConvertToTimeZone(DateTimeOffset dateTimeOffset, TimeZoneInfo tz) {
-        var utcTime = dateTimeOffset.UtcDateTime;
-        var localInTz = ConvertFromUtc(utcTime, tz);
-        return CreateDateTimeOffset(localInTz, tz);
-    }*/
     public static TimeSpan GetUtcOffset(DateTime dateTime, TimeZoneInfo tz) {
         return tz.GetUtcOffset(dateTime);
+    }
+
+    public static string GetTimeZoneId() {
+        TimeZoneInfo localZone = TimeZoneInfo.Local;
+
+        if (localZone.Id == "Central European Standard Time" || localZone.Id == "Europe/Madrid")
+            return "Europe/Madrid";
+
+        if (localZone.Id == "GMT Standard Time" || localZone.Id == "Atlantic/Canary")
+            return "Atlantic/Canary";
+
+        if (localZone.Id == "GMT Standard Time" || localZone.Id == "Europe/London")
+            return "Europe/London";
+
+        switch (localZone.Id) {
+            case "Eastern Standard Time":
+            case "America/New_York":
+                return "America/New_York";
+            case "Central Standard Time":
+            case "America/Chicago":
+                return "America/Chicago";
+            case "Mountain Standard Time":
+            case "America/Denver":
+                return "America/Denver";
+            case "Pacific Standard Time":
+            case "America/Los_Angeles":
+                return "America/Los_Angeles";
+            case "Alaskan Standard Time":
+            case "America/Anchorage":
+                return "America/Anchorage";
+            case "Hawaiian Standard Time":
+            case "Pacific/Honolulu":
+                return "Pacific/Honolulu";
+        }
+
+        return localZone.Id;
     }
 }

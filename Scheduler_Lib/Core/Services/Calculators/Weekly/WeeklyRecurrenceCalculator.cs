@@ -13,10 +13,7 @@ public static class WeeklyRecurrenceCalculator {
     public static List<DateTimeOffset> CalculateFutureDates(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var dates = new List<DateTimeOffset>();
         var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
-        var nextEligible = SelectNextEligibleDate(
-            new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal)),
-            schedulerInput.DaysOfWeek!,
-            tz);
+        var baseDto = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
 
         var endLocal = schedulerInput.EndDate ?? GetEffectiveEndDate(schedulerInput, tz);
         var weekStart = baseLocal.Date;
@@ -26,7 +23,7 @@ public static class WeeklyRecurrenceCalculator {
         var iteration = 0;
 
         while (weekStart <= endLocal.Date && iteration < maxIterations) {
-            GenerateSlotsForWeek(weekStart, schedulerInput, tz, nextEligible, endLocal, slotStep, dates);
+            GenerateSlotsForWeek(weekStart, schedulerInput, tz, baseDto, endLocal, slotStep, dates);
 
             if (dates.Count >= maxIterations)
                 return dates;
@@ -91,7 +88,7 @@ public static class WeeklyRecurrenceCalculator {
         DateTime weekStart,
         SchedulerInput schedulerInput,
         TimeZoneInfo tz,
-        DateTimeOffset nextEligible,
+        DateTimeOffset baseDto,
         DateTimeOffset endLocal,
         TimeSpan slotStep,
         List<DateTimeOffset> accumulator) {
@@ -105,7 +102,7 @@ public static class WeeklyRecurrenceCalculator {
 
             var candidate = TimeZoneConverter.CreateDateTimeOffset(candidateLocal.Value, tz);
 
-            if (candidate <= nextEligible)
+            if (candidate < baseDto)
                 continue;
 
             if (candidate > endLocal)
@@ -120,7 +117,7 @@ public static class WeeklyRecurrenceCalculator {
                     tz,
                     schedulerInput,
                     endLocal,
-                    nextEligible,
+                    baseDto,
                     accumulator);
             } else {
                 if (!accumulator.Contains(candidate))
@@ -130,7 +127,7 @@ public static class WeeklyRecurrenceCalculator {
     }
 
     private static DateTime? GetCandidateForWeekAndDay(DateTime weekStart, DayOfWeek day, TimeSpan timeOfDay) {
-        var date = new DateTime(weekStart.Year, weekStart.Month, weekStart.Day, 
+        var date = new DateTime(weekStart.Year, weekStart.Month, weekStart.Day,
             timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds, DateTimeKind.Unspecified);
 
         for (var i = 0; i < DaysInWeek; i++) {
@@ -138,13 +135,13 @@ public static class WeeklyRecurrenceCalculator {
                 return date;
 
             if (!DateSafetyHelper.TryAddDaysSafely(date, 1, out var next))
-                return null;
+                return null; 
 
             date = next;
         }
-
         return null;
     }
+
     private static DateTimeOffset GetEffectiveEndDate(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var period = schedulerInput.DailyPeriod ?? TimeSpan.FromDays(3);
         var beginning = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
