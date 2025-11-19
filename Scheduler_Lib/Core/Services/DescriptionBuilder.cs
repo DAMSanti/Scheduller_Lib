@@ -126,7 +126,6 @@ internal class DescriptionBuilder {
     }
 
     private static string FormatMonthlyDateType(EnumMonthlyDateType dateType, string language) {
-        // Reuse localization: use monthlytype.* keys for generic types and day names for specific weekdays
         return dateType switch {
             EnumMonthlyDateType.Day => LocalizationResources.GetDescription("monthlytype.day", language),
             EnumMonthlyDateType.Weekday => LocalizationResources.GetDescription("monthlytype.weekday", language),
