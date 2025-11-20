@@ -104,23 +104,6 @@ internal class DescriptionBuilder {
         return LocalizationResources.GetDescription("monthly.every.month", language);
     }
 
-    private static string GetMonthlyDateTypeDescription(EnumMonthlyDateType dateType, string language) {
-        return dateType switch {
-            EnumMonthlyDateType.Day => LocalizationResources.GetDescription("monthlytype.day", language),
-            EnumMonthlyDateType.Weekday => LocalizationResources.GetDescription("monthlytype.weekday", language),
-            EnumMonthlyDateType.WeekendDay => LocalizationResources.GetDescription("monthlytype.weekendday", language),
-
-            EnumMonthlyDateType.Monday => LocalizationResources.GetDayName(DayOfWeek.Monday, language),
-            EnumMonthlyDateType.Tuesday => LocalizationResources.GetDayName(DayOfWeek.Tuesday, language),
-            EnumMonthlyDateType.Wednesday => LocalizationResources.GetDayName(DayOfWeek.Wednesday, language),
-            EnumMonthlyDateType.Thursday => LocalizationResources.GetDayName(DayOfWeek.Thursday, language),
-            EnumMonthlyDateType.Friday => LocalizationResources.GetDayName(DayOfWeek.Friday, language),
-            EnumMonthlyDateType.Saturday => LocalizationResources.GetDayName(DayOfWeek.Saturday, language),
-            EnumMonthlyDateType.Sunday => LocalizationResources.GetDayName(DayOfWeek.Sunday, language),
-
-            _ => dateType.ToString()
-        };
-    }
     private static string FormatMonthlyFrequency(EnumMonthlyFrequency frequency, string language) {
         return LocalizationResources.GetDescription($"frequency.{frequency.ToString()!.ToLower()}", language);
     }
@@ -146,14 +129,7 @@ internal class DescriptionBuilder {
         return startInZone.Date;
     }
 
-    private static string TimeSpanToString12HourFormat(TimeSpan timeSpan) {
-        var dateTime = DateTime.Today.Add(timeSpan);
-        var hour12 = dateTime.Hour % 12;
-        if (hour12 == 0) hour12 = 12;
-
-        var period = dateTime.Hour < 12 ? "AM" : "PM";
-        return $"{hour12:D2}:{dateTime.Minute:D2} {period}";
-    }
+    
 
     private static string FormatPeriod(TimeSpan period) {
         if (period.TotalDays >= 1)
@@ -163,9 +139,7 @@ internal class DescriptionBuilder {
         return period.TotalMinutes >= 1 ? FormatUnit(period.TotalMinutes, "minute", "minutes") : FormatUnit(period.TotalSeconds, "second", "seconds");
     }
     
-    private static string FormatDate(DateTimeOffset dateTimeOffset) => dateTimeOffset.Date.ToShortDateString();
     
-    private static string FormatTime(DateTimeOffset dateTimeOffset) => dateTimeOffset.DateTime.ToShortTimeString();
     
     private static string FormatUnit(double value, string singular, string plural) {
         var formatted = value.ToString("0.##", CultureInfo.InvariantCulture);
@@ -210,14 +184,5 @@ internal class DescriptionBuilder {
         return $"{interval.TotalSeconds:F0} seconds";
     }
 
-    private static DayOfWeek GetDayOfWeekFromType(EnumMonthlyDateType dateType) => dateType switch {
-        EnumMonthlyDateType.Monday => DayOfWeek.Monday,
-        EnumMonthlyDateType.Tuesday => DayOfWeek.Tuesday,
-        EnumMonthlyDateType.Wednesday => DayOfWeek.Wednesday,
-        EnumMonthlyDateType.Thursday => DayOfWeek.Thursday,
-        EnumMonthlyDateType.Friday => DayOfWeek.Friday,
-        EnumMonthlyDateType.Saturday => DayOfWeek.Saturday,
-        EnumMonthlyDateType.Sunday => DayOfWeek.Sunday,
-        _ => DayOfWeek.Monday
-    };
+    
 }
