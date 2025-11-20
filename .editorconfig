@@ -1,7 +1,0 @@
-root = true
-
-# Turn IDE0051 (unused private members) into a warning so analyzers emit it
-[*.cs]
-dotnet_diagnostic.IDE0051.severity = warning
-
-dotnet_diagnostic.CA1303.severity = none

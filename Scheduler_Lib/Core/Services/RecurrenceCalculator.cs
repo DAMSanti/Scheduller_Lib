@@ -64,12 +64,4 @@ public static class RecurrenceCalculator {
                                    (d.DateTime == next.DateTime && d.Offset == next.Offset));
         return futureDates;
     }
-
-    public static List<DateTimeOffset> CalculateWeeklyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        return WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
-    }
-
-    public static List<DateTimeOffset> CalculateMonthlyRecurrence(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        return MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
-    }
 }

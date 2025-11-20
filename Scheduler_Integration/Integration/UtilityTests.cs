@@ -1,6 +1,7 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Core.Services.Utilities;
+using System.Reflection;
 using Scheduler_Lib.Resources;
 using Xunit;
 using Xunit.Abstractions;
@@ -26,6 +27,29 @@ public class UtilitiesTests(ITestOutputHelper output) {
     }
 
     #endregion
+
+    [Fact, Trait("Category", "BaseDateTimeCalculator_Integration")]
+    public void BaseDateTimeCalculator_ShouldReturnStartDate_WhenNoTargetAndCurrentIsDefault() {
+        var tz = TimeZoneConverter.GetTimeZone();
+        var schedulerInput = new SchedulerInput {
+            EnabledChk = true,
+            Periodicity = EnumConfiguration.Recurrent,
+            Recurrency = EnumRecurrency.Daily,
+            StartDate = new DateTimeOffset(2025, 10, 10, 8, 30, 0, tz.GetUtcOffset(new DateTime(2025, 10, 10)))
+            // CurrentDate left as default (DateTimeOffset default) and TargetDate is null
+        };
+
+        var assembly = typeof(Scheduler_Lib.Core.Services.RecurrenceCalculator).Assembly;
+        var type = assembly.GetType("Scheduler_Lib.Core.Services.Calculators.Base.BaseDateTimeCalculator");
+        Assert.NotNull(type);
+
+        var method = type!.GetMethod("GetBaseDateTime", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+        Assert.NotNull(method);
+
+        var result = (DateTime)method!.Invoke(null, new object?[] { schedulerInput, tz })!;
+
+        Assert.Equal(schedulerInput.StartDate.DateTime, result);
+    }
 
     #region DateSafetyHelper Tests - Via InitialHandler (TryAddDaysSafely)
 
@@ -191,6 +215,39 @@ public class UtilitiesTests(ITestOutputHelper output) {
 
         Assert.True(result.IsSuccess);
         output.WriteLine($"✓ DateSafetyHelper: year boundary cubierto");
+    }
+
+    [Fact, Trait("Category", "DateSafetyHelper_Integration")]
+    public void DateSafetyHelper_ShouldReturnTrue_WhenAddingToMaxValueAtThreshold() {
+        var date = DateTime.MaxValue.AddDays(-1);
+        var result = DateSafetyHelper.TryAddDaysSafely(date, 1, out var resultDate);
+
+        Assert.True(result);
+        Assert.Equal(DateTime.MaxValue, resultDate);
+    }
+
+    [Fact, Trait("Category", "DateSafetyHelper_Integration")]
+    public void DateSafetyHelper_ShouldReturnTrue_WhenSubtractingToMinValueAtThreshold() {
+        var date = DateTime.MinValue.AddDays(1);
+        var result = DateSafetyHelper.TryAddDaysSafely(date, -1, out var resultDate);
+
+        Assert.True(result);
+        Assert.Equal(DateTime.MinValue, resultDate);
+    }
+
+    [Fact, Trait("Category", "DateSafetyHelper_Integration")]
+    public void DateSafetyHelper_ShouldReturnTrue_WhenDaysIsZero_DirectCall() {
+        var dt = new DateTime(2025, 10, 10, 10, 0, 0);
+        var success = DateSafetyHelper.TryAddDaysSafely(dt, 0, out var result);
+        Assert.True(success);
+        Assert.Equal(dt, result);
+    }
+
+    [Fact, Trait("Category", "DateSafetyHelper_Integration")]
+    public void DateSafetyHelper_ShouldReturnFalse_WhenNegativeDaysUnderflow_DirectCall() {
+        var dt = DateTime.MinValue.AddDays(1);
+        var success = DateSafetyHelper.TryAddDaysSafely(dt, -5, out _);
+        Assert.False(success);
     }
     #endregion
 

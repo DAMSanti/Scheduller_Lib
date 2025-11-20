@@ -21,11 +21,15 @@ public static class TimeZoneConverter {
 
     public static string GetTimeZoneId() {
         TimeZoneInfo localZone = TimeZoneInfo.Local;
+        return GetTimeZoneId(localZone);
+    }
 
+    // Overload for testability: resolves timezone mapping from a provided TimeZoneInfo
+    public static string GetTimeZoneId(TimeZoneInfo localZone) {
         if (localZone.Id == "Central European Standard Time" || localZone.Id == "Europe/Madrid")
             return "Europe/Madrid";
 
-        if (localZone.Id == "GMT Standard Time" || localZone.Id == "Atlantic/Canary")
+        if (localZone.Id == "Atlantic/Canary")
             return "Atlantic/Canary";
 
         if (localZone.Id == "GMT Standard Time" || localZone.Id == "Europe/London")

@@ -129,23 +129,6 @@ internal class DescriptionBuilder {
         return startInZone.Date;
     }
 
-    
-
-    private static string FormatPeriod(TimeSpan period) {
-        if (period.TotalDays >= 1)
-            return FormatUnit(period.TotalDays, "day", "days");
-        if (period.TotalHours >= 1)
-            return FormatUnit(period.TotalHours, "hour", "hours");
-        return period.TotalMinutes >= 1 ? FormatUnit(period.TotalMinutes, "minute", "minutes") : FormatUnit(period.TotalSeconds, "second", "seconds");
-    }
-    
-    
-    
-    private static string FormatUnit(double value, string singular, string plural) {
-        var formatted = value.ToString("0.##", CultureInfo.InvariantCulture);
-        return value > 1 ? $"{formatted} {plural}" : $"{formatted} {singular}";
-    }
-
     private static string FormatInterval(TimeSpan interval, string language) {
         if (interval.TotalSeconds < 60 && interval.TotalSeconds >= 1) {
             var seconds = (int)interval.TotalSeconds;

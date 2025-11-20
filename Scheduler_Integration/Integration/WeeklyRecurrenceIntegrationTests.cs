@@ -1,5 +1,6 @@
 using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
+using Scheduler_Lib.Core.Services.Calculators.Weekly;
 using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
 using Xunit;
@@ -64,7 +65,8 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var tzCalc = TimeZoneConverter.GetTimeZone();
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tzCalc);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 7);
@@ -122,7 +124,8 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var tzCalc = TimeZoneConverter.GetTimeZone();
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tzCalc);
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
@@ -159,7 +162,8 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Saturday, DayOfWeek.Sunday];
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var tz = TimeZoneConverter.GetTimeZone();
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday));
@@ -201,7 +205,8 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceAt = new TimeSpan(9, 0, 0);
 
         var result = SchedulerService.InitialHandler(schedulerInput);
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var tz = TimeZoneConverter.GetTimeZone();
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 3);
@@ -226,7 +231,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.Contains("every 2 week(s)", result.Value.Description);
@@ -251,7 +256,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count > 2);
@@ -276,7 +281,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.Equal(DayOfWeek.Monday, date.DayOfWeek));
@@ -301,7 +306,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 6);
@@ -327,7 +332,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 20);
@@ -352,7 +357,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 10);
@@ -399,7 +404,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
@@ -421,7 +426,7 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         var result = SchedulerService.InitialHandler(schedulerInput);
 
-        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 12);
@@ -667,5 +672,48 @@ public class WeeklyRecurrenceIntegrationTests(ITestOutputHelper output) {
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void WeeklyRecurrence_ShouldHandle_WeekStartNearMaxDate_ReturnsNoSlots() {
+        var maxDate = DateTime.MaxValue.AddDays(-1);
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.StartDate = new DateTimeOffset(maxDate, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(maxDate, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(DateTime.MaxValue, TimeSpan.Zero);
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Saturday];
+
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+
+        Assert.True(futureDates != null);
+        Assert.Empty(futureDates!);
+        output.WriteLine($"WeekStart near MaxDate: Start={schedulerInput.StartDate}, FutureDates={futureDates.Count}");
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public void WeeklyRecurrence_ShouldHandle_WeeklyPeriodStepOverflow_Gracefully() {
+        var maxDate = DateTime.MaxValue.AddDays(-1);
+        var schedulerInput = new SchedulerInput();
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.StartDate = new DateTimeOffset(maxDate, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(maxDate, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(DateTime.MaxValue, TimeSpan.Zero);
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Friday];
+
+    var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+
+        // The week stepping AddDays(7) would overflow; ensure no exceptions and result is valid (count >= 0)
+        Assert.True(futureDates != null);
+        Assert.True(futureDates!.Count >= 0);
+        output.WriteLine($"Weekly step overflow handled: Start={schedulerInput.StartDate}, Count={futureDates.Count}");
     }
 }
