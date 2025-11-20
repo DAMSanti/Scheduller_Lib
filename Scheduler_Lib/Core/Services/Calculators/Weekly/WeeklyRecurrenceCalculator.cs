@@ -19,13 +19,12 @@ public static class WeeklyRecurrenceCalculator {
         var weekStart = baseLocal.Date;
         var slotStep = schedulerInput.DailyPeriod ?? TimeSpan.FromHours(1);
 
-        const int maxIterations = Config.MaxIterations;
         var iteration = 0;
 
-        while (weekStart <= endLocal.Date && iteration < maxIterations) {
+        while (weekStart <= endLocal.Date && iteration < Config.MaxIterations) {
             GenerateSlotsForWeek(weekStart, schedulerInput, tz, baseDto, endLocal, slotStep, dates);
 
-            if (dates.Count >= maxIterations)
+            if (dates.Count >= Config.MaxIterations)
                 return dates;
 
             var stepDays = DaysInWeek * schedulerInput.WeeklyPeriod!.Value;
@@ -40,7 +39,7 @@ public static class WeeklyRecurrenceCalculator {
         return dates;
     }
 
-    public static DateTimeOffset SelectNextEligibleDate(
+    internal static DateTimeOffset SelectNextEligibleDate(
         DateTimeOffset targetDate, 
         List<DayOfWeek> daysOfWeek, 
         TimeZoneInfo tz, 
@@ -146,7 +145,7 @@ public static class WeeklyRecurrenceCalculator {
         var period = schedulerInput.DailyPeriod ?? TimeSpan.FromDays(3);
         var beginning = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
 
-    var endLocal = beginning.Add(period * Config.EffectiveEndDateMultiplier);
+        var endLocal = beginning.Add(period * Config.EffectiveEndDateMultiplier);
         return new DateTimeOffset(endLocal, tz.GetUtcOffset(endLocal));
     }
 

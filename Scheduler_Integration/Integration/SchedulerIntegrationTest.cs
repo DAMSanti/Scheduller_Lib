@@ -4,98 +4,92 @@ using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
 using Xunit;
 using Xunit.Abstractions;
+#pragma warning disable IDE0017
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace Scheduler_IntegrationTests.Integration;
 
-public class CalculateDateIntegrationTests(ITestOutputHelper output) {
+public class CalculateDateIntegrationTests() {
 
-    #region Setup Helpers
-
-    private SchedulerInput CreateBaseValidOnceInput() {
+    private static SchedulerInput CreateBaseValidOnceInput() {
         var tz = TimeZoneConverter.GetTimeZone();
-        return new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31))),
-            TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 6, 15))),
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 6, 15)));
+        return schedulerInput;
     }
 
-    private SchedulerInput CreateBaseValidOnceInputWithoutEndDate() {
+    private static SchedulerInput CreateBaseValidOnceInputWithoutEndDate() {
         var tz = TimeZoneConverter.GetTimeZone();
-        return new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            EndDate = null,
-            TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 6, 15))),
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.EndDate = null;
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 6, 15)));
+        return schedulerInput;
     }
 
-    private SchedulerInput CreateDailyInput() {
+    private static SchedulerInput CreateDailyInput() {
         var tz = TimeZoneConverter.GetTimeZone();
-        return new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            EndDate = new DateTimeOffset(2025, 1, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 1, 31))),
-            OccursEveryChk = true,
-            DailyPeriod = TimeSpan.FromDays(1)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 1, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 1, 31)));
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        return schedulerInput;
     }
 
-    private SchedulerInput CreateWeeklyInput() {
+    private static SchedulerInput CreateWeeklyInput() {
         var tz = TimeZoneConverter.GetTimeZone();
-        return new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31))),
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday]
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
+        return schedulerInput;
     }
 
-    private SchedulerInput CreateMonthlyInput() {
+    private static SchedulerInput CreateMonthlyInput() {
         var tz = TimeZoneConverter.GetTimeZone();
-        return new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1))),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31))),
-            MonthlyDayChk = true,
-            MonthlyDay = 15,
-            MonthlyDayPeriod = 1
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 1, 1)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 15;
+        schedulerInput.MonthlyDayPeriod = 1;
+        return schedulerInput;
     }
-
-    #endregion
-
-    #region Global Validations
 
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldFail_WhenApplicationIsDisabled() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = false,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = false;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorApplicationDisabled, result.Error ?? string.Empty);
@@ -103,18 +97,17 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldFail_WhenStartDateIsAfterEndDate() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 10, 20, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            OccursOnceChk = true,
-            OccursOnceAt = new TimeSpan(10, 0, 0),
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 20, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 10, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -122,32 +115,30 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldFail_WhenStartDateIsDefault() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = default,
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            OccursEveryChk = true,
-            DailyPeriod = TimeSpan.FromDays(1),
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = default;
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
     }
 
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldFail_WhenUnsupportedPeriodicity() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = (EnumConfiguration)999,
-            Recurrency = EnumRecurrency.Daily,
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = (EnumConfiguration)999;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedPeriodicity, result.Error ?? string.Empty);
@@ -155,23 +146,18 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldFail_WhenUnsupportedRecurrency() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = (EnumRecurrency)999,
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = (EnumRecurrency)999;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region Once Configuration Validation
 
     [Fact, Trait("Category", "ValidateOnce")]
     public void ValidateOnce_ShouldFail_WhenPeriodicityOnceAndRecurrencyWeekly() {
@@ -180,7 +166,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.WeeklyPeriod = 1;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceWeekly, result.Error ?? string.Empty);
@@ -193,15 +179,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
         schedulerInput.WeeklyPeriod = 1;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceWeekly, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region TargetDate Validation
 
     [Fact, Trait("Category", "ValidateOnce")]
     public void ValidateOnce_ShouldFail_WhenTargetDateLessThanStartDate() {
@@ -210,7 +192,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
@@ -223,7 +205,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
@@ -236,7 +218,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
     }
@@ -248,7 +230,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
@@ -261,7 +243,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
@@ -272,7 +254,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         var schedulerInput = CreateBaseValidOnceInputWithoutEndDate();
         schedulerInput.TargetDate = schedulerInput.StartDate;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
     }
@@ -283,7 +265,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.Recurrency = EnumRecurrency.Daily;
         schedulerInput.TargetDate = null;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateNull, result.Error ?? string.Empty);
@@ -298,7 +280,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayPeriod = 1;
         schedulerInput.TargetDate = null;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateNull, result.Error ?? string.Empty);
@@ -309,14 +291,10 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         var schedulerInput = CreateBaseValidOnceInputWithoutEndDate();
         schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
     }
-
-    #endregion
-
-    #region StartDate Validation
 
     [Fact, Trait("Category", "ValidateOnce")]
     public void ValidateOnce_ShouldFail_WhenStartDateGreaterThanEndDate() {
@@ -325,7 +303,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -338,15 +316,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = null;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region Multiple Errors Validation
 
     [Fact, Trait("Category", "ValidateOnce")]
     public void ValidateOnce_ShouldFail_WithMultipleErrors_OnceWeeklyAndStartGreaterThanEnd() {
@@ -358,7 +332,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceWeekly, result.Error ?? string.Empty);
@@ -372,7 +346,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
@@ -390,7 +364,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.StartDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         var error = result.Error ?? string.Empty;
@@ -399,15 +373,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.Contains(Messages.ErrorStartDatePostEndDate, error);
     }
 
-    #endregion
-
-    #region Edge Cases
-
     [Fact, Trait("Category", "ValidateOnce")]
     public void ValidateOnce_ShouldSuccess_WhenAllConditionsAreValid() {
         var schedulerInput = CreateBaseValidOnceInput();
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
     }
@@ -418,14 +388,10 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.Periodicity = EnumConfiguration.Once;
         schedulerInput.Recurrency = EnumRecurrency.Daily;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
     }
-
-    #endregion
-
-    #region Recurrent StartDate And EndDate Validation
 
     [Fact, Trait("Category", "ValidationRecurrent")]
     public void ValidateRecurrent_ShouldFail_WhenEndDatePresentAndStartGreaterThanEnd() {
@@ -434,7 +400,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -447,7 +413,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = null;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
     }
@@ -462,7 +428,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = endDate;
         schedulerInput.CurrentDate = startDate;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
     }
@@ -477,7 +443,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = endDate;
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -491,21 +457,17 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.EndDate = sameDate;
         schedulerInput.CurrentDate = sameDate;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region Recurrency Type Validation
 
     [Fact, Trait("Category", "ValidationRecurrent")]
     public void ValidateRecurrent_ShouldFail_WhenRecurrencyIsNotSupported() {
         var schedulerInput = CreateDailyInput();
         schedulerInput.Recurrency = (EnumRecurrency)999;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
@@ -515,10 +477,10 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
     public void ValidateRecurrent_ShouldSuccess_WhenRecurrencyIsWeeklyValid() {
         var schedulerInput = CreateDailyInput();
         schedulerInput.Recurrency = EnumRecurrency.Weekly;
-        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
+    schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
         schedulerInput.WeeklyPeriod = 1;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
@@ -530,7 +492,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursEveryChk = true;
         schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
@@ -543,14 +505,10 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDay = 15;
         schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region Daily Time Window Validation
 
     [Fact, Trait("Category", "ValidationRecurrent")]
     public void ValidateRecurrent_ShouldFail_WhenDailyStartTimeGreaterThanEndTime() {
@@ -561,7 +519,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = new TimeSpan(17, 0, 0);
         schedulerInput.DailyEndTime = new TimeSpan(9, 0, 0);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
@@ -576,7 +534,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = null;
         schedulerInput.DailyEndTime = new TimeSpan(9, 0, 0);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
     }
@@ -590,7 +548,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = new TimeSpan(17, 0, 0);
         schedulerInput.DailyEndTime = null;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
     }
@@ -604,7 +562,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = null;
         schedulerInput.DailyEndTime = null;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
     }
@@ -620,7 +578,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = startTime;
         schedulerInput.DailyEndTime = endTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
     }
@@ -636,15 +594,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyStartTime = startTime;
         schedulerInput.DailyEndTime = endTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorDailyStartAfterEnd, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region Daily Period Validation
 
     [Fact, Trait("Category", "ValidationRecurrent")]
     public void ValidateRecurrent_ShouldFail_WhenDailyPeriodIsExactlyZero() {
@@ -655,7 +609,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayPeriod = 1;
         schedulerInput.DailyPeriod = TimeSpan.Zero;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
@@ -670,7 +624,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayPeriod = 1;
         schedulerInput.DailyPeriod = TimeSpan.FromHours(-1);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
@@ -685,11 +639,9 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayPeriod = 1;
         schedulerInput.DailyPeriod = null;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        if (result.IsSuccess) {
-            Assert.DoesNotContain(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
-        }
+        Assert.DoesNotContain(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
     }
 
     [Fact, Trait("Category", "ValidationRecurrent")]
@@ -701,7 +653,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayPeriod = 1;
         schedulerInput.DailyPeriod = TimeSpan.FromTicks(1);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
     }
@@ -715,14 +667,10 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.MonthlyDayPeriod = 1;
         schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorPositiveOffsetRequired, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region Combined Validations
 
     [Fact, Trait("Category", "ValidationRecurrent")]
     public void ValidateRecurrent_ShouldFail_WhenMultipleConditionsFail() {
@@ -737,7 +685,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.DailyEndTime = new TimeSpan(9, 0, 0);
         schedulerInput.DailyPeriod = TimeSpan.Zero;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         var error = result.Error ?? string.Empty;
@@ -745,10 +693,6 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         Assert.Contains(Messages.ErrorDailyStartAfterEnd, error);
         Assert.Contains(Messages.ErrorPositiveOffsetRequired, error);
     }
-
-    #endregion
-
-    #region Once Configuration Tests
 
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldSuccess_WhenOnceConfigurationIsValid() {
@@ -762,7 +706,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 01, 01)));
         schedulerInput.TargetDate = new DateTimeOffset(2025, 01, 15, 14, 30, 0, tz.GetUtcOffset(new DateTime(2025, 01, 15, 14, 30, 0)));
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(schedulerInput.TargetDate!.Value.DateTime, result.Value.NextDate.DateTime);
@@ -770,69 +714,61 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Integration")]
     public void SchedulerCalculation_ShouldFail_WhenOnceConfigurationMissingTargetDate() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = null,
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = null;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
     }
 
-    #endregion
-
-    #region Periodicity and Recurrency Validation
-
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldPass_WhenPeriodicityIsOnce() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedPeriodicity, result.Error ?? string.Empty);
     }
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldPass_WhenPeriodicityIsRecurrent() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero),
-            OccursEveryChk = true,
-            DailyPeriod = TimeSpan.FromDays(1)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedPeriodicity, result.Error ?? string.Empty);
     }
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldFail_WhenPeriodicityIsNotSupported() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = (EnumConfiguration)999,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = (EnumConfiguration)999;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorUnsupportedPeriodicity, result.Error ?? string.Empty);
@@ -840,75 +776,67 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldPass_WhenRecurrencyIsDaily() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero),
-            OccursEveryChk = true,
-            DailyPeriod = TimeSpan.FromDays(1)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldPass_WhenRecurrencyIsWeekly() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero),
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Monday]
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldPass_WhenRecurrencyIsMonthly() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero),
-            MonthlyDayChk = true,
-            MonthlyDay = 15,
-            MonthlyDayPeriod = 1
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 15;
+        schedulerInput.MonthlyDayPeriod = 1;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorUnsupportedRecurrency, result.Error ?? string.Empty);
     }
 
-    #endregion
-
-    #region Current Date and Enabled Validation
-
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldFail_WhenCurrentDateIsDefault() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = default,
-            TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = default;
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorCurrentDateNull, result.Error ?? string.Empty);
@@ -916,33 +844,31 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldPass_WhenCurrentDateIsValid() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorCurrentDateNull, result.Error ?? string.Empty);
     }
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldFail_WhenStartDateIsDefaultValue() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = default,
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = default;
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDateMissing, result.Error ?? string.Empty);
@@ -950,31 +876,29 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldSuccess_WhenAllValidationsPass() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.DoesNotContain(Messages.ErrorStartDateMissing, result.Error ?? string.Empty);
     }
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldFail_WhenEnabledChkIsFalse() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = false,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = false;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorApplicationDisabled, result.Error ?? string.Empty);
@@ -982,15 +906,11 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
 
     [Fact, Trait("Category", "Validations")]
     public void ValidateCalculateDate_ShouldFail_WhenSchedulerInputIsNull() {
-        var result = SchedulerService.InitialHandler(null!);
+        var result = SchedulerService.InitialOrchestator(null!);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorRequestNull, result.Error ?? string.Empty);
     }
-
-    #endregion
-
-    #region Occurs Once Time - Weekly
 
     [Fact, Trait("Category", "CalculateRecurrent_OccursOnce")]
     public void InitialHandler_ShouldApplyOccursOnceTime_ToWeeklyRecurrence() {
@@ -1000,7 +920,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = occursTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(occursTime.Hours, result.Value.NextDate.Hour);
@@ -1016,7 +936,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = occursTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Contains(result.Value.NextDate.DayOfWeek, schedulerInput.DaysOfWeek!);
@@ -1026,14 +946,14 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
     [Fact, Trait("Category", "CalculateRecurrent_OccursOnce")]
     public void InitialHandler_ShouldNotApplyOccursOnceTime_WhenOccursOnceChkIsFalse_Weekly() {
         var schedulerInput = CreateWeeklyInput();
-        var originalResult = SchedulerService.InitialHandler(schedulerInput);
+    _ = SchedulerService.InitialOrchestator(schedulerInput);
 
         var schedulerInput2 = CreateWeeklyInput();
         var occursTime = new TimeSpan(14, 30, 45);
         schedulerInput2.OccursOnceChk = false;
         schedulerInput2.OccursOnceAt = occursTime;
 
-        var resultWithOccursOnce = SchedulerService.InitialHandler(schedulerInput2);
+        var resultWithOccursOnce = SchedulerService.InitialOrchestator(schedulerInput2);
 
         Assert.True(resultWithOccursOnce.IsSuccess);
     }
@@ -1047,7 +967,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = occursTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
 
@@ -1063,7 +983,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = midnightTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(0, result.Value.NextDate.Hour);
@@ -1079,17 +999,13 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = endOfDayTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(23, result.Value.NextDate.Hour);
         Assert.Equal(59, result.Value.NextDate.Minute);
         Assert.Equal(59, result.Value.NextDate.Second);
     }
-
-    #endregion
-
-    #region Occurs Once Time - Monthly
 
     [Fact, Trait("Category", "CalculateRecurrent_OccursOnce")]
     public void InitialHandler_ShouldApplyOccursOnceTime_ToMonthlyRecurrence() {
@@ -1099,7 +1015,7 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceChk = true;
         schedulerInput.OccursOnceAt = occursTime;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(occursTime.Hours, result.Value.NextDate.Hour);
@@ -1116,11 +1032,10 @@ public class CalculateDateIntegrationTests(ITestOutputHelper output) {
         schedulerInput.OccursOnceAt = occursTime;
         schedulerInput.MonthlyDay = 15;
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(schedulerInput.MonthlyDay, result.Value.NextDate.Day);
         Assert.Equal(occursTime, result.Value.NextDate.TimeOfDay);
     }
-    #endregion    
 }

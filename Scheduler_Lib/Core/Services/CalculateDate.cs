@@ -5,7 +5,7 @@ using Scheduler_Lib.Infrastructure.Validations;
 namespace Scheduler_Lib.Core.Services;
 
 public class SchedulerService {
-    public static ResultPattern<SchedulerOutput> InitialHandler(SchedulerInput schedulerInput) {
+    public static ResultPattern<SchedulerOutput> InitialOrchestator(SchedulerInput schedulerInput) {
 
         var validation = Validations.ValidateCalculateDate(schedulerInput);
         if (!validation.IsSuccess) 

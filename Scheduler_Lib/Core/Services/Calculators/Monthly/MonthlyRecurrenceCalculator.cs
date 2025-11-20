@@ -18,12 +18,11 @@ internal static class MonthlyRecurrenceCalculator {
         var endMonth = new DateTime(endLocal.DateTime.Year, endLocal.DateTime.Month, 1);
 
         var iteration = 0;
-        const int maxIterations = Config.MaxIterations;
 
         var timeOfDay = schedulerInput.TargetDate?.TimeOfDay ?? schedulerInput.StartDate.TimeOfDay;
         var slotStep = schedulerInput.DailyPeriod ?? TimeSpan.FromHours(1);
 
-        while (currentMonth <= endMonth && iteration < maxIterations) {
+        while (currentMonth <= endMonth && iteration < Config.MaxIterations) {
             DateTimeOffset? nextEligible = null;
 
             if (schedulerInput.MonthlyDayChk && schedulerInput.MonthlyDay.HasValue) {
@@ -58,7 +57,7 @@ internal static class MonthlyRecurrenceCalculator {
                 }
             }
 
-            if (dates.Count >= maxIterations)
+            if (dates.Count >= Config.MaxIterations)
                 break;
 
             var monthlyPeriod = (schedulerInput.MonthlyDayChk ? schedulerInput.MonthlyDayPeriod : schedulerInput.MonthlyThePeriod) ?? 1;

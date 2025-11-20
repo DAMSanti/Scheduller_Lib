@@ -1,0 +1,9 @@
+root = true
+
+[*.cs]
+# Prefer explicit property assignments over C# object initializer suggestions
+# These settings keep the IDE from suggesting to use object/collection initializers
+csharp_style_object_initializer = false:silent
+csharp_style_collection_initializer = false:silent
+
+# Keep other code style defaults intact

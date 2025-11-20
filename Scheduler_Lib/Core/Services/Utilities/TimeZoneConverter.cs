@@ -19,12 +19,6 @@ public static class TimeZoneConverter {
         return tz.GetUtcOffset(dateTime);
     }
 
-    public static string GetTimeZoneId() {
-        TimeZoneInfo localZone = TimeZoneInfo.Local;
-        return GetTimeZoneId(localZone);
-    }
-
-    // Overload for testability: resolves timezone mapping from a provided TimeZoneInfo
     public static string GetTimeZoneId(TimeZoneInfo localZone) {
         if (localZone.Id == "Central European Standard Time" || localZone.Id == "Europe/Madrid")
             return "Europe/Madrid";
@@ -35,27 +29,16 @@ public static class TimeZoneConverter {
         if (localZone.Id == "GMT Standard Time" || localZone.Id == "Europe/London")
             return "Europe/London";
 
-        switch (localZone.Id) {
-            case "Eastern Standard Time":
-            case "America/New_York":
-                return "America/New_York";
-            case "Central Standard Time":
-            case "America/Chicago":
-                return "America/Chicago";
-            case "Mountain Standard Time":
-            case "America/Denver":
-                return "America/Denver";
-            case "Pacific Standard Time":
-            case "America/Los_Angeles":
-                return "America/Los_Angeles";
-            case "Alaskan Standard Time":
-            case "America/Anchorage":
-                return "America/Anchorage";
-            case "Hawaiian Standard Time":
-            case "Pacific/Honolulu":
-                return "Pacific/Honolulu";
-        }
+        return localZone.Id switch {
+            "Eastern Standard Time" or "America/New_York" => "America/New_York",
+            "Central Standard Time" or "America/Chicago" => "America/Chicago",
+            "Mountain Standard Time" or "America/Denver" => "America/Denver",
+            "Pacific Standard Time" or "America/Los_Angeles" => "America/Los_Angeles",
+            "Alaskan Standard Time" or "America/Anchorage" => "America/Anchorage",
+            "Hawaiian Standard Time" or "Pacific/Honolulu" => "Pacific/Honolulu",
+            _ => "Europe/Madrid",
+        };
 
-        return localZone.Id;
+        return "Europe/Madrid";
     }
 }

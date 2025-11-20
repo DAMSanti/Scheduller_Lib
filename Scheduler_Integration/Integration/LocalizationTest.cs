@@ -4,41 +4,34 @@ using Scheduler_Lib.Core.Services.Localization;
 using Scheduler_Lib.Core.Services.Utilities;
 using Xunit;
 using Xunit.Abstractions;
+#pragma warning disable IDE0017
 
 namespace Scheduler_IntegrationTests.Integration;
 
-public class LocalizationIntegrationTests(ITestOutputHelper output) {
-
-    #region Weekly Recurrence - All Languages
-
+public class LocalizationIntegrationTests() {
     [Theory, Trait("Category", "Localization")]
     [InlineData("es_ES")]
     [InlineData("en_US")]
     [InlineData("en_GB")]
     public void WeeklyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31))),
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday],
-            OccursOnceChk = true,
-            OccursOnceAt = new TimeSpan(10, 30, 0)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday];
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 30, 0);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language}");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine($"📅 Próxima ejecución: {result.Value.NextDate}");
-        output.WriteLine("");
     }
 
     [Theory, Trait("Category", "Localization")]
@@ -47,60 +40,47 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     [InlineData("en_GB")]
     public void WeeklyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            EndDate = new DateTimeOffset(2025, 10, 15, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 15))),
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Monday],
-            OccursEveryChk = true,
-            DailyPeriod = TimeSpan.FromHours(2),
-            DailyStartTime = TimeSpan.FromHours(9),
-            DailyEndTime = TimeSpan.FromHours(17)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 15)));
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(2);
+        schedulerInput.DailyStartTime = TimeSpan.FromHours(9);
+        schedulerInput.DailyEndTime = TimeSpan.FromHours(17);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language} (OccursEvery)");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine("");
     }
-
-    #endregion
-
-    #region Daily Recurrence - All Languages
 
     [Theory, Trait("Category", "Localization")]
     [InlineData("es_ES")]
     [InlineData("en_US")]
     [InlineData("en_GB")]    public void DailyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            EndDate = new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31))),
-            OccursOnceChk = true,
-            OccursOnceAt = new TimeSpan(14, 30, 0)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 31)));
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 30, 0);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language} (Daily)");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine($"📅 Próxima ejecución: {result.Value.NextDate}");
-        output.WriteLine("");
     }
 
     [Theory, Trait("Category", "Localization")]
@@ -109,32 +89,24 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     [InlineData("en_GB")]
     public void DailyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Daily,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            EndDate = new DateTimeOffset(2025, 10, 15, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 15))),
-            OccursEveryChk = true,
-            DailyPeriod = TimeSpan.FromHours(3),
-            DailyStartTime = TimeSpan.FromHours(8),
-            DailyEndTime = TimeSpan.FromHours(20)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 10, 15, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 10, 15)));
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(3);
+        schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
+        schedulerInput.DailyEndTime = TimeSpan.FromHours(20);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language} (Daily OccursEvery)");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine("");
     }
-
-    #endregion
-
-    #region Monthly Recurrence - All Languages
 
     [Theory, Trait("Category", "Localization")]
     [InlineData("es_ES")]
@@ -142,29 +114,24 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     [InlineData("en_GB")]
     public void MonthlyRecurrence_ByDay_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31))),
-            MonthlyDayChk = true,
-            MonthlyDay = 15,
-            MonthlyDayPeriod = 1,
-            OccursOnceChk = true,
-            OccursOnceAt = new TimeSpan(10, 0, 0)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 15;
+        schedulerInput.MonthlyDayPeriod = 1;
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language} (Monthly by Day)");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine($"📅 Próxima ejecución: {result.Value.NextDate}");
-        output.WriteLine("");
     }
 
     [Theory, Trait("Category", "Localization")]
@@ -173,30 +140,25 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     [InlineData("en_GB")]
     public void MonthlyRecurrence_ByFrequencyAndDateType_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31))),
-            MonthlyTheChk = true,
-            MonthlyFrequency = EnumMonthlyFrequency.Last,
-            MonthlyDateType = EnumMonthlyDateType.Friday,
-            MonthlyThePeriod = 1,
-            OccursOnceChk = true,
-            OccursOnceAt = new TimeSpan(14, 0, 0)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
+        schedulerInput.MonthlyTheChk = true;
+        schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.Last;
+        schedulerInput.MonthlyDateType = EnumMonthlyDateType.Friday;
+        schedulerInput.MonthlyThePeriod = 1;
+        schedulerInput.OccursOnceChk = true;
+        schedulerInput.OccursOnceAt = new TimeSpan(14, 0, 0);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language} (Monthly by Frequency)");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine($"📅 Próxima ejecución: {result.Value.NextDate}");
-        output.WriteLine("");
     }
 
     [Theory, Trait("Category", "Localization")]
@@ -205,35 +167,27 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     [InlineData("en_GB")]
     public void MonthlyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Monthly,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31))),
-            MonthlyDayChk = true,
-            MonthlyDay = 10,
-            MonthlyDayPeriod = 1,
-            OccursEveryChk = true,
-            DailyPeriod = TimeSpan.FromHours(4),
-            DailyStartTime = TimeSpan.FromHours(8),
-            DailyEndTime = TimeSpan.FromHours(20)
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
+        schedulerInput.MonthlyDayChk = true;
+        schedulerInput.MonthlyDay = 10;
+        schedulerInput.MonthlyDayPeriod = 1;
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromHours(4);
+        schedulerInput.DailyStartTime = TimeSpan.FromHours(8);
+        schedulerInput.DailyEndTime = TimeSpan.FromHours(20);
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language} (Monthly OccursEvery)");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine("");
     }
-
-    #endregion
-
-    #region Once Configuration - All Languages
 
     [Theory, Trait("Category", "Localization")]
     [InlineData("es_ES")]
@@ -241,88 +195,73 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     [InlineData("en_GB")]
     public void Once_Configuration_ShouldGenerateLocalizedDescription(string language) {
         var tz = TimeZoneConverter.GetTimeZone();
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Once,
-            Recurrency = EnumRecurrency.Daily,
-            Language = language,
-            StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01))),
-            TargetDate = new DateTimeOffset(2025, 10, 15, 14, 30, 0, tz.GetUtcOffset(new DateTime(2025, 10, 15, 14, 30, 0)))
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Once;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.Language = language;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
+        schedulerInput.TargetDate = new DateTimeOffset(2025, 10, 15, 14, 30, 0, tz.GetUtcOffset(new DateTime(2025, 10, 15, 14, 30, 0)));
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
-        output.WriteLine($"🌐 Idioma: {language} (Once)");
-        output.WriteLine($"📝 Descripción: {result.Value.Description}");
-        output.WriteLine($"📅 Próxima ejecución: {result.Value.NextDate}");
-        output.WriteLine("");
     }
-
-    #endregion
-
-    #region Language Validation Tests
 
     [Fact, Trait("Category", "Localization")]
     public void Validation_ShouldFail_WhenLanguageIsNotSupported() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            Language = "ja-JP",
-            StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Monday]
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.Language = "ja-JP";
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains("ERROR: Language not supported. Available ", result.Error ?? string.Empty);
-        output.WriteLine($"❌ Error esperado: {result.Error}");
     }
 
     [Fact, Trait("Category", "Localization")]
     public void Validation_ShouldFail_WhenLanguageIsNull() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            Language = null!,
-            StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Monday]
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.Language = null!;
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains("ERROR: The language is mandatory.", result.Error ?? string.Empty);
-        output.WriteLine($"❌ Error esperado: {result.Error}");
     }
 
     [Fact, Trait("Category", "Localization")]
     public void Validation_ShouldFail_WhenLanguageIsEmpty() {
-        var schedulerInput = new SchedulerInput {
-            EnabledChk = true,
-            Periodicity = EnumConfiguration.Recurrent,
-            Recurrency = EnumRecurrency.Weekly,
-            Language = "",
-            StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero),
-            WeeklyPeriod = 1,
-            DaysOfWeek = [DayOfWeek.Monday]
-        };
+        var schedulerInput = new SchedulerInput();
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Weekly;
+        schedulerInput.Language = "";
+        schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 0, 0, 0, TimeSpan.Zero);
+        schedulerInput.WeeklyPeriod = 1;
+        schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
-        var result = SchedulerService.InitialHandler(schedulerInput);
+        var result = SchedulerService.InitialOrchestator(schedulerInput);
 
         Assert.False(result.IsSuccess);
         Assert.Contains("ERROR: The language is mandatory.", result.Error ?? string.Empty);
-        output.WriteLine($"❌ Error esperado: {result.Error}");
     }
 
     [Fact, Trait("Category", "Localization")]
@@ -332,16 +271,10 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
         Assert.NotEmpty(supportedLanguages);
         Assert.Equal(3, supportedLanguages.Count);
 
-        output.WriteLine("✅ Idiomas soportados:");
         foreach (var lang in supportedLanguages) {
-            output.WriteLine($"   - {lang}");
             Assert.True(LocalizationService.IsSupportedLanguage(lang));
         }
     }
-
-    #endregion
-
-    #region Date Formatting Tests
 
     [Theory, Trait("Category", "Localization")]
     [InlineData("es_ES")]
@@ -352,7 +285,6 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
         var formattedDate = LocalizationService.FormatDate(date, language);
 
         Assert.NotEmpty(formattedDate);
-        output.WriteLine($"🌐 {language}: {formattedDate}");
     }
 
     [Theory, Trait("Category", "Localization")]
@@ -362,13 +294,9 @@ public class LocalizationIntegrationTests(ITestOutputHelper output) {
     public void DayOfWeekFormatting_ShouldBeLocalizedCorrectly(string language) {
         var daysOfWeek = new[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday };
 
-        output.WriteLine($"🌐 {language}:");
         foreach (var day in daysOfWeek) {
             var formattedDay = LocalizationService.FormatDayOfWeek(day, language);
             Assert.NotEmpty(formattedDay);
-            output.WriteLine($"   {day} → {formattedDay}");
         }
     }
-
-    #endregion
 }
