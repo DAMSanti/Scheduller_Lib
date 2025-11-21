@@ -1,6 +1,5 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
-using Scheduler_Lib.Core.Services.Localization;
 using Scheduler_Lib.Core.Services.Utilities;
 using Xunit;
 using Xunit.Abstractions;
@@ -285,18 +284,5 @@ public class LocalizationIntegrationTests() {
         var formattedDate = LocalizationService.FormatDate(date, language);
 
         Assert.NotEmpty(formattedDate);
-    }
-
-    [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void DayOfWeekFormatting_ShouldBeLocalizedCorrectly(string language) {
-        var daysOfWeek = new[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday };
-
-        foreach (var day in daysOfWeek) {
-            var formattedDay = LocalizationService.FormatDayOfWeek(day, language);
-            Assert.NotEmpty(formattedDay);
-        }
     }
 }

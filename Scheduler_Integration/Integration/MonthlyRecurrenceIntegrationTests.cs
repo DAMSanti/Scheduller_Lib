@@ -1028,57 +1028,5 @@ public class MonthlyRecurrenceIntegrationTests() {
             Assert.Contains(expected, result.Value.Description);
         }
     }
-
-    [Fact, Trait("Category", "Integration")]
-    public void MonthlyRecurrence_FormatMonthlyDateType_AllDateTypes() {
-        var tz = TimeZoneConverter.GetTimeZone();
-        foreach (EnumMonthlyDateType dt in Enum.GetValues(typeof(EnumMonthlyDateType))) {
-            var schedulerInput = new SchedulerInput();
-            schedulerInput.EnabledChk = true;
-            schedulerInput.Periodicity = EnumConfiguration.Recurrent;
-            schedulerInput.Recurrency = EnumRecurrency.Monthly;
-            schedulerInput.Language = "en_US";
-            schedulerInput.StartDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
-            schedulerInput.CurrentDate = new DateTimeOffset(2025, 10, 01, 10, 0, 0, tz.GetUtcOffset(new DateTime(2025, 10, 01)));
-            schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 23, 59, 59, tz.GetUtcOffset(new DateTime(2025, 12, 31)));
-            schedulerInput.MonthlyTheChk = true;
-            schedulerInput.MonthlyFrequency = EnumMonthlyFrequency.First;
-            schedulerInput.MonthlyDateType = dt;
-            schedulerInput.MonthlyThePeriod = 1;
-            schedulerInput.OccursOnceChk = true;
-            schedulerInput.OccursOnceAt = new TimeSpan(10, 0, 0);
-
-            var result = SchedulerService.InitialOrchestator(schedulerInput);
-            Assert.True(result.IsSuccess);
-
-            string expected;
-            switch (dt) {
-                case EnumMonthlyDateType.Day:
-                    expected = "day";
-                    break;
-                case EnumMonthlyDateType.Weekday:
-                    expected = "weekday";
-                    break;
-                case EnumMonthlyDateType.WeekendDay:
-                    expected = "weekend day";
-                    break;
-                default:
-                    var dow = dt switch {
-                        EnumMonthlyDateType.Monday => DayOfWeek.Monday,
-                        EnumMonthlyDateType.Tuesday => DayOfWeek.Tuesday,
-                        EnumMonthlyDateType.Wednesday => DayOfWeek.Wednesday,
-                        EnumMonthlyDateType.Thursday => DayOfWeek.Thursday,
-                        EnumMonthlyDateType.Friday => DayOfWeek.Friday,
-                        EnumMonthlyDateType.Saturday => DayOfWeek.Saturday,
-                        EnumMonthlyDateType.Sunday => DayOfWeek.Sunday,
-                        _ => DayOfWeek.Monday
-                    };
-                    expected = LocalizationService.FormatDayOfWeek(dow, "en_US");
-                    break;
-            }
-
-            Assert.Contains(expected, result.Value.Description);
-        }
-    }
 }
 

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Scheduler_Lib.Core.Services.Localization;
+namespace Scheduler_Lib.Core.Services;
 
 public static class LocalizationService {
     private static readonly Dictionary<string, CultureInfo> SupportedCultures = new() {
@@ -30,14 +30,6 @@ public static class LocalizationService {
         return time.ToString(@"hh\:mm\:ss");
     }
 
-    public static string FormatDayOfWeek(DayOfWeek day, string language) {
-        var culture = GetCulture(language);
-        var date = new DateTime(2025, 1, 1);
-        while (date.DayOfWeek != day)
-            date = date.AddDays(1);
-
-        return date.ToString("dddd", culture);
-    }
     public static bool IsSupportedLanguage(string language) {
         return SupportedCultures.ContainsKey(language);
     }

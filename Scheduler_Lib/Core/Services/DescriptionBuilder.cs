@@ -1,5 +1,4 @@
 ﻿using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Core.Services.Localization;
 using Scheduler_Lib.Resources;
 using System.Globalization;
 using System.Text;
@@ -13,16 +12,15 @@ internal class DescriptionBuilder {
         DateTimeOffset nextDate) {
 
         var language = schedulerInput.Language ?? "es_ES";
-        var culture = LocalizationService.GetCulture(language);
         var formattedDate = LocalizationService.FormatDate(nextDate, language);
 
         if (schedulerInput.Periodicity == EnumConfiguration.Once)
             return BuildOnceDescription(schedulerInput, tz, nextDate);
 
         var description = schedulerInput.Recurrency switch {
-            EnumRecurrency.Weekly => BuildWeeklyDescription(schedulerInput, language, culture),
-            EnumRecurrency.Daily => BuildDailyDescription(schedulerInput, language, culture),
-            EnumRecurrency.Monthly => BuildMonthlyDescription(schedulerInput, language, culture),
+            EnumRecurrency.Weekly => BuildWeeklyDescription(schedulerInput, language),
+            EnumRecurrency.Daily => BuildDailyDescription(schedulerInput, language),
+            EnumRecurrency.Monthly => BuildMonthlyDescription(schedulerInput, language),
             _ => "Unknown recurrence"
         };
 
@@ -37,7 +35,7 @@ internal class DescriptionBuilder {
         return string.Format(template, LocalizationService.FormatDate(nextLocal, language), LocalizationService.FormatTime(nextLocal.TimeOfDay), startDateStr);
     }
 
-    private static string BuildWeeklyDescription(SchedulerInput schedulerInput, string language, CultureInfo culture) {
+    private static string BuildWeeklyDescription(SchedulerInput schedulerInput, string language) {
         var days = string.Join(", ", schedulerInput.DaysOfWeek!
             .Select(d => LocalizationResources.GetDayName(d, language)));
 
@@ -60,7 +58,7 @@ internal class DescriptionBuilder {
     var onDays = LocalizationResources.GetDescription("weekly.on.days", language);
     return $"{periodText} {onDays} {days}{timeInfo}";
     }
-    private static string BuildDailyDescription(SchedulerInput schedulerInput, string language, CultureInfo culture) {
+    private static string BuildDailyDescription(SchedulerInput schedulerInput, string language) {
         if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
             var at = LocalizationResources.GetDescription("daily.at", language);
             return $"{LocalizationResources.GetDescription("daily.every.day", language)} {at} {schedulerInput.OccursOnceAt.Value:hh\\:mm\\:ss}";
@@ -75,7 +73,7 @@ internal class DescriptionBuilder {
         return LocalizationResources.GetDescription("daily.every.day", language);
     }
 
-    private static string BuildMonthlyDescription(SchedulerInput schedulerInput, string language, CultureInfo culture) {
+    private static string BuildMonthlyDescription(SchedulerInput schedulerInput, string language) {
         if (schedulerInput.MonthlyDayChk && schedulerInput.MonthlyDay.HasValue) {
             var dayPeriod = schedulerInput.MonthlyDayPeriod ?? 1;
             var dayPeriodText = dayPeriod == 1

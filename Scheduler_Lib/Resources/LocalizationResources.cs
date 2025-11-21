@@ -1,7 +1,7 @@
-﻿namespace Scheduler_Lib.Core.Services.Localization;
+﻿namespace Scheduler_Lib.Resources;
 
 internal static class LocalizationResources {
-    private static readonly string[] SupportedLanguages = { "es_ES", "en_US", "en_GB" };
+    private static readonly string[] SupportedLanguages = ["es_ES", "en_US", "en_GB"];
     private static readonly Dictionary<string, string> LanguageIndex = new() {
         { "es_ES", "0" },
         { "en_US", "1" },
