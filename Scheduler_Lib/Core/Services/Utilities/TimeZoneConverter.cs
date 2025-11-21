@@ -7,6 +7,16 @@ public static class TimeZoneConverter {
         return TimeZoneInfo.FindSystemTimeZoneById(Config.TimeZoneId);
     }
 
+    public static TimeZoneInfo GetTimeZone(string? timeZoneId) {
+        if (string.IsNullOrWhiteSpace(timeZoneId))
+            return GetTimeZone();
+        try {
+            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+        } catch {
+            return GetTimeZone();
+        }
+    }
+
     public static DateTimeOffset CreateDateTimeOffset(DateTime localWallClock, TimeZoneInfo tz) {
         return new DateTimeOffset(localWallClock, tz.GetUtcOffset(localWallClock));
     }
@@ -38,7 +48,5 @@ public static class TimeZoneConverter {
             "Hawaiian Standard Time" or "Pacific/Honolulu" => "Pacific/Honolulu",
             _ => "Europe/Madrid",
         };
-
-        return "Europe/Madrid";
     }
 }

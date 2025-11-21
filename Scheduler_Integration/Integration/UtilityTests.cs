@@ -338,4 +338,30 @@ public class UtilitiesTests() {
         var expectedOffset = tz.GetUtcOffset(result.Value.NextDate.DateTime);
         Assert.Equal(expectedOffset, result.Value.NextDate.Offset);
     }
+
+    [Fact, Trait("Category", "Integration")]
+    public void RecurrenceCalculator_UsesSchedulerInputTimeZone_ForFutureDates() {
+        var schedulerInput = new SchedulerInput();
+        var tzDefault = TimeZoneConverter.GetTimeZone();
+        var naiveStart = new DateTime(2025, 12, 1, 8, 0, 0);
+        var tzAlternative = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(x => x.Id != tzDefault.Id && x.GetUtcOffset(naiveStart) != tzDefault.GetUtcOffset(naiveStart));
+        Assert.NotNull(tzAlternative);
+        var tzProvided = tzAlternative!;
+
+        schedulerInput.EnabledChk = true;
+        schedulerInput.Periodicity = EnumConfiguration.Recurrent;
+        schedulerInput.Recurrency = EnumRecurrency.Daily;
+        schedulerInput.StartDate = new DateTimeOffset(naiveStart, TimeSpan.Zero);
+        schedulerInput.CurrentDate = schedulerInput.StartDate;
+        schedulerInput.EndDate = new DateTimeOffset(2025, 12, 05, 8, 0, 0, TimeSpan.Zero);
+        schedulerInput.OccursEveryChk = true;
+        schedulerInput.DailyPeriod = TimeSpan.FromDays(1);
+        schedulerInput.TimeZoneId = tzProvided.Id;
+
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
+
+        Assert.NotNull(futureDates);
+        Assert.True(futureDates.Count > 0);
+        Assert.All(futureDates, d => Assert.Equal(tzProvided.GetUtcOffset(d.DateTime), d.Offset));
+    }
 }

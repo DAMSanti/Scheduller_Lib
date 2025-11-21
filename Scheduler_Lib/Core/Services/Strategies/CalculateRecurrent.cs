@@ -19,7 +19,7 @@ internal class CalculateRecurrent {
     }
 
     private static SchedulerOutput BuildResultRecurrent(SchedulerInput schedulerInput) {
-        var tz = TimeZoneConverter.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone(schedulerInput.TimeZoneId);
 
         DateTimeOffset next;
 

@@ -24,4 +24,5 @@ public class SchedulerInput {
     public EnumMonthlyDateType? MonthlyDateType { get; set; }
     public int? MonthlyThePeriod { get; set; }
     public string Language { get; set; } = "en_US";
+    public string? TimeZoneId { get; set; }
 }

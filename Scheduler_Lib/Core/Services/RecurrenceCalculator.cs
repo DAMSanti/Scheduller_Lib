@@ -1,14 +1,19 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services.Calculators.Base;
-using Scheduler_Lib.Core.Services.Calculators.Weekly;
-using Scheduler_Lib.Core.Services.Calculators.Monthly;
 using Scheduler_Lib.Core.Services.Calculators.Daily;
+using Scheduler_Lib.Core.Services.Calculators.Monthly;
+using Scheduler_Lib.Core.Services.Calculators.Weekly;
 using Scheduler_Lib.Core.Services.Utilities;
+using System.Runtime.CompilerServices;
 
 namespace Scheduler_Lib.Core.Services;
 
 public static class RecurrenceCalculator {
     public static DateTimeOffset GetNextExecutionDate(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        var timeZone = !string.IsNullOrWhiteSpace(schedulerInput.TimeZoneId)
+        ? TimeZoneConverter.GetTimeZone(schedulerInput.TimeZoneId)
+        : tz;
+
         if (schedulerInput.Recurrency == EnumRecurrency.Weekly) {
             var baseLocal = BaseDateTimeCalculator.GetBaseDateTime(schedulerInput, tz);
             var baseDtoForNext = new DateTimeOffset(baseLocal, tz.GetUtcOffset(baseLocal));
@@ -44,24 +49,37 @@ public static class RecurrenceCalculator {
         
         return WeeklyRecurrenceCalculator.SelectNextEligibleDate(targetDate, daysOfWeek, tz, monthlyFrequency, monthlyDateType, currentMonth);
     }
-    
+
     public static List<DateTimeOffset> GetFutureDates(SchedulerInput schedulerInput) {
-        if (schedulerInput.Periodicity != EnumConfiguration.Recurrent)
-            return [];
+        var tz = !string.IsNullOrWhiteSpace(schedulerInput.TimeZoneId)
+            ? TimeZoneConverter.GetTimeZone(schedulerInput.TimeZoneId)
+            : TimeZoneConverter.GetTimeZone();
 
-        var tz = TimeZoneConverter.GetTimeZone();
-
-        List<DateTimeOffset> futureDates = schedulerInput.Recurrency switch {
-            EnumRecurrency.Daily => DailyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz),
-            EnumRecurrency.Weekly => WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz),
-            EnumRecurrency.Monthly => MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz),
-            _ => []
-        };
+        List<DateTimeOffset> futureDates;
+        switch (schedulerInput.Recurrency) {
+            case EnumRecurrency.Daily:
+                futureDates = DailyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+                break;
+            case EnumRecurrency.Weekly:
+                futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+                break;
+            case EnumRecurrency.Monthly:
+                futureDates = MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
+                break;
+            default:
+                futureDates = new List<DateTimeOffset>();
+                break;
+        }
 
         var next = GetNextExecutionDate(schedulerInput, tz);
 
-        futureDates.RemoveAll(d => d.UtcDateTime == next.UtcDateTime || 
-                                   (d.DateTime == next.DateTime && d.Offset == next.Offset));
+        for (int i = futureDates.Count - 1; i >= 0; i--) {
+            var d = futureDates[i];
+            if (d.UtcDateTime == next.UtcDateTime ||
+                (d.DateTime == next.DateTime && d.Offset == next.Offset)) {
+                futureDates.RemoveAt(i);
+            }
+        }
         return futureDates;
     }
 }

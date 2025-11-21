@@ -9,14 +9,23 @@ internal class ValidationOnce {
     internal static ResultPattern<bool> ValidateOnce(SchedulerInput schedulerInput) {
         var errors = new StringBuilder();
 
-        if (schedulerInput is { Periodicity: EnumConfiguration.Once, Recurrency: EnumRecurrency.Weekly })
-            errors.AppendLine(Messages.ErrorOnceWeekly);
+        if (schedulerInput.Periodicity == EnumConfiguration.Once) {
+            if (schedulerInput.Recurrency == EnumRecurrency.Weekly)
+                errors.AppendLine(Messages.ErrorOnceWeekly);
+        }
 
-        if (schedulerInput.TargetDate != null && ((schedulerInput.TargetDate < schedulerInput.StartDate || schedulerInput.TargetDate > schedulerInput.EndDate)))
-            errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
+        if (schedulerInput.TargetDate != null) {
+            var target = schedulerInput.TargetDate.Value;
+            if (target < schedulerInput.StartDate)
+                errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
+            else if (schedulerInput.EndDate != null && target > schedulerInput.EndDate)
+                errors.AppendLine(Messages.ErrorTargetDateAfterEndDate);
+        }
 
-        if (schedulerInput.EndDate != null && schedulerInput.StartDate > schedulerInput.EndDate)
-            errors.AppendLine(Messages.ErrorStartDatePostEndDate);
+        if (schedulerInput.EndDate != null) {
+            if (schedulerInput.StartDate > schedulerInput.EndDate)
+                errors.AppendLine(Messages.ErrorStartDatePostEndDate);
+        }
 
         if (schedulerInput.TargetDate == null && schedulerInput.Recurrency != EnumRecurrency.Weekly)
             errors.AppendLine(Messages.ErrorTargetDateNull);

@@ -18,7 +18,7 @@ internal class CalculateOneTime {
     }
 
     private static SchedulerOutput BuildResultOnce(SchedulerInput schedulerInput) {
-        var tz = TimeZoneConverter.GetTimeZone();
+        var tz = TimeZoneConverter.GetTimeZone(schedulerInput.TimeZoneId);
         var targetDate = schedulerInput.TargetDate!.Value;
         var next = new DateTimeOffset(targetDate.DateTime, tz.GetUtcOffset(targetDate.DateTime));
 
