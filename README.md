@@ -1,34 +1,34 @@
 # Scheduler_Lib
 
-## Descripción General
+## Descripciï¿½n General
 
-**Scheduler_Lib** es una biblioteca desarrollada en .NET 8 que permite calcular fechas programadas de manera flexible, soportando tanto eventos únicos como recurrentes. Su diseño sigue principios SOLID y buenas prácticas de arquitectura, facilitando la extensión, el mantenimiento y la reutilización del código.
+**Scheduler_Lib** es una biblioteca desarrollada en .NET 8 que permite calcular fechas programadas de manera flexible, soportando tanto eventos ï¿½nicos como recurrentes. Su diseï¿½o sigue principios SOLID y buenas prï¿½cticas de arquitectura, facilitando la extensiï¿½n, el mantenimiento y la reutilizaciï¿½n del cï¿½digo.
 
 ---
 
 ## Funcionalidad Principal
 
-- **Cálculo de Fechas Únicas (OneTime):**  
-  Permite programar un evento para una fecha específica o con un desplazamiento determinado. El cálculo tiene en cuenta la zona horaria y los posibles cambios por horario de verano (Daylight Saving Time).
+- **Cï¿½lculo de Fechas ï¿½nicas (OneTime):**  
+  Permite programar un evento para una fecha especï¿½fica o con un desplazamiento determinado. El cï¿½lculo tiene en cuenta la zona horaria y los posibles cambios por horario de verano (Daylight Saving Time).
 
-- **Cálculo de Fechas Recurrentes (Recurrent):**  
-  Permite programar eventos que se repiten cada cierto número de días, generando una lista de futuras fechas de ejecución. El cálculo de cada fecha recurrente también considera la zona horaria y los cambios de offset por horario de verano.
+- **Cï¿½lculo de Fechas Recurrentes (Recurrent):**  
+  Permite programar eventos que se repiten cada cierto nï¿½mero de dï¿½as, generando una lista de futuras fechas de ejecuciï¿½n. El cï¿½lculo de cada fecha recurrente tambiï¿½n considera la zona horaria y los cambios de offset por horario de verano.
 
 - **Validaciones:**  
-  Incluye validaciones para asegurar la coherencia de los datos de entrada (por ejemplo, que el desplazamiento sea positivo, que las fechas estén en rango y que los datos requeridos no sean nulos).
+  Incluye validaciones para asegurar la coherencia de los datos de entrada (por ejemplo, que el desplazamiento sea positivo, que las fechas estï¿½n en rango y que los datos requeridos no sean nulos).
 
-- **Centralización de Mensajes:**  
-  Todos los textos de error y mensajes relevantes están centralizados en una única clase, facilitando su modificación y traducción.
+- **Centralizaciï¿½n de Mensajes:**  
+  Todos los textos de error y mensajes relevantes estï¿½n centralizados en una ï¿½nica clase, facilitando su modificaciï¿½n y traducciï¿½n.
 
 ---
 
 ## Estructura de Carpetas
 
 - `Core/Model`: Modelos de datos principales (`RequestedDate`, `SolvedDate`, etc.).
-- `Core/Services`: Lógica de negocio para el cálculo de fechas (`CalcOneTime`, `CalcRecurrent`, etc.).
-- `Core/Factory`: Fábrica para obtener la estrategia de cálculo adecuada según la periodicidad.
+- `Core/Services`: Lï¿½gica de negocio para el cï¿½lculo de fechas (`CalcOneTime`, `CalcRecurrent`, etc.).
+- `Core/Factory`: Fï¿½brica para obtener la estrategia de cï¿½lculo adecuada segï¿½n la periodicidad.
 - `Infrastructure/Validations`: Validaciones de entrada y reglas de negocio.
-- `Resources`: Centralización de mensajes y textos de error.
+- `Resources`: Centralizaciï¿½n de mensajes y textos de error.
 - `Scheduler_Test`: Pruebas unitarias para garantizar la calidad y robustez de la biblioteca.
 
 ---
@@ -36,7 +36,7 @@
 
 ## Pruebas
 
-El proyecto incluye pruebas unitarias con xUnit para validar el correcto funcionamiento de las validaciones y los cálculos de fechas.
+El proyecto incluye pruebas unitarias con xUnit para validar el correcto funcionamiento de las validaciones y los cï¿½lculos de fechas.
 
 ---
 
@@ -46,4 +46,6 @@ El proyecto incluye pruebas unitarias con xUnit para validar el correcto funcion
 
 ---
 
-© Santiago Manuel Tamayo Arozamena 2025
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/DAMSanti/Scheduller_Lib)
+
+ï¿½ Santiago Manuel Tamayo Arozamena 2025
