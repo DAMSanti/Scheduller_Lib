@@ -1,6 +1,5 @@
 using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
-using Scheduler_Lib.Core.Services.Calculators.Weekly;
 using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
 using Xunit;
@@ -66,8 +65,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var tzCalc = TimeZoneConverter.GetTimeZone();
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tzCalc);
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 7);
@@ -125,8 +123,7 @@ public class WeeklyRecurrenceIntegrationTests() {
         schedulerInput.DaysOfWeek = [DayOfWeek.Monday];
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
-        var tzCalc = TimeZoneConverter.GetTimeZone();
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tzCalc);
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
@@ -163,8 +160,7 @@ public class WeeklyRecurrenceIntegrationTests() {
         schedulerInput.DaysOfWeek = [DayOfWeek.Saturday, DayOfWeek.Sunday];
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
-        var tz = TimeZoneConverter.GetTimeZone();
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday));
@@ -206,7 +202,7 @@ public class WeeklyRecurrenceIntegrationTests() {
         schedulerInput.OccursOnceAt = new TimeSpan(9, 0, 0);
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 3);
@@ -231,7 +227,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.Contains("every 2 week(s)", result.Value.Description);
@@ -256,7 +252,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count > 2);
@@ -281,7 +277,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.Equal(DayOfWeek.Monday, date.DayOfWeek));
@@ -306,7 +302,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 6);
@@ -332,7 +328,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 20);
@@ -357,7 +353,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 10);
@@ -404,7 +400,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.All(futureDates!, date => Assert.True(date <= schedulerInput.EndDate));
@@ -426,7 +422,7 @@ public class WeeklyRecurrenceIntegrationTests() {
 
         var result = SchedulerService.InitialOrchestator(schedulerInput);
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
         Assert.True(futureDates!.Count >= 12);
@@ -687,7 +683,7 @@ public class WeeklyRecurrenceIntegrationTests() {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Saturday];
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.NotNull(futureDates);
         Assert.Empty(futureDates!);
@@ -707,7 +703,7 @@ public class WeeklyRecurrenceIntegrationTests() {
         schedulerInput.WeeklyPeriod = 1;
         schedulerInput.DaysOfWeek = [DayOfWeek.Friday];
 
-        var futureDates = WeeklyRecurrenceCalculator.CalculateFutureDates(schedulerInput, TimeZoneConverter.GetTimeZone());
+        var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.NotNull(futureDates);
         Assert.True(futureDates!.Count >= 0);

@@ -1,3 +1,5 @@
+using Scheduler_Lib.Core.Adapters;
+using Scheduler_Lib.Core.Interfaces;
 using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services.Utilities;
 using Scheduler_Lib.Resources;
@@ -11,7 +13,7 @@ internal static class DailySlotGenerator {
         TimeSpan endTime, 
         TimeSpan step, 
         TimeZoneInfo tz, 
-        SchedulerInput schedulerInput, 
+        ISchedulerConfiguration schedulerConfiguration, 
         DateTimeOffset endDate, 
         DateTimeOffset earliestAllowed, 
         List<DateTimeOffset> accumulator) {
@@ -24,21 +26,37 @@ internal static class DailySlotGenerator {
 
         var slotLocal = startLocal;
         while (slotLocal <= endLocal) {
-            ProcessSlotTime(slotLocal, tz, schedulerInput, endDate, earliestAllowed, accumulator);
+            ProcessSlotTime(slotLocal, tz, schedulerConfiguration, endDate, earliestAllowed, accumulator);
             slotLocal = slotLocal.Add(step);
         }
     }
 
-    private static void ProcessSlotTime(
-        DateTime slotLocal, 
+    // Overload for backward compatibility with SchedulerInput
+    internal static void GenerateSlotsForDay(
+        DateTime day, 
+        TimeSpan startTime, 
+        TimeSpan endTime, 
+        TimeSpan step, 
         TimeZoneInfo tz, 
         SchedulerInput schedulerInput, 
         DateTimeOffset endDate, 
         DateTimeOffset earliestAllowed, 
         List<DateTimeOffset> accumulator) {
+        
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        GenerateSlotsForDay(day, startTime, endTime, step, tz, adapter, endDate, earliestAllowed, accumulator);
+    }
+
+    private static void ProcessSlotTime(
+        DateTime slotLocal, 
+        TimeZoneInfo tz, 
+        ISchedulerConfiguration schedulerConfiguration, 
+        DateTimeOffset endDate, 
+        DateTimeOffset earliestAllowed, 
+        List<DateTimeOffset> accumulator) {
 
         if (tz.IsAmbiguousTime(slotLocal)) {
-            HandleAmbiguousTime(slotLocal, tz, schedulerInput, endDate, earliestAllowed, accumulator);
+            HandleAmbiguousTime(slotLocal, tz, schedulerConfiguration, endDate, earliestAllowed, accumulator);
             return;
         }
 
@@ -47,7 +65,7 @@ internal static class DailySlotGenerator {
         }
 
         var slotDateTimeOffset = TimeZoneConverter.CreateDateTimeOffset(slotLocal, tz);
-        if (IsSlotValid(slotDateTimeOffset, schedulerInput.StartDate, endDate, earliestAllowed, accumulator)) {
+        if (IsSlotValid(slotDateTimeOffset, schedulerConfiguration.StartDate, endDate, earliestAllowed, accumulator)) {
             accumulator.Add(slotDateTimeOffset);
         }
     }
@@ -55,7 +73,7 @@ internal static class DailySlotGenerator {
     private static void HandleAmbiguousTime(
         DateTime slotLocal, 
         TimeZoneInfo tz, 
-        SchedulerInput schedulerInput, 
+        ISchedulerConfiguration schedulerConfiguration, 
         DateTimeOffset endDate, 
         DateTimeOffset earliestAllowed, 
         List<DateTimeOffset> accumulator) {
@@ -64,7 +82,7 @@ internal static class DailySlotGenerator {
 
         foreach (var offset in offsets.OrderByDescending(o => o)) {
             var slotDateTimeOffset = new DateTimeOffset(slotLocal, offset);
-            if (IsSlotValid(slotDateTimeOffset, schedulerInput.StartDate, endDate, earliestAllowed, accumulator)) {
+            if (IsSlotValid(slotDateTimeOffset, schedulerConfiguration.StartDate, endDate, earliestAllowed, accumulator)) {
                 accumulator.Add(slotDateTimeOffset);
             }
         }

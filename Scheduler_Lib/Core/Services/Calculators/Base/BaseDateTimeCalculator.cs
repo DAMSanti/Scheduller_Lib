@@ -1,21 +1,29 @@
+using Scheduler_Lib.Core.Adapters;
+using Scheduler_Lib.Core.Interfaces;
 using Scheduler_Lib.Core.Model;
 
 namespace Scheduler_Lib.Core.Services.Calculators.Base;
 
 internal static class BaseDateTimeCalculator {
-    internal static DateTime GetBaseDateTime(SchedulerInput schedulerInput, TimeZoneInfo tz) {
-        if (schedulerInput.TargetDate.HasValue)
-            return schedulerInput.TargetDate.Value.DateTime;
+    internal static DateTime GetBaseDateTime(ISchedulerConfiguration schedulerConfiguration, TimeZoneInfo tz) {
+        if (schedulerConfiguration.TargetDate.HasValue)
+            return schedulerConfiguration.TargetDate.Value.DateTime;
 
-        if (schedulerInput.CurrentDate != default) {
-            var utcTime = schedulerInput.CurrentDate.UtcDateTime;
-            var startTime = schedulerInput.StartDate.TimeOfDay;
+        if (schedulerConfiguration.CurrentDate != default) {
+            var utcTime = schedulerConfiguration.CurrentDate.UtcDateTime;
+            var startTime = schedulerConfiguration.StartDate.TimeOfDay;
 
             var localInTz = Utilities.TimeZoneConverter.ConvertFromUtc(utcTime, tz);
             return new DateTime(localInTz.Year, localInTz.Month, localInTz.Day,
                 startTime.Hours, startTime.Minutes, startTime.Seconds, DateTimeKind.Unspecified);
         }
 
-        return schedulerInput.StartDate.DateTime;
+        return schedulerConfiguration.StartDate.DateTime;
+    }
+
+    // Overload for backward compatibility with SchedulerInput
+    internal static DateTime GetBaseDateTime(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        return GetBaseDateTime(adapter, tz);
     }
 }

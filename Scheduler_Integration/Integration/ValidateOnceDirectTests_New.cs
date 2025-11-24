@@ -1,12 +1,13 @@
 using Scheduler_Lib.Core.Model;
-using Scheduler_Lib.Infrastructure.Validations;
+using Scheduler_Lib.Core.Adapters;
+using Scheduler_Lib.Core.Validation.Validators;
 using Scheduler_Lib.Resources;
 using System;
 using Xunit;
 
 namespace Scheduler_IntegrationTests.Integration;
 
-public class ValidateOnceDirectTests {
+public class ValidateOnceDirectTests_New {
     [Fact, Trait("Category", "ValidateOnceDirect")]
     public void ValidateOnce_Direct_ShouldNotFlagOnceWeekly_WhenPeriodicityIsNotOnceAndRecurrencyWeekly() {
         var schedulerInput = new SchedulerInput();
@@ -16,7 +17,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.CurrentDate = schedulerInput.StartDate;
         schedulerInput.EndDate = new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero);
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new OneTimeExecutionValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.True(result.IsSuccess);
         Assert.DoesNotContain(Messages.ErrorOnceWeekly, result.Error ?? string.Empty);
@@ -31,7 +34,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.CurrentDate = schedulerInput.StartDate;
         schedulerInput.TargetDate = null;
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new OneTimeExecutionValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateNull, result.Error ?? string.Empty);
@@ -47,7 +52,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.TargetDate = null;
         schedulerInput.DaysOfWeek = new System.Collections.Generic.List<DayOfWeek> { DayOfWeek.Monday };
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new OneTimeExecutionValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorOnceWeekly, result.Error ?? string.Empty);
@@ -64,7 +71,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.TargetDate = null;
         schedulerInput.DaysOfWeek = new System.Collections.Generic.List<DayOfWeek> { DayOfWeek.Monday };
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new OneTimeExecutionValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.True(result.IsSuccess);
         Assert.DoesNotContain(Messages.ErrorTargetDateNull, result.Error ?? string.Empty);
@@ -80,7 +89,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.TargetDate = null;
         schedulerInput.DaysOfWeek = new System.Collections.Generic.List<DayOfWeek> { DayOfWeek.Monday };
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new OneTimeExecutionValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.False(result.IsSuccess);
         var error = result.Error ?? string.Empty;
@@ -98,7 +109,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.EndDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = schedulerInput.EndDate;
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new DateRangeValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.True(result.IsSuccess);
         Assert.DoesNotContain(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
@@ -114,7 +127,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.EndDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 1, TimeSpan.Zero);
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new DateRangeValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorTargetDateAfterEndDate, result.Error ?? string.Empty);
@@ -130,7 +145,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.EndDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.TargetDate = new DateTimeOffset(2025, 6, 15, 10, 0, 0, TimeSpan.Zero);
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new DateRangeValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.True(result.IsSuccess);
         Assert.DoesNotContain(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -145,7 +162,9 @@ public class ValidateOnceDirectTests {
         schedulerInput.EndDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var validator = new DateRangeValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        var result = validator.Validate(adapter);
 
         Assert.False(result.IsSuccess);
         Assert.Contains(Messages.ErrorStartDatePostEndDate, result.Error ?? string.Empty);
@@ -162,12 +181,17 @@ public class ValidateOnceDirectTests {
         schedulerInput.TargetDate = new DateTimeOffset(2026, 6, 15, 10, 0, 0, TimeSpan.Zero);
         schedulerInput.DaysOfWeek = new System.Collections.Generic.List<DayOfWeek> { DayOfWeek.Monday };
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var oneTimeValidator = new OneTimeExecutionValidator();
+        var dateRangeValidator = new DateRangeValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        
+        var oneTimeResult = oneTimeValidator.Validate(adapter);
+        var dateRangeResult = dateRangeValidator.Validate(adapter);
 
-        Assert.False(result.IsSuccess);
-        var error = result.Error ?? string.Empty;
-        Assert.Contains(Messages.ErrorOnceWeekly, error);
-        Assert.Contains(Messages.ErrorTargetDateAfterEndDate, error);
+        Assert.False(oneTimeResult.IsSuccess || dateRangeResult.IsSuccess);
+        var combinedError = $"{oneTimeResult.Error}{dateRangeResult.Error}";
+        Assert.Contains(Messages.ErrorOnceWeekly, combinedError);
+        Assert.Contains(Messages.ErrorTargetDateAfterEndDate, combinedError);
     }
 
     [Fact, Trait("Category", "ValidateOnceDirect")]
@@ -181,11 +205,16 @@ public class ValidateOnceDirectTests {
         schedulerInput.TargetDate = null;
         schedulerInput.DaysOfWeek = new System.Collections.Generic.List<DayOfWeek> { DayOfWeek.Monday };
 
-        var result = ValidationOnce.ValidateOnce(schedulerInput);
+        var oneTimeValidator = new OneTimeExecutionValidator();
+        var dateRangeValidator = new DateRangeValidator();
+        var adapter = new SchedulerInputAdapter(schedulerInput);
+        
+        var oneTimeResult = oneTimeValidator.Validate(adapter);
+        var dateRangeResult = dateRangeValidator.Validate(adapter);
 
-        Assert.False(result.IsSuccess);
-        var error = result.Error ?? string.Empty;
-        Assert.Contains(Messages.ErrorOnceWeekly, error);
-        Assert.Contains(Messages.ErrorStartDatePostEndDate, error);
+        Assert.False(oneTimeResult.IsSuccess || dateRangeResult.IsSuccess);
+        var combinedError = $"{oneTimeResult.Error}{dateRangeResult.Error}";
+        Assert.Contains(Messages.ErrorOnceWeekly, combinedError);
+        Assert.Contains(Messages.ErrorStartDatePostEndDate, combinedError);
     }
 }
