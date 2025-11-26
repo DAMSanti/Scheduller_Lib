@@ -1,6 +1,7 @@
 ﻿using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Core.Services.Utilities;
+using Scheduler_Lib.Core.Services;
 using Xunit;
 using Xunit.Abstractions;
 #pragma warning disable IDE0017
@@ -265,13 +266,13 @@ public class LocalizationIntegrationTests() {
 
     [Fact, Trait("Category", "Localization")]
     public void LocalizationService_ShouldReturnAllSupportedLanguages() {
-        var supportedLanguages = LocalizationService.GetSupportedLanguages().ToList();
+        var supportedLanguages = Scheduler_Lib.Core.Services.LocalizationService.GetSupportedLanguages().ToList();
 
         Assert.NotEmpty(supportedLanguages);
         Assert.Equal(3, supportedLanguages.Count);
 
         foreach (var lang in supportedLanguages) {
-            Assert.True(LocalizationService.IsSupportedLanguage(lang));
+            Assert.True(Scheduler_Lib.Core.Services.LocalizationService.IsSupportedLanguage(lang));
         }
     }
 
@@ -281,7 +282,7 @@ public class LocalizationIntegrationTests() {
     [InlineData("en_GB")]
     public void DateFormatting_ShouldBeLocalizedCorrectly(string language) {
         var date = new DateTimeOffset(2025, 10, 15, 14, 30, 45, TimeSpan.Zero);
-        var formattedDate = LocalizationService.FormatDate(date, language);
+        var formattedDate = Scheduler_Lib.Core.Services.LocalizationService.FormatDate(date, language);
 
         Assert.NotEmpty(formattedDate);
     }

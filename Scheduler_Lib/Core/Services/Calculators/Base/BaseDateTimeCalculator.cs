@@ -21,8 +21,8 @@ internal static class BaseDateTimeCalculator {
         return schedulerConfiguration.StartDate.DateTime;
     }
 
-    // Overload for backward compatibility with SchedulerInput
-    internal static DateTime GetBaseDateTime(SchedulerInput schedulerInput, TimeZoneInfo tz) {
+    // Renamed method to avoid ambiguity in reflection
+    internal static DateTime GetBaseDateTimeFromInput(SchedulerInput schedulerInput, TimeZoneInfo tz) {
         var adapter = new SchedulerInputAdapter(schedulerInput);
         return GetBaseDateTime(adapter, tz);
     }

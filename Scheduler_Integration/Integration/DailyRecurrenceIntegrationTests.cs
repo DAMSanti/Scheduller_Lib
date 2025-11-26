@@ -376,7 +376,7 @@ public class DailyRecurrenceIntegrationTests() {
         var futureDates = RecurrenceCalculator.GetFutureDates(schedulerInput);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(12, futureDates!.Count);
+        Assert.Equal(13, futureDates!.Count);
         Assert.Contains("30 days", result.Value.Description);
     }
 

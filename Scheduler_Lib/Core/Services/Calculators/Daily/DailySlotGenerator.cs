@@ -95,9 +95,10 @@ internal static class DailySlotGenerator {
         DateTimeOffset earliestAllowed, 
         List<DateTimeOffset> accumulator) {
         
-        return slot >= startDate 
-            && slot <= endDate 
-            && slot > earliestAllowed 
+        // Compare using DateTime to avoid timezone-related issues
+        return slot.DateTime >= startDate.DateTime 
+            && slot.DateTime <= endDate.DateTime 
+            && slot >= earliestAllowed 
             && !accumulator.Contains(slot);
     }
 }

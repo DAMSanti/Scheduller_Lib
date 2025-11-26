@@ -37,7 +37,7 @@ public class UtilitiesTests() {
         var type = assembly.GetType("Scheduler_Lib.Core.Services.Calculators.Base.BaseDateTimeCalculator");
         Assert.NotNull(type);
 
-        var method = type!.GetMethod("GetBaseDateTime", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+        var method = type!.GetMethod("GetBaseDateTimeFromInput", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
         Assert.NotNull(method);
 
         var result = (DateTime)method!.Invoke(null, [schedulerInput, tz])!;

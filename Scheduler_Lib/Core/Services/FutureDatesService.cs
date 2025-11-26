@@ -19,26 +19,21 @@ public static class FutureDatesService
     /// </summary>
     public static List<DateTimeOffset> GetFutureDates(SchedulerInput schedulerInput)
     {
-        var configuration = new SchedulerInputAdapter(schedulerInput);
-        var timeZone = TimeZoneConverter.GetTimeZone(configuration.TimeZoneId);
-        
-        var strategy = _strategyFactory.CreateStrategy(configuration);
-        var futureDates = strategy.CalculateFutureDates(configuration, timeZone);
-        
-        // Remove the next execution date from the list (backward compatibility)
-        var next = strategy.GetNextExecutionDate(configuration, timeZone);
-        
-        for (int i = futureDates.Count - 1; i >= 0; i--)
+        try
         {
-            var d = futureDates[i];
-            if (d.UtcDateTime == next.UtcDateTime ||
-                (d.DateTime == next.DateTime && d.Offset == next.Offset))
-            {
-                futureDates.RemoveAt(i);
-            }
+            var configuration = new SchedulerInputAdapter(schedulerInput);
+            var timeZone = TimeZoneConverter.GetTimeZone(configuration.TimeZoneId);
+            
+            var strategy = _strategyFactory.CreateStrategy(configuration);
+            var futureDates = strategy.CalculateFutureDates(configuration, timeZone);
+            
+            return futureDates;
         }
-        
-        return futureDates;
+        catch (InvalidOperationException)
+        {
+            // Return empty list if no strategy found for unsupported recurrency
+            return new List<DateTimeOffset>();
+        }
     }
 
     /// <summary>
