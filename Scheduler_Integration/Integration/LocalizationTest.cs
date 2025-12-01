@@ -9,10 +9,10 @@ namespace Scheduler_IntegrationTests.Integration;
 
 public class LocalizationIntegrationTests() {
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void WeeklyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language) {
+    [InlineData("es_ES", "cada semana en Lunes, Miércoles, Viernes")]
+    [InlineData("en_US", "every week on Monday, Wednesday, Friday")]
+    [InlineData("en_GB", "every week on Monday, Wednesday, Friday")]
+    public void WeeklyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -31,13 +31,14 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void WeeklyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
+    [InlineData("es_ES", "cada semana en Lunes ocurre cada 2 horas")]
+    [InlineData("en_US", "every week on Monday occurs every 2 hours")]
+    [InlineData("en_GB", "every week on Monday occurs every 2 hours")]
+    public void WeeklyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -58,12 +59,14 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]    public void DailyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language) {
+    [InlineData("es_ES", "cada día")]
+    [InlineData("en_US", "every day")]
+    [InlineData("en_GB", "every day")]
+    public void DailyRecurrence_ShouldGenerateLocalizedDescription_WhenLanguageIsSupported(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -80,13 +83,14 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void DailyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
+    [InlineData("es_ES", "ocurre cada 3 horas")]
+    [InlineData("en_US", "occurs every 3 hours")]
+    [InlineData("en_GB", "occurs every 3 hours")]
+    public void DailyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -105,13 +109,14 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void MonthlyRecurrence_ByDay_ShouldGenerateLocalizedDescription(string language) {
+    [InlineData("es_ES", "cada mes el día 15 de cada mes")]
+    [InlineData("en_US", "every month on day 15 of every month")]
+    [InlineData("en_GB", "every month on day 15 of every month")]
+    public void MonthlyRecurrence_ByDay_ShouldGenerateLocalizedDescription(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -131,13 +136,14 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void MonthlyRecurrence_ByFrequencyAndDateType_ShouldGenerateLocalizedDescription(string language) {
+    [InlineData("es_ES", "cada mes el último Viernes de cada mes")]
+    [InlineData("en_US", "every month the last Friday of every month")]
+    [InlineData("en_GB", "every month the last Friday of every month")]
+    public void MonthlyRecurrence_ByFrequencyAndDateType_ShouldGenerateLocalizedDescription(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -158,13 +164,14 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void MonthlyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language) {
+    [InlineData("es_ES", "cada mes el día 10 de cada mes")]
+    [InlineData("en_US", "every month on day 10 of every month")]
+    [InlineData("en_GB", "every month on day 10 of every month")]
+    public void MonthlyRecurrence_WithOccursEvery_ShouldGenerateLocalizedDescription(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -186,13 +193,14 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Theory, Trait("Category", "Localization")]
-    [InlineData("es_ES")]
-    [InlineData("en_US")]
-    [InlineData("en_GB")]
-    public void Once_Configuration_ShouldGenerateLocalizedDescription(string language) {
+    [InlineData("es_ES", "Ocurre una vez")]
+    [InlineData("en_US", "Occurs once")]
+    [InlineData("en_GB", "Occurs once")]
+    public void Once_Configuration_ShouldGenerateLocalizedDescription(string language, string expectedDescriptionStart) {
         var tz = TimeZoneConverter.GetTimeZone();
         var schedulerInput = new SchedulerInput();
         schedulerInput.EnabledChk = true;
@@ -207,6 +215,7 @@ public class LocalizationIntegrationTests() {
 
         Assert.True(result.IsSuccess);
         Assert.NotEmpty(result.Value.Description);
+        Assert.Contains(expectedDescriptionStart, result.Value.Description);
     }
 
     [Fact, Trait("Category", "Localization")]
