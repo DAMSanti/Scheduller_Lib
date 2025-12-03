@@ -25,7 +25,7 @@ public class TimeZoneConverterIntegrationTests {
             { "America/Anchorage", "America/Anchorage" },
             { "Hawaiian Standard Time", "Pacific/Honolulu" },
             { "Pacific/Honolulu", "Pacific/Honolulu" },
-            { "My/Unknown_Timezone", "Europe/Madrid" }
+            { "My/Unknown_Timezone", "Europe/London" }
         };
     }
 

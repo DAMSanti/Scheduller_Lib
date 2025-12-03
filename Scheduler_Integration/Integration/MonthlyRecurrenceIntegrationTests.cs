@@ -690,6 +690,7 @@ public class MonthlyRecurrenceIntegrationTests() {
         schedulerInput.EnabledChk = true;
         schedulerInput.Periodicity = EnumConfiguration.Recurrent;
         schedulerInput.Recurrency = EnumRecurrency.Monthly;
+        schedulerInput.Language = "en_US";
         schedulerInput.StartDate = new DateTimeOffset(2025, 01, 01, 0, 0, 0, TimeSpan.Zero);
         schedulerInput.CurrentDate = new DateTimeOffset(2025, 02, 28, 23, 0, 0, TimeSpan.Zero);
         schedulerInput.EndDate = new DateTimeOffset(2025, 02, 28, 23, 59, 59, TimeSpan.Zero);

@@ -46,7 +46,7 @@ public static class TimeZoneConverter {
             "Pacific Standard Time" or "America/Los_Angeles" => "America/Los_Angeles",
             "Alaskan Standard Time" or "America/Anchorage" => "America/Anchorage",
             "Hawaiian Standard Time" or "Pacific/Honolulu" => "Pacific/Honolulu",
-            _ => "Europe/Madrid",
+            _ => "Europe/London",
         };
     }
 }

@@ -31,8 +31,10 @@ internal class CalculateRecurrent {
             }
         } else if (schedulerInput.Recurrency == EnumRecurrency.Monthly) {
             var futureDates = MonthlyRecurrenceCalculator.CalculateFutureDates(schedulerInput, tz);
-            if (futureDates.Count > 0) {
-                next = futureDates.First();
+            var validFutureDates = futureDates.Where(d => d >= schedulerInput.CurrentDate).ToList();
+            
+            if (validFutureDates.Count > 0) {
+                next = validFutureDates.First();
                 
                 if (schedulerInput.OccursOnceChk && schedulerInput.OccursOnceAt.HasValue) {
                     next = OccursOnceHelper.ApplyOccursOnceAt(next, schedulerInput.OccursOnceAt, tz);
