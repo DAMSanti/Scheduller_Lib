@@ -1,7 +1,6 @@
 using Scheduler_Lib.Core.Model;
 using Scheduler_Lib.Core.Services;
 using Scheduler_Lib.Core.Services.Utilities;
-using Scheduler_Lib.Core.Services.Localization;
 using Scheduler_Lib.Resources;
 using Xunit;
 using Xunit.Abstractions;
